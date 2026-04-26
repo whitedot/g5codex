@@ -19,37 +19,32 @@ function admin_get_member_form_defaults()
     );
 }
 
-function admin_build_member_form_binary_options($selected_value)
+function admin_build_member_form_radio_option_view($value, $label, $checked, $id = '')
+{
+    $value = (string) $value;
+    $id = $id !== '' ? (string) $id : $value;
+
+    return array(
+        'value_attr' => admin_escape_attr($value),
+        'label_text' => get_text((string) $label),
+        'id_attr' => admin_escape_attr($id),
+        'checked_attr' => $checked ? ' checked="checked"' : '',
+    );
+}
+
+function admin_build_member_form_binary_options($selected_value, $id_prefix = '')
 {
     return array(
-        array(
-            'value' => '1',
-            'label' => '예',
-            'checked' => (bool) $selected_value,
-        ),
-        array(
-            'value' => '0',
-            'label' => '아니오',
-            'checked' => !$selected_value,
-        ),
+        admin_build_member_form_radio_option_view('1', '예', (bool) $selected_value, $id_prefix . '1'),
+        admin_build_member_form_radio_option_view('0', '아니오', !$selected_value, $id_prefix . '0'),
     );
 }
 
 function admin_build_member_form_certify_case_options($selected_value)
 {
     return array(
-        array(
-            'value' => 'simple',
-            'label' => '간편인증',
-            'id' => 'mb_certify_sa',
-            'checked' => $selected_value === 'simple',
-        ),
-        array(
-            'value' => 'hp',
-            'label' => '휴대폰',
-            'id' => 'mb_certify_hp',
-            'checked' => $selected_value === 'hp',
-        ),
+        admin_build_member_form_radio_option_view('simple', '간편인증', $selected_value === 'simple', 'mb_certify_sa'),
+        admin_build_member_form_radio_option_view('hp', '휴대폰', $selected_value === 'hp', 'mb_certify_hp'),
     );
 }
 
@@ -134,11 +129,11 @@ function admin_build_member_form_view(array $request, array $member, $is_admin, 
         'member_level_options' => admin_build_member_level_options(1, (int) $member['mb_level'], isset($mb['mb_level']) ? $mb['mb_level'] : ''),
         'html_title' => $html_title,
         'certify_case_options' => admin_build_member_form_certify_case_options(isset($mb['mb_certify']) ? $mb['mb_certify'] : ''),
-        'mb_certify_options' => admin_build_member_form_binary_options(!empty($mb['mb_certify'])),
-        'mb_adult_options' => admin_build_member_form_binary_options(!empty($mb['mb_adult'])),
-        'mb_mailling_options' => admin_build_member_form_binary_options(!empty($mb['mb_mailling'])),
-        'mb_open_options' => admin_build_member_form_binary_options(!empty($mb['mb_open'])),
-        'mb_marketing_agree_options' => admin_build_member_form_binary_options(!empty($mb['mb_marketing_agree'])),
+        'mb_certify_options' => admin_build_member_form_binary_options(!empty($mb['mb_certify']), 'mb_certify_'),
+        'mb_adult_options' => admin_build_member_form_binary_options(!empty($mb['mb_adult']), 'mb_adult_'),
+        'mb_mailling_options' => admin_build_member_form_binary_options(!empty($mb['mb_mailling']), 'mb_mailling_'),
+        'mb_open_options' => admin_build_member_form_binary_options(!empty($mb['mb_open']), 'mb_open_'),
+        'mb_marketing_agree_options' => admin_build_member_form_binary_options(!empty($mb['mb_marketing_agree']), 'mb_marketing_agree_'),
         'mb_cert_history' => $mb_cert_history,
         'title' => $title_prefix . '회원 ' . $html_title,
     );
@@ -260,13 +255,13 @@ function admin_build_member_form_page_view(array $member_form_view, array $confi
         'admin_container_class' => 'admin-page-member-form',
         'admin_page_subtitle' => '기본정보, 인증 연락처, 동의 상태, 활동 이력을 탭에서 빠르게 관리하세요.',
         'list_url' => './member_list.php?' . admin_bootstrap_build_qstr($member_list_request),
-        'hidden_fields' => $hidden_fields,
+        'hidden_fields' => admin_build_hidden_field_views($hidden_fields),
         'admin_token' => get_admin_token(),
         'event_member' => $member_form_view['mb'],
         'event_mode' => $hidden_fields['w'],
         'pg_anchor_menu_view' => admin_build_anchor_menu_view(admin_member_form_tabs(), array(
             'nav_id' => 'member_tabs_nav',
-            'nav_class' => 'tab-nav-justified',
+            'nav_class' => 'tab-nav-justified admin-anchor-tabs',
             'nav_aria_label' => '회원 등록/수정 탭',
             'link_class' => 'tab-trigger-underline-justified js-member-tab-link',
             'active_class' => 'active',

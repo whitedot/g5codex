@@ -38,19 +38,11 @@ function admin_build_config_captcha_mp3_options($selected)
     $captcha_mp3_path = str_replace(array('recaptcha_inv', 'recaptcha'), 'kcaptcha', G5_CAPTCHA_PATH) . '/mp3';
     $directories = get_subdirectory_names($captcha_mp3_path);
 
-    $options[] = array(
-        'value' => '',
-        'label' => '선택',
-        'selected' => (string) $selected === '',
-    );
+    $options[] = admin_build_select_option_view('', '선택', (string) $selected === '');
 
     for ($i = 0; $i < count($directories); $i++) {
         $value = (string) $directories[$i];
-        $options[] = array(
-            'value' => $value,
-            'label' => $value,
-            'selected' => (string) $selected === $value,
-        );
+        $options[] = admin_build_select_option_view($value, $value, (string) $selected === $value);
     }
 
     return $options;
@@ -110,11 +102,7 @@ function admin_build_config_select_options($selected, array $labels)
     $options = array();
 
     foreach ($labels as $value => $label) {
-        $options[] = array(
-            'value' => (string) $value,
-            'label' => $label,
-            'selected' => (string) $selected === (string) $value,
-        );
+        $options[] = admin_build_select_option_view($value, $label, (string) $selected === (string) $value);
     }
 
     return $options;
@@ -184,7 +172,7 @@ function admin_build_config_form_view(array $config, $remote_addr = '')
         'mail_view' => admin_build_config_mail_view($config),
         'pg_anchor_menu_view' => admin_build_anchor_menu_view(admin_config_form_tabs(), array(
             'nav_id' => 'config_tabs_nav',
-            'nav_class' => 'tab-nav-justified',
+            'nav_class' => 'tab-nav-justified admin-anchor-tabs',
             'nav_aria_label' => '환경설정 탭',
             'link_class' => 'tab-trigger-underline-justified js-config-tab-link',
             'active_class' => 'active',

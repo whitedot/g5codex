@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     autoLogin.addEventListener("click", function() {
         if (this.checked) {
-            this.checked = confirm(<?php echo json_encode($auto_login_confirm_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+            this.checked = confirm(<?php echo $auto_login_confirm_message_json; ?>);
         }
     });
 });

@@ -25,7 +25,7 @@ window.AdminShell = {
         const themeToggle = document.getElementById('admin_theme_toggle');
         const themeToggleIconUse = document.getElementById('admin_theme_toggle_icon_use');
         const navRoot = document.getElementById('adminNavList');
-        const scrollTopButton = document.querySelector('.scroll_top');
+        const scrollTopButton = document.querySelector('.admin-footer-scroll-top');
         let hideScrollbarTimer = null;
 
         const isMobileViewport = () => mobileQuery.matches;

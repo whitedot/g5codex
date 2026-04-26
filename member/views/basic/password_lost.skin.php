@@ -41,11 +41,11 @@ if ($use_certify_js)
 </div>
 <script>    
 document.addEventListener("DOMContentLoaded", function() {
-    var pageTypeParam = "pageType=<?php echo $page_type; ?>";
+    var pageTypeParam = "pageType=" + encodeURIComponent(<?php echo $page_type_json; ?>);
 
 	<?php if ($show_simple_cert_button) { ?>
 	var simpleButtons = document.querySelectorAll(".win_sa_cert");
-	var simpleUrl = "<?php echo $simple_cert_url; ?>";
+	var simpleUrl = <?php echo $simple_cert_url_json; ?>;
 
 	simpleButtons.forEach(function(button) {
 		button.addEventListener("click", function() {
@@ -60,12 +60,12 @@ document.addEventListener("DOMContentLoaded", function() {
     if (hpButton) {
         hpButton.addEventListener("click", function() {
             var params = "?" + pageTypeParam;
-        <?php if ($hp_cert_error_message !== '') { ?>
-            alert("<?php echo $hp_cert_error_message; ?>");
+        <?php if ($has_hp_cert_error) { ?>
+            alert(<?php echo $hp_cert_error_message_json; ?>);
             return false;
         <?php } ?>
         
-            certify_win_open("<?php echo $hp_cert_type; ?>", "<?php echo $hp_cert_url; ?>" + params);
+            certify_win_open(<?php echo $hp_cert_type_json; ?>, <?php echo $hp_cert_url_json; ?> + params);
         });
     }
     <?php } ?>

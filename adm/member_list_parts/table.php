@@ -1,6 +1,6 @@
-<form name="fmemberlist" id="fmemberlist" action="./member_list_update.php" method="post" data-admin-member-list="true">
-    <?php foreach ($member_list_view['hidden_fields'] as $name => $value) { ?>
-        <input type="hidden" name="<?php echo $name; ?>" value="<?php echo get_sanitize_input($value); ?>">
+<form name="fmemberlist" id="fmemberlist" action="./member_list_update.php" method="post" class="admin-member-list-form" data-admin-member-list="true">
+    <?php foreach ($member_list_view['hidden_fields'] as $hidden_field) { ?>
+        <input type="hidden" name="<?php echo $hidden_field['name_attr']; ?>" value="<?php echo $hidden_field['value_attr']; ?>">
     <?php } ?>
     <input type="hidden" name="token" value="<?php echo $member_list_view['admin_token'] ?>">
 
@@ -18,18 +18,18 @@
                     <col style="width: 6rem;">
                     <col style="width: 10rem;">
                 </colgroup>
-                <thead class="border-default-300 bg-default-100 border-b font-semibold text-xs">
+                <thead class="ui-table-head">
                     <tr>
                         <th scope="col" id="mb_list_chk">
                             <label for="chkall" class="sr-only">회원 전체</label>
                             <input type="checkbox" name="chkall" value="1" id="chkall">
                         </th>
                         <?php foreach ($member_list_view['table_columns'] as $column) { ?>
-                            <th scope="col" id="<?php echo $column['id']; ?>"<?php echo $column['class'] !== '' ? ' class="' . $column['class'] . '"' : ''; ?>>
-                                <?php if ($column['href'] !== '') { ?>
-                                    <a href="<?php echo $column['href']; ?>"><?php echo $column['label']; ?></a>
+                            <th scope="col" id="<?php echo $column['id_attr']; ?>"<?php echo $column['class_attr'] !== '' ? ' class="' . $column['class_attr'] . '"' : ''; ?>>
+                                <?php if ($column['href_attr'] !== '') { ?>
+                                    <a href="<?php echo $column['href_attr']; ?>"><?php echo $column['label_text']; ?></a>
                                 <?php } else { ?>
-                                    <?php echo $column['label']; ?>
+                                    <?php echo $column['label_text']; ?>
                                 <?php } ?>
                             </th>
                         <?php } ?>
@@ -53,14 +53,14 @@
                             <td headers="mb_list_status" class="member-cell-fixed">
                                 <span class="member-status <?php echo $item['status_class']; ?>"><?php echo $item['status_label']; ?></span>
                             </td>
-                            <td headers="mb_list_mng" class="member-cell-manage text-end">
+                            <td headers="mb_list_mng" class="member-cell-manage">
                                 <div class="member-manage">
                                     <?php if (!empty($item['actions'])) { ?>
                                         <?php foreach ($item['actions'] as $action) { ?>
                                             <?php if ($action['type'] === 'link') { ?>
-                                                <a href="<?php echo $action['href']; ?>" class="<?php echo $action['class']; ?>"><?php echo $action['label']; ?></a>
+                                                <a href="<?php echo $action['href_attr']; ?>" class="<?php echo $action['class_attr']; ?>"><?php echo $action['label_text']; ?></a>
                                             <?php } elseif ($action['type'] === 'delete') { ?>
-                                                <button type="button" class="<?php echo $action['class']; ?>" data-member-delete-id="<?php echo $action['mb_id']; ?>"><?php echo $action['label']; ?></button>
+                                                <button type="button" class="<?php echo $action['class_attr']; ?>" data-member-delete-id="<?php echo $action['mb_id_attr']; ?>"><?php echo $action['label_text']; ?></button>
                                             <?php } ?>
                                         <?php } ?>
                                     <?php } else { ?>
@@ -78,7 +78,7 @@
         </div>
 
         <div class="member-list-actions">
-            <div class="flex items-center">
+            <div class="ui-table-actions">
                 <input type="submit" name="act_button" value="선택삭제" class="btn btn-outline-danger">
             </div>
             <?php if ($member_list_view['show_add_button']) { ?>

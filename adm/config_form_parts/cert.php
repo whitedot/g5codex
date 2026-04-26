@@ -17,7 +17,7 @@
                 <div class="af-field">
                     <select name="cf_cert_use" id="cf_cert_use" class="form-select">
                         <?php foreach ($config_cert_view['cf_cert_use_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -44,7 +44,7 @@
                     <p class="hint-text">KG이니시스의 통합인증(간편인증+전자서명) 서비스에서 전자서명을 제외한 간편인증 서비스 입니다. <a href="https://www.inicis.com/all-auth-service" target="_blank" rel="noopener noreferrer"><u>KG이니시스 통합인증 안내</u></a></p>
                     <select name="cf_cert_simple" id="cf_cert_simple" class="form-select">
                         <?php foreach ($config_cert_view['cf_cert_simple_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -58,7 +58,7 @@
                     <p class="hint-text">KG이니시스 통합인증서비스에 암호화를 적용합니다. 만일 글자가 깨지는 문제가 발생하면 사용안함으로 적용해 주세요.</p>
                     <select name="cf_cert_use_seed" id="cf_cert_use_seed" class="form-select">
                         <?php foreach ($config_cert_view['cf_cert_use_seed_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -71,7 +71,7 @@
                 <div class="af-field">
                     <select name="cf_cert_hp" id="cf_cert_hp" class="form-select">
                         <?php foreach ($config_cert_view['cf_cert_hp_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>

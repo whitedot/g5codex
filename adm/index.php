@@ -20,7 +20,7 @@ if ($dashboard_view['can_read_member_menu']) {
     <section class="card admin-dashboard-card">
         <div class="card-header">
             <div class="admin-dashboard-intro">
-                <h2 class="card-title">신규가입회원 <?php echo $dashboard_view['new_member_rows'] ?>건 목록</h2>
+                <h2 class="card-title">신규가입회원 <?php echo $dashboard_view['new_member_rows_text'] ?> 목록</h2>
                 <p class="admin-dashboard-meta">최근 가입한 회원을 빠르게 확인하고 필요한 관리 작업으로 이어질 수 있도록 구성했습니다.</p>
             </div>
             <a href="./member_list.php" class="btn btn-sm btn-surface-default-soft">회원 전체보기</a>
@@ -28,16 +28,16 @@ if ($dashboard_view['can_read_member_menu']) {
 
         <div class="admin-dashboard-summary">
             <div class="admin-dashboard-stats">
-                <span class="admin-dashboard-stat">총회원수 <strong><?php echo number_format($dashboard_view['total_count']) ?>명</strong></span>
-                <span class="admin-dashboard-stat">차단 <strong><?php echo number_format($dashboard_view['intercept_count']) ?>명</strong></span>
-                <span class="admin-dashboard-stat">탈퇴 <strong><?php echo number_format($dashboard_view['leave_count']) ?>명</strong></span>
+                <span class="admin-dashboard-stat">총회원수 <strong><?php echo $dashboard_view['total_count_text'] ?></strong></span>
+                <span class="admin-dashboard-stat">차단 <strong><?php echo $dashboard_view['intercept_count_text'] ?></strong></span>
+                <span class="admin-dashboard-stat">탈퇴 <strong><?php echo $dashboard_view['leave_count_text'] ?></strong></span>
             </div>
         </div>
 
         <div class="table-wrapper">
             <table class="table">
                 <caption>신규가입회원</caption>
-                <thead class="border-default-300 bg-default-100 border-b font-semibold text-xs">
+                <thead class="ui-table-head">
                     <tr>
                         <th scope="col">회원아이디</th>
                         <th scope="col">이름</th>
@@ -63,7 +63,7 @@ if ($dashboard_view['can_read_member_menu']) {
                         </tr>
                     <?php } ?>
                     <?php if (empty($dashboard_view['items'])) { ?>
-                        <tr><td colspan="<?php echo $dashboard_view['colspan']; ?>" class="admin-dashboard-empty">자료가 없습니다.</td></tr>
+                        <tr><td colspan="<?php echo $dashboard_view['colspan']; ?>" class="ui-table-empty admin-dashboard-empty">자료가 없습니다.</td></tr>
                     <?php } ?>
                 </tbody>
             </table>

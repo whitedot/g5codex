@@ -44,13 +44,13 @@ function admin_render_anchor_menu(array $menu_view)
 
     $nav_attr = array();
     if ($nav_id !== '') {
-        $nav_attr[] = 'id="' . htmlspecialchars($nav_id, ENT_QUOTES, 'UTF-8') . '"';
+        $nav_attr[] = 'id="' . admin_escape_attr($nav_id) . '"';
     }
     if ($nav_class !== '') {
-        $nav_attr[] = 'class="' . htmlspecialchars($nav_class, ENT_QUOTES, 'UTF-8') . '"';
+        $nav_attr[] = 'class="' . admin_escape_attr($nav_class) . '"';
     }
     if ($nav_aria_label !== '') {
-        $nav_attr[] = 'aria-label="' . htmlspecialchars($nav_aria_label, ENT_QUOTES, 'UTF-8') . '"';
+        $nav_attr[] = 'aria-label="' . admin_escape_attr($nav_aria_label) . '"';
     }
     if ($as_tabs) {
         $nav_attr[] = 'role="tablist"';
@@ -80,20 +80,20 @@ function admin_render_anchor_menu(array $menu_view)
             $item_class .= ' ' . $active_class;
         }
 
-        $link_attr[] = 'class="' . htmlspecialchars(trim($item_class), ENT_QUOTES, 'UTF-8') . '"';
-        $link_attr[] = 'href="' . htmlspecialchars($href, ENT_QUOTES, 'UTF-8') . '"';
+        $link_attr[] = 'class="' . admin_escape_attr(trim($item_class)) . '"';
+        $link_attr[] = 'href="' . admin_escape_attr($href) . '"';
         $link_attr[] = 'aria-selected="' . ($is_active ? 'true' : 'false') . '"';
 
         if ($as_tabs) {
             $panel_id = ($href !== '' && $href[0] === '#') ? substr($href, 1) : ('panel_' . $index);
             $tab_id = $link_id_prefix . $panel_id;
-            $link_attr[] = 'id="' . htmlspecialchars($tab_id, ENT_QUOTES, 'UTF-8') . '"';
+            $link_attr[] = 'id="' . admin_escape_attr($tab_id) . '"';
             $link_attr[] = 'role="tab"';
-            $link_attr[] = 'aria-controls="' . htmlspecialchars($panel_id, ENT_QUOTES, 'UTF-8') . '"';
+            $link_attr[] = 'aria-controls="' . admin_escape_attr($panel_id) . '"';
             $link_attr[] = 'tabindex="' . ($is_active ? '0' : '-1') . '"';
         }
 
-        $menu[] = '<a ' . implode(' ', $link_attr) . '>' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</a>';
+        $menu[] = '<a ' . implode(' ', $link_attr) . '>' . get_text($label) . '</a>';
     }
 
     $menu[] = '</nav>';

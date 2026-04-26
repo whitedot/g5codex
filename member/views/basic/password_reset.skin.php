@@ -31,9 +31,9 @@ function fpasswordreset_submit(f) {
     var passwordConfirmField = document.getElementById("mb_pw2");
 
     if (passwordField && passwordConfirmField && passwordField.value == passwordConfirmField.value) {
-        alert(<?php echo json_encode($password_reset_success_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+        alert(<?php echo $password_reset_success_message_json; ?>);
     } else {
-        alert(<?php echo json_encode($password_reset_mismatch_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+        alert(<?php echo $password_reset_mismatch_message_json; ?>);
         return false;
     }
 }

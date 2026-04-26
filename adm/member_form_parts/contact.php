@@ -20,9 +20,9 @@
                 <div class="af-field">
                     <div class="af-inline">
                         <?php foreach ($contact_view['certify_case_options'] as $option) { ?>
-                        <label for="<?php echo $option['id']; ?>" class="af-check form-label">
-                            <input type="radio" name="mb_certify_case" value="<?php echo $option['value']; ?>" id="<?php echo $option['id']; ?>"<?php echo $option['checked'] ? ' checked="checked"' : ''; ?> class="form-radio">
-                            <span class="form-label"><?php echo $option['label']; ?></span>
+                        <label for="<?php echo $option['id_attr']; ?>" class="af-check form-label">
+                            <input type="radio" name="mb_certify_case" value="<?php echo $option['value_attr']; ?>" id="<?php echo $option['id_attr']; ?>"<?php echo $option['checked_attr']; ?> class="form-radio">
+                            <span class="form-label"><?php echo $option['label_text']; ?></span>
                         </label>
                         <?php } ?>
                     </div>
@@ -36,9 +36,9 @@
                 <div class="af-field">
                     <div class="af-inline">
                         <?php foreach ($contact_view['mb_certify_options'] as $option) { ?>
-                        <label for="mb_certify_<?php echo $option['value']; ?>" class="af-check form-label">
-                            <input type="radio" name="mb_certify" value="<?php echo $option['value']; ?>" id="mb_certify_<?php echo $option['value']; ?>"<?php echo $option['checked'] ? ' checked="checked"' : ''; ?> class="form-radio">
-                            <span class="form-label"><?php echo $option['label']; ?></span>
+                        <label for="<?php echo $option['id_attr']; ?>" class="af-check form-label">
+                            <input type="radio" name="mb_certify" value="<?php echo $option['value_attr']; ?>" id="<?php echo $option['id_attr']; ?>"<?php echo $option['checked_attr']; ?> class="form-radio">
+                            <span class="form-label"><?php echo $option['label_text']; ?></span>
                         </label>
                         <?php } ?>
                     </div>
@@ -52,9 +52,9 @@
                 <div class="af-field">
                     <div class="af-inline">
                         <?php foreach ($contact_view['mb_adult_options'] as $option) { ?>
-                        <label for="mb_adult_<?php echo $option['value']; ?>" class="af-check form-label">
-                            <input type="radio" name="mb_adult" value="<?php echo $option['value']; ?>" id="mb_adult_<?php echo $option['value']; ?>"<?php echo $option['checked'] ? ' checked="checked"' : ''; ?> class="form-radio">
-                            <span class="form-label"><?php echo $option['label']; ?></span>
+                        <label for="<?php echo $option['id_attr']; ?>" class="af-check form-label">
+                            <input type="radio" name="mb_adult" value="<?php echo $option['value_attr']; ?>" id="<?php echo $option['id_attr']; ?>"<?php echo $option['checked_attr']; ?> class="form-radio">
+                            <span class="form-label"><?php echo $option['label_text']; ?></span>
                         </label>
                         <?php } ?>
                     </div>

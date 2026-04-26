@@ -28,9 +28,9 @@ function admin_process_member_list_file_delete()
     $messages = array();
     $count = 0;
 
-    if (!@opendir($base_path)) {
+    if (!is_dir($base_path)) {
         return array(
-            'messages' => array('회원관리파일를 열지못했습니다.'),
+            'messages' => array('회원관리파일을 열지 못했습니다.'),
             'count' => 0,
         );
     }
@@ -66,14 +66,30 @@ function admin_process_member_list_file_delete()
     );
 }
 
+function admin_build_member_list_file_delete_result_view(array $delete_result)
+{
+    $messages = array();
+    $raw_messages = isset($delete_result['messages']) && is_array($delete_result['messages']) ? $delete_result['messages'] : array();
+
+    foreach ($raw_messages as $message) {
+        $messages[] = get_text((string) $message);
+    }
+
+    return array(
+        'messages' => $messages,
+        'count' => isset($delete_result['count']) ? (int) $delete_result['count'] : 0,
+    );
+}
+
 function admin_complete_member_list_file_delete_request($is_admin)
 {
     admin_require_super_admin($is_admin);
+    $delete_result = admin_process_member_list_file_delete();
 
     return array(
         'title' => '회원관리파일 일괄삭제',
         'admin_container_class' => 'admin-page-member-export-delete',
         'admin_page_subtitle' => '서버에 남아 있는 회원 내보내기 산출물을 정리하고 삭제 결과를 바로 확인하세요.',
-        'result' => admin_process_member_list_file_delete(),
+        'result' => admin_build_member_list_file_delete_result_view($delete_result),
     );
 }

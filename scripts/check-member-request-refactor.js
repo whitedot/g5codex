@@ -140,6 +140,32 @@ assertNoMatches(
   /\$_SESSION|get_session\(/
 );
 
+assertNoMatches(
+  'member domain json encoding outside view helper',
+  phpFiles(file('lib/domain/member'), true).filter(target => rel(target) !== 'lib/domain/member/render-view.lib.php'),
+  /json_encode\(/
+);
+
+const memberAggregateLoaders = [
+  file('lib/domain/member/flow.lib.php'),
+  file('lib/domain/member/validation.lib.php'),
+  file('lib/domain/member/persist.lib.php'),
+  file('lib/domain/member/render.lib.php'),
+  file('lib/domain/member/page.lib.php'),
+];
+
+assertNoMatches(
+  'member aggregate loader business functions',
+  memberAggregateLoaders,
+  /^function\s+/
+);
+
+assertNoMatches(
+  'member aggregate loader SQL or branching logic',
+  memberAggregateLoaders,
+  /\bsql_query\s*\(|\bsql_fetch\s*\(|^(?!if \(!defined\('_GNUBOARD_'\)).*\b(?:if|foreach|for|while)\s*\(/
+);
+
 const memberRenderPages = [
   'login.php',
   'member_cert_refresh.php',
@@ -179,5 +205,27 @@ assertNoMatches('legacy register intro skin runtime access', [file('member/views
 assertNoMatches('legacy member confirm skin runtime access', [file('member/views/basic/member_confirm.skin.php')], /\$g5\[|\$url\b/);
 assertNoMatches('legacy member confirm skin member access', [file('member/views/basic/member_confirm.skin.php')], /\$member\[/);
 assertNoMatches('legacy register email skin runtime access', [file('member/views/basic/register_email.skin.php')], /\$mb\[|G5_HTTPS_MEMBER_URL|G5_URL/);
+assertNoMatches('legacy auto post skin escaping work', [file('member/views/basic/auto_post_form.skin.php')], /htmlspecialchars\(|json_encode\(|foreach \(\$fields as \$name => \$value\)/);
+assertNoMatches(
+  'legacy member skin inline json encoding',
+  [
+    file('member/views/basic/login.skin.php'),
+    file('member/views/basic/password_reset.skin.php'),
+    file('member/views/basic/register.skin.php'),
+    file('member/views/basic/register_form.skin.php'),
+    file('member/views/basic/member_cert_refresh.skin.php'),
+  ],
+  /json_encode\(/
+);
+
+assertNoMatches(
+  'legacy member skin php interpolation inside javascript strings',
+  [
+    file('member/views/basic/password_lost.skin.php'),
+    file('member/views/basic/member_cert_refresh.skin.php'),
+    file('member/views/basic/register_form.skin.php'),
+  ],
+  /var\s+\w+\s*=\s*"[^"]*<\?php echo|alert\("[^"]*<\?php echo|certify_win_open\("[^"]*<\?php echo/
+);
 
 console.log('Member request refactor checks passed.');

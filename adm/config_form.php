@@ -22,7 +22,7 @@ require_once './admin.head.php';
 
 <?php echo admin_render_anchor_menu($config_form_view['pg_anchor_menu_view']); ?>
 
-<form name="fconfigform" id="fconfigform" method="post" action="./config_form_update.php" class="admin-form-layout ui-form-theme ui-form-showcase space-y-5" data-current-user-ip="<?php echo $config_form_view['current_user_ip']; ?>" data-webp-warning="<?php echo $config_form_view['webp_warning']; ?>">
+<form name="fconfigform" id="fconfigform" method="post" action="./config_form_update.php" class="admin-form-layout ui-form-theme ui-form-showcase" data-current-user-ip="<?php echo $config_form_view['current_user_ip']; ?>" data-webp-warning="<?php echo $config_form_view['webp_warning']; ?>">
     <input type="hidden" name="token" value="" id="token">
 
     <?php
@@ -32,8 +32,8 @@ require_once './admin.head.php';
     include_once G5_ADMIN_PATH . '/config_form_parts/mail.php';
     ?>
 
-    <div id="config_captcha_wrap" class="rounded-lg border border-default-200 bg-default-50 p-4 space-y-3" hidden>
-        <h2 class="text-base font-semibold">캡차 입력</h2>
+    <div id="config_captcha_wrap" class="admin-captcha-panel" hidden>
+        <h2 class="admin-captcha-title">캡차 입력</h2>
         <?php
         require_once G5_CAPTCHA_PATH . '/captcha.lib.php';
         $captcha_html = captcha_html();
@@ -41,7 +41,7 @@ require_once './admin.head.php';
         ?>
     </div>
 
-    <div class="admin-form-sticky-actions flex items-center justify-end border-default-300 border-t border-dashed pt-4">
+    <div class="admin-form-sticky-actions admin-form-actions admin-form-actions-primary">
         <button type="submit" class="btn btn-solid-primary" accesskey="s">저장</button>
     </div>
 </form>

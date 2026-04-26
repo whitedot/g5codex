@@ -62,9 +62,13 @@ function admin_build_dashboard_empty_view(array $member, $is_admin, array $auth)
         'additional_content_after' => run_replace('adm_index_addtional_content_after', '', $is_admin, $auth, $member),
         'can_read_member_menu' => !auth_check_menu($auth, '200100', 'r', true),
         'new_member_rows' => 5,
+        'new_member_rows_text' => admin_format_count_text(5, '건'),
         'total_count' => 0,
+        'total_count_text' => admin_format_count_text(0, '명'),
         'leave_count' => 0,
+        'leave_count_text' => admin_format_count_text(0, '명'),
         'intercept_count' => 0,
+        'intercept_count_text' => admin_format_count_text(0, '명'),
         'items' => array(),
         'colspan' => 8,
     );
@@ -86,6 +90,9 @@ function admin_build_dashboard_view(array $request, array $member, $is_admin, ar
     $view['total_count'] = (int) sql_fetch_value_prepared(" SELECT count(*) as cnt {$sql_common} {$query['sql_search']} ", $query_params);
     $view['leave_count'] = (int) sql_fetch_value_prepared(" select count(*) as cnt {$sql_common} {$query['sql_search']} and mb_leave_date <> '' ", $query_params);
     $view['intercept_count'] = (int) sql_fetch_value_prepared(" SELECT count(*) as cnt {$sql_common} {$query['sql_search']} and mb_intercept_date <> '' ", $query_params);
+    $view['total_count_text'] = admin_format_count_text($view['total_count'], '명');
+    $view['leave_count_text'] = admin_format_count_text($view['leave_count'], '명');
+    $view['intercept_count_text'] = admin_format_count_text($view['intercept_count'], '명');
 
     $list_params = $query_params;
     $list_params['new_member_rows'] = (int) $view['new_member_rows'];

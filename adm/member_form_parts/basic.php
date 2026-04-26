@@ -62,7 +62,7 @@
                 <div class="af-field">
                     <select id="mb_level" name="mb_level" class="form-select">
                         <?php foreach ($basic_view['member_level_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected="selected"' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>

@@ -27,11 +27,12 @@ function member_build_member_certify_client_config(array $config, $page_type)
         'show_certify_options' => ($config['cf_cert_use'] != 0 && $page_type !== 'find') || ($config['cf_cert_use'] != 0 && $config['cf_cert_find'] != 0),
         'show_simple_cert_button' => !empty($config['cf_cert_simple']),
         'show_hp_cert_button' => !empty($config['cf_cert_hp']),
-        'simple_cert_url' => G5_INICERT_URL . '/ini_request.php',
-        'hp_cert_url' => $hp_cert_url,
-        'hp_cert_type' => $hp_cert_type,
-        'hp_cert_error_message' => $hp_cert_error_message,
-        'page_type' => $page_type,
+        'simple_cert_url_json' => member_json_string(G5_INICERT_URL . '/ini_request.php'),
+        'hp_cert_url_json' => member_json_string($hp_cert_url),
+        'hp_cert_type_json' => member_json_string($hp_cert_type),
+        'has_hp_cert_error' => $hp_cert_error_message !== '',
+        'hp_cert_error_message_json' => member_json_string($hp_cert_error_message),
+        'page_type_json' => member_json_string($page_type),
     );
 }
 
@@ -59,7 +60,7 @@ function member_build_login_render_page_view(array $login_view, $url)
             'password_lost_url' => G5_MEMBER_URL . '/password_lost.php',
             'login_action_url' => $login_view['login_action_url'],
             'login_url' => $login_view['login_url'],
-            'auto_login_confirm_message' => "자동로그인을 사용하시면 다음부터 회원아이디와 비밀번호를 입력하실 필요가 없습니다.\n\n공공장소에서는 개인정보가 유출될 수 있으니 사용을 자제하여 주십시오.\n\n자동로그인을 사용하시겠습니까?",
+            'auto_login_confirm_message_json' => member_json_string("자동로그인을 사용하시면 다음부터 회원아이디와 비밀번호를 입력하실 필요가 없습니다.\n\n공공장소에서는 개인정보가 유출될 수 있으니 사용을 자제하여 주십시오.\n\n자동로그인을 사용하시겠습니까?"),
         ),
         'options' => array(
             'sub' => true,
@@ -85,8 +86,8 @@ function member_build_password_reset_page_view(array $request)
             'member_id_text' => isset($request['mb_id']) ? get_text($request['mb_id']) : '',
             'page_description_text' => '새로운 비밀번호를 입력해주세요.',
             'submit_label' => '확인',
-            'password_reset_success_message' => '비밀번호 변경되었습니다. 다시 로그인해 주세요.',
-            'password_reset_mismatch_message' => '새 비밀번호와 비밀번호 확인이 일치하지 않습니다.',
+            'password_reset_success_message_json' => member_json_string('비밀번호 변경되었습니다. 다시 로그인해 주세요.'),
+            'password_reset_mismatch_message_json' => member_json_string('새 비밀번호와 비밀번호 확인이 일치하지 않습니다.'),
         ),
     );
 }
@@ -105,8 +106,8 @@ function member_build_register_intro_page_view(array $config)
             'stipulation_text' => get_text($config['cf_stipulation']),
             'private_info_item_text' => $private_info_item_text,
             'cancel_url' => G5_URL,
-            'agree_alert_message' => '회원가입약관의 내용에 동의하셔야 회원가입 하실 수 있습니다.',
-            'agree2_alert_message' => '개인정보 수집 및 이용의 내용에 동의하셔야 회원가입 하실 수 있습니다.',
+            'agree_alert_message_json' => member_json_string('회원가입약관의 내용에 동의하셔야 회원가입 하실 수 있습니다.'),
+            'agree2_alert_message_json' => member_json_string('개인정보 수집 및 이용의 내용에 동의하셔야 회원가입 하실 수 있습니다.'),
         ),
     );
 }
@@ -164,7 +165,7 @@ function member_build_cert_refresh_page_view(array $request, array $member, arra
             'member_hp_value' => isset($member['mb_hp']) ? $member['mb_hp'] : '',
             'member_name_value' => isset($member['mb_name']) ? $member['mb_name'] : '',
             'privacy_fields_text' => $privacy_fields_text,
-            'privacy_agree_required_message' => '추가 개인정보처리방침에 동의하셔야 인증을 진행하실 수 있습니다.',
+            'privacy_agree_required_message_json' => member_json_string('추가 개인정보처리방침에 동의하셔야 인증을 진행하실 수 있습니다.'),
         ), $certify_ui),
     );
 }

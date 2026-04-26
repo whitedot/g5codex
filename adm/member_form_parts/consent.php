@@ -11,9 +11,9 @@
                 <div class="af-field">
                     <div class="af-inline">
                         <?php foreach ($consent_view['mailing_options'] as $option) { ?>
-                        <label for="mb_mailling_<?php echo $option['value']; ?>" class="af-check form-label">
-                            <input type="radio" name="mb_mailling" value="<?php echo $option['value']; ?>" id="mb_mailling_<?php echo $option['value']; ?>"<?php echo $option['checked'] ? ' checked="checked"' : ''; ?> class="form-radio">
-                            <span class="form-label"><?php echo $option['label']; ?></span>
+                        <label for="<?php echo $option['id_attr']; ?>" class="af-check form-label">
+                            <input type="radio" name="mb_mailling" value="<?php echo $option['value_attr']; ?>" id="<?php echo $option['id_attr']; ?>"<?php echo $option['checked_attr']; ?> class="form-radio">
+                            <span class="form-label"><?php echo $option['label_text']; ?></span>
                         </label>
                         <?php } ?>
                     </div>
@@ -30,9 +30,9 @@
                 <div class="af-field">
                     <div class="af-inline">
                         <?php foreach ($consent_view['marketing_agree_options'] as $option) { ?>
-                        <label for="mb_marketing_agree_<?php echo $option['value']; ?>" class="af-check form-label">
-                            <input type="radio" name="mb_marketing_agree" value="<?php echo $option['value']; ?>" id="mb_marketing_agree_<?php echo $option['value']; ?>"<?php echo $option['checked'] ? ' checked="checked"' : ''; ?> class="form-radio">
-                            <span class="form-label"><?php echo $option['label']; ?></span>
+                        <label for="<?php echo $option['id_attr']; ?>" class="af-check form-label">
+                            <input type="radio" name="mb_marketing_agree" value="<?php echo $option['value_attr']; ?>" id="<?php echo $option['id_attr']; ?>"<?php echo $option['checked_attr']; ?> class="form-radio">
+                            <span class="form-label"><?php echo $option['label_text']; ?></span>
                         </label>
                         <?php } ?>
                     </div>
@@ -43,7 +43,7 @@
             </div>
 
             <?php if ($consent_view['is_update']) { ?>
-            <div class="af-row">
+            <div class="af-row af-row-start">
                 <div class="af-label">
                     <label class="form-label">약관동의 변경내역</label>
                 </div>
@@ -62,9 +62,9 @@
                 <div class="af-field">
                     <div class="af-inline">
                         <?php foreach ($consent_view['open_options'] as $option) { ?>
-                        <label for="mb_open_<?php echo $option['value']; ?>" class="af-check form-label">
-                            <input type="radio" name="mb_open" value="<?php echo $option['value']; ?>" id="mb_open_<?php echo $option['value']; ?>"<?php echo $option['checked'] ? ' checked="checked"' : ''; ?> class="form-radio">
-                            <span class="form-label"><?php echo $option['label']; ?></span>
+                        <label for="<?php echo $option['id_attr']; ?>" class="af-check form-label">
+                            <input type="radio" name="mb_open" value="<?php echo $option['value_attr']; ?>" id="<?php echo $option['id_attr']; ?>"<?php echo $option['checked_attr']; ?> class="form-radio">
+                            <span class="form-label"><?php echo $option['label_text']; ?></span>
                         </label>
                         <?php } ?>
                     </div>

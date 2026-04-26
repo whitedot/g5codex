@@ -42,21 +42,21 @@
     - Gemini 3 Pro
     - Codex 5.4
 
-## 5. 향후 계획
+## 5. 리팩토링 기준
 
-향후 계획은 이제 플랫폼화 기준으로 정리합니다.
+현재 리팩토링은 그누보드5의 과도한 현대화를 경계하면서, 레거시 PHP 개발자와 AI가 함께 이해하기 쉬운 코드로 정리하는 기준에 맞춰 관리합니다.
 
-- `member-only` 범위 정리는 1차 기준선으로 보고, 다음 사이클은 `admin` 도메인 표준화를 마무리하는 데 집중합니다.
-- 신규 `community`, `shop`, `booking` 도메인을 바로 추가하지 않고, 먼저 관리자 셸/메뉴, 스트림 다운로드, 화면 계약을 `lib/domain/admin/` 기준으로 다시 정렬합니다.
+- `member-only` 범위 정리는 1차 기준선으로 보고, `admin` 도메인과 회원 인증 흐름의 읽기 비용을 줄이는 데 집중합니다.
+- 신규 `community`, `shop`, `booking` 도메인을 바로 추가하지 않고, 먼저 controller, request, validation, persist, flow, render 책임 경계를 안정화합니다.
 - 런타임 호환성 리스크가 있는 관리자 회원 엑셀 내보내기 경로와 PHP 8.4 대응 상태를 먼저 정리한 뒤, 그다음에 신규 도메인 도입 여부를 판단합니다.
-- 현재 작업계획과 남은 리스크는 `docs/current-work-plan-2026-04-26.md`를 기준으로 관리합니다.
+- 현재 리팩토링 목표와 실행 계획은 `docs/gnuboard5-readable-refactor-plan.md`를 기준으로 관리합니다.
 
 ## 6. 유지보수 문서 안내
 
 레거시 G5/PHP 개발자가 현재 구조를 파악하거나 작업을 넘겨받을 때는 `docs/legacy-maintainer-guide.md`를 먼저 봅니다.
 
 - 작업별 controller와 실제 구현 파일 지도는 `docs/legacy-maintainer-guide.md`에 둡니다.
-- 현재 남은 일과 보류 판단은 `docs/current-work-plan-2026-04-26.md`를 기준으로 합니다.
+- 현재 리팩토링 목표와 보류 판단은 `docs/gnuboard5-readable-refactor-plan.md`를 기준으로 합니다.
 - 유지/제외 범위는 `docs/member-only-scope.md`를 기준으로 합니다.
 - controller 작성 규칙은 `docs/architecture/*` 문서를 기준으로 합니다.
 

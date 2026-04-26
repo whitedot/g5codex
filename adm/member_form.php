@@ -24,9 +24,9 @@ require_once './admin.head.php';
 <div data-admin-member-form>
 <?php echo admin_render_anchor_menu($page_view['pg_anchor_menu_view']); ?>
 
-<form name="fmember" id="fmember" action="./member_form_update.php" method="post" class="admin-form-layout ui-form-theme ui-form-showcase space-y-5" autocomplete="off">
-    <?php foreach ($page_view['hidden_fields'] as $name => $value) { ?>
-        <input type="hidden" name="<?php echo $name; ?>" value="<?php echo get_sanitize_input($value); ?>">
+<form name="fmember" id="fmember" action="./member_form_update.php" method="post" class="admin-form-layout ui-form-theme ui-form-showcase" autocomplete="off">
+    <?php foreach ($page_view['hidden_fields'] as $hidden_field) { ?>
+        <input type="hidden" name="<?php echo $hidden_field['name_attr']; ?>" value="<?php echo $hidden_field['value_attr']; ?>">
     <?php } ?>
     <input type="hidden" name="token" value="<?php echo $page_view['admin_token']; ?>" id="token">
     <div class="sr-only" aria-hidden="true">
@@ -52,7 +52,7 @@ require_once './admin.head.php';
     include_once G5_ADMIN_PATH.'/member_form_parts/history.php';
     ?>
 
-    <div class="admin-form-sticky-actions flex items-center justify-between border-default-300 border-t border-dashed pt-4">
+    <div class="admin-form-sticky-actions admin-form-actions admin-form-actions-split">
         <a href="<?php echo $page_view['list_url']; ?>" class="btn btn-surface-default-soft">목록</a>
         <button type="submit" class="btn btn-solid-primary" accesskey="s">저장</button>
     </div>

@@ -65,12 +65,12 @@ if ($use_certify_js)
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            var pageTypeParam = "pageType=<?php echo $page_type; ?>";
+            var pageTypeParam = "pageType=" + encodeURIComponent(<?php echo $page_type_json; ?>);
             var f = document.fcertrefreshform;
 
             <?php if ($show_simple_cert_button) { ?>
                 var simpleCertButtons = document.querySelectorAll(".win_sa_cert");
-                var simpleCertUrl = "<?php echo $simple_cert_url; ?>";
+                var simpleCertUrl = <?php echo $simple_cert_url_json; ?>;
 
                 simpleCertButtons.forEach(function(button) {
                     button.addEventListener("click", function() {
@@ -88,12 +88,12 @@ if ($use_certify_js)
                     hpCertButton.addEventListener("click", function() {
                         if (!fcertrefreshform_submit(f)) return;
                         var params = "?" + pageTypeParam;
-                        <?php if ($hp_cert_error_message !== '') { ?>
-                        alert("<?php echo $hp_cert_error_message; ?>");
+                        <?php if ($has_hp_cert_error) { ?>
+                        alert(<?php echo $hp_cert_error_message_json; ?>);
                         return;
                         <?php } ?>
 
-                        certify_win_open("<?php echo $hp_cert_type; ?>", "<?php echo $hp_cert_url; ?>" + params);
+                        certify_win_open(<?php echo $hp_cert_type_json; ?>, <?php echo $hp_cert_url_json; ?> + params);
                     });
                 }
             <?php } ?>
@@ -101,7 +101,7 @@ if ($use_certify_js)
         
         function fcertrefreshform_submit(f) {
             if (!f.agree2.checked) {
-                alert(<?php echo json_encode($privacy_agree_required_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+                alert(<?php echo $privacy_agree_required_message_json; ?>);
                 f.agree2.focus();
                 return false;
             }

@@ -11,7 +11,7 @@
 ## 먼저 읽을 문서
 
 1. `README.md`
-2. `docs/current-work-plan-2026-04-26.md`
+2. `docs/gnuboard5-readable-refactor-plan.md`
 3. `docs/member-only-scope.md`
 4. `docs/architecture/member-controller-pattern.md`
 5. `docs/architecture/admin-controller-pattern.md`
@@ -34,7 +34,7 @@
 
 | 작업 | 시작 controller | 주 구현 파일 |
 | --- | --- | --- |
-| 로그인 | `member/login.php`, `member/login_check.php` | `lib/domain/member/request-auth.lib.php`, `validation-auth.lib.php`, `flow-auth.lib.php`, `render-auth.lib.php` |
+| 로그인 | `member/login.php`, `member/login_check.php` | `lib/domain/member/request-auth.lib.php`, `validation-auth.lib.php`, `flow-auth.lib.php`, `render-page-view.lib.php`, `render-response.lib.php` |
 | 로그아웃 | `member/logout.php` | `lib/domain/member/request-auth.lib.php`, `flow-auth.lib.php` |
 | 회원가입/정보수정 화면 | `member/register_form.php` | `lib/domain/member/request-register.lib.php`, `render-register-form.lib.php`, `page.lib.php` |
 | 회원가입/정보수정 저장 | `member/register_form_update.php`, `member/member_leave.php` | `lib/domain/member/validation-register.lib.php`, `persist-register.lib.php`, `flow-register.lib.php` |
@@ -60,6 +60,31 @@
 - 여러 도메인이 공유하는 순수 유틸리티는 `lib/support/`에 둔다.
 - 기존 include 경로가 꼭 필요할 때만 `lib/common.*.lib.php` 또는 `lib/member.*.lib.php` 호환 로더를 손댄다.
 
+## 화면 데이터 이름 규칙
+
+PHP 화면 파일은 escape, 숫자 포맷, JS 문자열 직렬화 방법을 직접 알지 않는 방향으로 유지한다. 템플릿에서 반복되는 출력 데이터는 도메인 view model에서 아래 이름으로 미리 준비한다.
+
+- HTML 속성 값은 `*_attr`를 사용한다. 예: `value_attr`, `href_attr`, `class_attr`, `name_attr`.
+- 화면에 그대로 출력할 텍스트는 `*_text`를 사용한다. 예: `label_text`, `count_text`, `error_text`.
+- HTML 조각을 의도적으로 넘길 때만 `*_html`을 사용하고, 값을 만든 함수에서 안전성을 책임진다.
+- `link`, `meta`, `script`처럼 태그 자체가 반복되는 shell 자산은 `tag_html`로 완성된 조각을 넘길 수 있다. 이때 조립 함수가 모든 속성 escape를 끝내야 하며, 템플릿은 반복 출력만 담당한다.
+- JavaScript 문자열 리터럴로 넣을 값은 `*_json`을 사용한다. 회원 화면은 `member_json_string()`, 관리자 화면은 `admin_json_string()`으로 만든 값을 넘긴다.
+- 조건 분기는 원문 문자열 비교 대신 `has_*`, `show_*`, `is_*` 같은 boolean view field를 우선 사용한다.
+- 반복 option/radio/hidden field는 `value_attr`, `selected_attr`, `checked_attr`, `label_text`, `id_attr`처럼 출력용 필드로 맞춘다.
+- 관리자 화면에서 공통 escape가 필요하면 `admin_escape_attr()`, 숫자 표시가 필요하면 `admin_format_count_text()`를 우선 사용한다.
+- 회원 화면 렌더링에서 HTML 속성 escape가 필요하면 `member_escape_attr()`를 우선 사용한다.
+
+## 스타일을 어디에 추가할까
+
+- PHP 화면 파일에는 Tailwind utility class를 길게 직접 추가하지 않는다.
+- 사이트와 관리자에서 함께 쓰는 폼, 버튼, 테이블, 안내문 규칙은 `tailwind4/common.css`의 `ui-*` 시맨틱 클래스로 둔다.
+- 관리자 화면에만 쓰는 레이아웃, action bar, export 상태, dashboard 표현은 `tailwind4/admin.css`의 `admin-*` 시맨틱 클래스로 둔다.
+- 예를 들어 table head는 `ui-table-head`, 안내 링크는 `ui-link-primary`, export 필터 배치는 `admin-export-*`, 관리자 폼 하단 버튼 영역은 `admin-form-actions-*`를 우선 사용한다.
+- 폼 행의 예외 정렬은 특정 `id` 선택자 대신 `ui-form-row-start` 또는 `af-row-start` 같은 역할 클래스로 표시한다.
+- `id`는 앵커, JS 연결, 기존 G5 호환을 위해 남길 수 있지만, 새 스타일 기준은 `admin-*` 또는 `ui-*` 클래스에 둔다.
+- 관리자 shell 스타일은 `admin-sidebar-*`, `admin-topbar-*`, `admin-content-*`처럼 역할이 드러나는 클래스를 우선 사용한다.
+- 스타일 원천을 수정한 뒤에는 변경 범위에 따라 `npm run build:admin` 또는 `npm run build`를 실행한다.
+
 ## 피해야 할 변경
 
 - `common.php`, `adm/admin.lib.php`, `lib/common.util.lib.php`에 새 업무 로직을 추가하지 않는다.
@@ -69,6 +94,8 @@
 - aggregate loader에 업무 로직을 넣지 않는다. include 흐름은 `docs/architecture/admin-include-map.md` 기준으로 유지한다.
 - `lib/PHPExcel` 또는 `lib/PHPExcel.php`를 복구하지 않는다.
 - Tailwind 생성 CSS를 직접 고치지 않는다. 스타일 변경은 `tailwind4/` 원천 파일을 고친 뒤 빌드한다.
+- PHP 화면 파일에 `flex`, `border-*`, `text-*`, `px-*`, `py-*`, `rounded-*` 조합을 반복해서 쌓지 않는다. 반복되는 모양은 `ui-*` 또는 `admin-*` 클래스로 이름 붙인다.
+- `tailwind4/admin.css`에 새 ID 선택자 스타일을 추가하지 않는다. 꼭 필요한 경우 먼저 의미 클래스를 붙일 수 있는지 확인한다.
 
 ## 작업 전후 확인
 
@@ -84,3 +111,4 @@ git diff --check
 ```
 
 문서만 고친 경우에도 `git diff --check`는 실행한다. PHP include 경로나 controller 예시를 건드렸다면 `check:refactor`까지 실행한다.
+`check:refactor`는 aggregate loader에 업무 로직이 들어오는 경우와 반복 Tailwind utility 조합이 PHP 화면 파일에 다시 추가되는 경우도 함께 잡는다.

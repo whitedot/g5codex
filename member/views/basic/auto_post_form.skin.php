@@ -5,17 +5,17 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title><?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); ?></title>
+<title><?php echo $title_text; ?></title>
 </head>
 <body>
-<form name="fmemberautopost" method="post" action="<?php echo htmlspecialchars($action, ENT_QUOTES, 'UTF-8'); ?>">
-<?php foreach ($fields as $name => $value) { ?>
-<input type="hidden" name="<?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); ?>">
+<form name="fmemberautopost" method="post" action="<?php echo $action_attr; ?>">
+<?php foreach ($fields as $field) { ?>
+<input type="hidden" name="<?php echo $field['name_attr']; ?>" value="<?php echo $field['value_attr']; ?>">
 <?php } ?>
 </form>
 <script>
-<?php if ($message) { ?>
-alert(<?php echo json_encode($message); ?>);
+<?php if ($message_json !== '') { ?>
+alert(<?php echo $message_json; ?>);
 <?php } ?>
 document.fmemberautopost.submit();
 </script>

@@ -16,8 +16,9 @@
     "check:legacy-phpexcel-retirement": "node ./scripts/check-legacy-phpexcel-retirement.js",
     "check:legacy-request-extract-retirement": "node ./scripts/check-legacy-request-extract-retirement.js",
     "check:member-request-refactor": "node ./scripts/check-member-request-refactor.js",
+    "check:plan-docs": "node ./scripts/check-plan-docs.js",
     "check:support-html-refactor": "node ./scripts/check-support-html-refactor.js",
-    "check:refactor": "npm run check:admin-refactor && npm run check:member-request-refactor && npm run check:common-query-refactor && npm run check:legacy-phpexcel-retirement && npm run check:legacy-request-extract-retirement && npm run check:support-html-refactor"
+    "check:refactor": "npm run check:plan-docs && npm run check:admin-refactor && npm run check:member-request-refactor && npm run check:common-query-refactor && npm run check:legacy-phpexcel-retirement && npm run check:legacy-request-extract-retirement && npm run check:support-html-refactor"
   },
   "repository": {
     "type": "git",

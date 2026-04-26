@@ -69,13 +69,13 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
     function fregister_submit(f)
     {
         if (!f.agree.checked) {
-            alert(<?php echo json_encode($agree_alert_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+            alert(<?php echo $agree_alert_message_json; ?>);
             f.agree.focus();
             return false;
         }
 
         if (!f.agree2.checked) {
-            alert(<?php echo json_encode($agree2_alert_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+            alert(<?php echo $agree2_alert_message_json; ?>);
             f.agree2.focus();
             return false;
         }

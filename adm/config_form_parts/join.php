@@ -31,7 +31,7 @@
                 <div class="af-field">
                     <select id="cf_register_level" name="cf_register_level" class="form-select">
                         <?php foreach ($config_join_view['cf_register_level_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>

@@ -646,9 +646,41 @@
         @apply mt-1 block text-xs text-default-400;
     }
 
+    .hint-text-flush {
+        @apply mt-0;
+    }
+
     .caption-sr-only,
     table > caption {
         @apply sr-only;
+    }
+
+    .ui-table-head {
+        @apply border-b border-default-300 bg-default-100 text-xs font-semibold;
+    }
+
+    .ui-table-actions {
+        @apply flex items-center;
+    }
+
+    .ui-table-empty {
+        @apply text-center text-default-600;
+    }
+
+    .ui-alert {
+        @apply text-sm leading-6;
+    }
+
+    .ui-alert-danger {
+        @apply rounded-lg border border-danger/30 bg-danger/5 px-4 py-3 text-danger;
+    }
+
+    .ui-alert-copy {
+        @apply mt-1;
+    }
+
+    .ui-link-primary {
+        @apply font-semibold text-primary hover:underline;
     }
 
     .ui-form-theme .form-label {
@@ -931,12 +963,12 @@
     .ui-form-row:has(textarea),
     .ui-form-row:has(.hint-text),
     .ui-form-row:has(table),
-    .ui-form-row:has(#sodr_request_log_wrap),
     .af-row:has(.form-textarea),
     .af-row:has(textarea),
     .af-row:has(.hint-text),
     .af-row:has(table),
-    .af-row:has(#sodr_request_log_wrap) {
+    .ui-form-row-start,
+    .af-row-start {
         @apply lg:items-start;
     }
 

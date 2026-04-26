@@ -8,9 +8,12 @@
 
 - `adm/member_list_exel.php`: export 화면 controller. `_common.php`, 권한 확인, page request 생성, partial 렌더링만 담당한다.
 - `adm/member_list_exel_export.php`: export stream controller. `_common.php`, stream page request 생성, complete 함수 호출만 담당한다.
-- `lib/domain/admin/export-config.lib.php`: export 상수, 필터 옵션, 요청 파라미터 정규화, where/count query를 담당한다.
+- `lib/domain/admin/export-config.lib.php`: export 상수와 기본 런타임 경로를 담당한다.
+- `lib/domain/admin/export-options.lib.php`: 화면 필터 option 목록을 담당한다.
+- `lib/domain/admin/export-request.lib.php`: 요청 파라미터 정규화와 날짜/레벨 범위 보정을 담당한다.
+- `lib/domain/admin/export-filter.lib.php`: where 조건과 count query를 담당한다.
 - `lib/domain/admin/export-query.lib.php`: sheet 컬럼 구성과 회원 row 조회 statement를 담당한다.
-- `lib/domain/admin/export-file.lib.php`: XLSX/ZIP 파일 생성, 임시 파일 삭제, 로그 기록을 담당한다.
+- `lib/domain/admin/export-file.lib.php`: 파일 생성, 정리, 로그 로더다. 실제 구현은 `export-file-create.lib.php`, `export-file-cleanup.lib.php`, `export-log.lib.php`에 둔다.
 - `lib/domain/admin/export-stream.lib.php`: SSE 준비, stream request 검증, 진행 이벤트, 전체 export 실행 순서를 담당한다.
 - `lib/domain/admin/export-view.lib.php`: 화면 view-model, client config, runtime readiness 메시지를 담당한다.
 - `lib/domain/admin/export-maintenance.lib.php`: 수동 파일 정리 action을 담당한다.
@@ -26,7 +29,7 @@
 - page 파일에서 `check_demo()`, XLSX/ZIP 직접 실행, runtime 직접 조립을 다시 넣지 않는다.
 - stream 실행은 `admin_complete_member_export_stream_page()` 안으로 모은다.
 - 화면 데이터는 `admin_build_member_export_page_request()` 결과의 `view`를 통해 전달한다.
-- partial은 `$member_export_view`, `$filter_state`, `$member_export_links` 같은 화면 데이터만 사용한다.
+- partial은 controller/request state를 직접 보지 않고 `$member_export_view`와 그 안의 `filter_view`, `total_view`, `client_config_attrs` 같은 출력용 view model만 사용한다.
 
 ## 검증 기준
 

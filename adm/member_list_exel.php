@@ -15,10 +15,10 @@ require_once './admin.head.php';
 ?>
 <div
     data-admin-member-export
-    data-environment-ready="<?php echo $member_export_view['environment_ready'] ? '1' : '0'; ?>"
-    data-environment-error="<?php echo htmlspecialchars($member_export_view['environment_error'], ENT_QUOTES, 'UTF-8'); ?>"
+    data-environment-ready="<?php echo $member_export_view['environment_ready_attr']; ?>"
+    data-environment-error="<?php echo $member_export_view['environment_error_attr']; ?>"
     <?php foreach ($member_export_view['client_config_attrs'] as $name => $value) { ?>
-        data-<?php echo $name; ?>="<?php echo htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); ?>"
+        data-<?php echo $name; ?>="<?php echo $value; ?>"
     <?php } ?>
 >
     <?php include_once G5_ADMIN_PATH . '/member_list_exel_parts/intro.php'; ?>

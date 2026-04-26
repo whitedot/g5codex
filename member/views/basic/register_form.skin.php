@@ -227,11 +227,11 @@ if ($use_certify_js)
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    var pageTypeParam = "pageType=<?php echo $register_page_type; ?>";
+    var pageTypeParam = "pageType=" + encodeURIComponent(<?php echo $register_page_type_json; ?>);
 
 	<?php if($show_simple_cert_button) { ?>
 	var certifyButtons = document.querySelectorAll(".win_sa_cert");
-	var simpleCertUrl = "<?php echo $simple_cert_url; ?>";
+	var simpleCertUrl = <?php echo $simple_cert_url_json; ?>;
 
 	certifyButtons.forEach(function(button) {
 		button.addEventListener("click", function() {
@@ -248,12 +248,12 @@ document.addEventListener("DOMContentLoaded", function() {
         hpCertButton.addEventListener("click", function() {
 		    if(!cert_confirm()) return;
             var params = "?" + pageTypeParam;
-            <?php if ($hp_cert_error_message !== '') { ?>
-            alert("<?php echo $hp_cert_error_message; ?>");
+            <?php if ($has_hp_cert_error) { ?>
+            alert(<?php echo $hp_cert_error_message_json; ?>);
             return;
             <?php } ?>
             
-            certify_win_open("<?php echo $hp_cert_type; ?>", "<?php echo $hp_cert_url; ?>" + params);
+            certify_win_open(<?php echo $hp_cert_type_json; ?>, <?php echo $hp_cert_url_json; ?> + params);
         });
     }
     <?php } ?>
@@ -274,21 +274,21 @@ function fregisterform_submit(f)
 
     if (f.w.value == "") {
         if (f.mb_password.value.length < 3) {
-            alert(<?php echo json_encode($password_length_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+            alert(<?php echo $password_length_message_json; ?>);
             f.mb_password.focus();
             return false;
         }
     }
 
     if (f.mb_password.value != f.mb_password_re.value) {
-        alert(<?php echo json_encode($password_mismatch_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+        alert(<?php echo $password_mismatch_message_json; ?>);
         f.mb_password_re.focus();
         return false;
     }
 
     if (f.mb_password.value.length > 0) {
         if (f.mb_password_re.value.length < 3) {
-            alert(<?php echo json_encode($password_length_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+            alert(<?php echo $password_length_message_json; ?>);
             f.mb_password_re.focus();
             return false;
         }
@@ -297,7 +297,7 @@ function fregisterform_submit(f)
     // 이름 검사
     if (f.w.value=="") {
         if (f.mb_name.value.length < 1) {
-            alert(<?php echo json_encode($name_required_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+            alert(<?php echo $name_required_message_json; ?>);
             f.mb_name.focus();
             return false;
         }
@@ -307,7 +307,7 @@ function fregisterform_submit(f)
     <?php if ($require_certification_on_submit) { ?>
     // 본인확인 체크
     if(f.cert_no.value=="") {
-        alert(<?php echo json_encode($certify_prompt_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
+        alert(<?php echo $certify_prompt_message_json; ?>);
         return false;
     }
     <?php } ?>

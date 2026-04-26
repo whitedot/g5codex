@@ -104,7 +104,7 @@ function admin_run_member_export(array $params, array $runtime)
     $pages = 1;
 
     if ($total > ADMIN_MEMBER_EXPORT_MAX_SIZE) {
-        throw new Exception('엑셀 다운로드 가능 범위(최대 ' . number_format(ADMIN_MEMBER_EXPORT_MAX_SIZE) . '건)를 초과했습니다.<br>조건을 추가로 설정하신 후 다시 시도해 주세요.');
+        throw new Exception('엑셀 다운로드 가능 범위(최대 ' . admin_format_count_text(ADMIN_MEMBER_EXPORT_MAX_SIZE, '건') . ')를 초과했습니다.<br>조건을 추가로 설정하신 후 다시 시도해 주세요.');
     }
 
     if ($total <= 0) {

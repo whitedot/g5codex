@@ -5,7 +5,7 @@
                 <label for="sfl">검색대상</label>
                 <select name="sfl" id="sfl">
                     <?php foreach ($member_list_view['search_view']['field_options'] as $option) { ?>
-                        <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                        <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                     <?php } ?>
                 </select>
             </div>

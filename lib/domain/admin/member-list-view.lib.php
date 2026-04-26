@@ -21,11 +21,7 @@ function admin_build_member_list_search_field_options(array $request)
 {
     $options = array();
     foreach (admin_member_list_search_field_labels() as $value => $label) {
-        $options[] = array(
-            'value' => $value,
-            'label' => $label,
-            'selected' => $request['sfl'] === $value,
-        );
+        $options[] = admin_build_select_option_view($value, $label, $request['sfl'] === $value);
     }
 
     return $options;
@@ -35,46 +31,46 @@ function admin_build_member_list_table_columns(array $request)
 {
     return array(
         array(
-            'id' => 'mb_list_id',
-            'label' => '아이디',
-            'href' => admin_build_member_list_sort_url($request, 'mb_id'),
-            'class' => '',
+            'id_attr' => 'mb_list_id',
+            'label_text' => '아이디',
+            'href_attr' => admin_build_member_list_sort_url($request, 'mb_id'),
+            'class_attr' => '',
         ),
         array(
-            'id' => 'mb_list_name',
-            'label' => '이름',
-            'href' => admin_build_member_list_sort_url($request, 'mb_name'),
-            'class' => '',
+            'id_attr' => 'mb_list_name',
+            'label_text' => '이름',
+            'href_attr' => admin_build_member_list_sort_url($request, 'mb_name'),
+            'class_attr' => '',
         ),
         array(
-            'id' => 'mb_list_nick',
-            'label' => '닉네임',
-            'href' => admin_build_member_list_sort_url($request, 'mb_nick'),
-            'class' => '',
+            'id_attr' => 'mb_list_nick',
+            'label_text' => '닉네임',
+            'href_attr' => admin_build_member_list_sort_url($request, 'mb_nick'),
+            'class_attr' => '',
         ),
         array(
-            'id' => 'mb_list_email',
-            'label' => '이메일 주소',
-            'href' => admin_build_member_list_sort_url($request, 'mb_email'),
-            'class' => '',
+            'id_attr' => 'mb_list_email',
+            'label_text' => '이메일 주소',
+            'href_attr' => admin_build_member_list_sort_url($request, 'mb_email'),
+            'class_attr' => '',
         ),
         array(
-            'id' => 'mb_list_level',
-            'label' => '권한',
-            'href' => admin_build_member_list_sort_url($request, 'mb_level', 'desc'),
-            'class' => '',
+            'id_attr' => 'mb_list_level',
+            'label_text' => '권한',
+            'href_attr' => admin_build_member_list_sort_url($request, 'mb_level', 'desc'),
+            'class_attr' => '',
         ),
         array(
-            'id' => 'mb_list_status',
-            'label' => '상태',
-            'href' => '',
-            'class' => '',
+            'id_attr' => 'mb_list_status',
+            'label_text' => '상태',
+            'href_attr' => '',
+            'class_attr' => '',
         ),
         array(
-            'id' => 'mb_list_mng',
-            'label' => '관리',
-            'href' => '',
-            'class' => 'text-end',
+            'id_attr' => 'mb_list_mng',
+            'label_text' => '관리',
+            'href_attr' => '',
+            'class_attr' => 'text-end',
         ),
     );
 }
@@ -137,6 +133,24 @@ function admin_build_member_list_sort_url(array $request, $column, $flag = 'asc'
     return '?' . str_replace('&', '&amp;', admin_build_member_list_sort_query($request, $column, $flag));
 }
 
+function admin_build_member_list_summary_links(array $request, $quick_view, $intercept_count_text, $leave_count_text)
+{
+    return array(
+        array(
+            'href_attr' => admin_escape_attr('?' . admin_build_member_list_filter_query($request, array('sst' => 'mb_intercept_date', 'sod' => 'desc'))),
+            'label_text' => '차단',
+            'count_text' => $intercept_count_text,
+            'aria_current_attr' => $quick_view === 'blocked' ? ' aria-current="page"' : '',
+        ),
+        array(
+            'href_attr' => admin_escape_attr('?' . admin_build_member_list_filter_query($request, array('sst' => 'mb_leave_date', 'sod' => 'desc'))),
+            'label_text' => '탈퇴',
+            'count_text' => $leave_count_text,
+            'aria_current_attr' => $quick_view === 'left' ? ' aria-current="page"' : '',
+        ),
+    );
+}
+
 function admin_build_member_list_actions(array $row, array $member, $is_admin, $qstr)
 {
     $actions = array();
@@ -144,18 +158,20 @@ function admin_build_member_list_actions(array $row, array $member, $is_admin, $
     if ($is_admin != 'group') {
         $actions[] = array(
             'type' => 'link',
-            'href' => './member_form.php?' . $qstr . '&amp;w=u&amp;mb_id=' . $row['mb_id'],
-            'label' => '수정',
-            'class' => 'btn btn-sm btn-surface-default-soft',
+            'href_attr' => './member_form.php?' . $qstr . '&amp;w=u&amp;mb_id=' . rawurlencode((string) $row['mb_id']),
+            'label_text' => '수정',
+            'class_attr' => 'btn btn-sm btn-surface-default-soft',
+            'mb_id_attr' => '',
         );
     }
 
     if ($member['mb_id'] != $row['mb_id'] && is_admin($row['mb_id']) != 'super' && ($is_admin == 'super' || $row['mb_level'] < $member['mb_level'])) {
         $actions[] = array(
             'type' => 'delete',
-            'mb_id' => $row['mb_id'],
-            'label' => '삭제',
-            'class' => 'btn btn-sm btn-outline-danger',
+            'href_attr' => '',
+            'label_text' => '삭제',
+            'class_attr' => 'btn btn-sm btn-outline-danger',
+            'mb_id_attr' => admin_escape_attr($row['mb_id']),
         );
     }
 
@@ -231,12 +247,12 @@ function admin_build_member_list_view(array $request, array $member, $is_admin, 
         'page' => $request['page'],
     );
     $paging_url = '?' . $qstr . '&amp;page=';
+    $leave_count_text = admin_format_count_text($leave_count, '명');
+    $intercept_count_text = admin_format_count_text($intercept_count, '명');
 
     return array(
-        'list_all_url' => isset($server_input['SCRIPT_NAME']) ? $server_input['SCRIPT_NAME'] : '',
-        'quick_view' => $quick_view,
-        'blocked_url' => '?' . admin_build_member_list_filter_query($request, array('sst' => 'mb_intercept_date', 'sod' => 'desc')),
-        'left_url' => '?' . admin_build_member_list_filter_query($request, array('sst' => 'mb_leave_date', 'sod' => 'desc')),
+        'list_all_url_attr' => admin_escape_attr(isset($server_input['SCRIPT_NAME']) ? $server_input['SCRIPT_NAME'] : ''),
+        'summary_filter_links' => admin_build_member_list_summary_links($request, $quick_view, $intercept_count_text, $leave_count_text),
         'sort_urls' => array(
             'mb_id' => admin_build_member_list_sort_url($request, 'mb_id'),
             'mb_name' => admin_build_member_list_sort_url($request, 'mb_name'),
@@ -249,12 +265,15 @@ function admin_build_member_list_view(array $request, array $member, $is_admin, 
             'stx_value' => get_sanitize_input($request['stx']),
         ),
         'table_columns' => admin_build_member_list_table_columns($request),
-        'hidden_fields' => $hidden_fields,
+        'hidden_fields' => admin_build_hidden_field_views($hidden_fields),
         'caption' => '회원관리 목록',
         'total_count' => $total_count,
+        'total_count_text' => admin_format_count_text($total_count, '명'),
         'total_page' => $total_page,
         'leave_count' => $leave_count,
+        'leave_count_text' => $leave_count_text,
         'intercept_count' => $intercept_count,
+        'intercept_count_text' => $intercept_count_text,
         'items' => $items,
         'colspan' => 8,
         'empty_message' => '자료가 없습니다.',

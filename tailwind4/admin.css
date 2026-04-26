@@ -8,7 +8,7 @@
         --admin-sidebar-collapsed-width: 5.5rem;
     }
 
-    #to_content a {
+    .admin-skip-link a {
         position: absolute;
         left: -9999px;
         top: auto;
@@ -17,50 +17,50 @@
         overflow: hidden;
     }
 
-    #to_content a:focus {
+    .admin-skip-link a:focus {
         @apply fixed left-4 top-4 z-50 h-auto w-auto rounded-lg bg-slate-900 px-3 py-2 text-sm text-white;
     }
 
-    #hd {
+    .admin-sidebar-frame {
         @apply fixed inset-y-0 left-0 z-50;
         width: var(--admin-sidebar-width);
     }
 
-    #gnb {
+    .admin-sidebar {
         @apply flex h-full flex-col border-r border-default-300 bg-card transition-all duration-300;
     }
 
-    #gnb > h2 {
+    .admin-sidebar-brand {
         @apply flex items-center justify-between gap-3 border-b border-default-300 px-5 py-0;
         min-height: var(--admin-shell-bar-height);
     }
 
-    #gnb > h2 > a {
+    .admin-sidebar-brand-link {
         @apply flex min-w-0 items-center gap-3;
     }
 
-    #gnb > h2 > a > span:first-child {
+    .admin-sidebar-brand-mark {
         @apply flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-sm font-semibold text-white;
     }
 
-    #gnb > h2 > a > span:first-child .admin-shell-control-icon {
+    .admin-sidebar-brand-mark .admin-shell-control-icon {
         width: 1.1rem;
         height: 1.1rem;
     }
 
-    #gnb > h2 > a > span:last-child {
+    .admin-sidebar-brand-name {
         @apply truncate text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100;
     }
 
-    #btn_gnb {
+    .admin-sidebar-toggle {
         @apply hidden h-8 w-8 items-center justify-center rounded-lg border border-default-300 bg-default-100 text-xs text-default-600 hover:bg-default-200 lg:inline-flex;
     }
 
-    #btn_gnb span {
+    .admin-sidebar-toggle span {
         @apply inline-flex transition-transform;
     }
 
-    #btn_gnb.btn_gnb_open span {
+    .admin-sidebar-toggle.btn_gnb_open span {
         @apply rotate-180;
     }
 
@@ -74,33 +74,33 @@
         stroke-linejoin: round;
     }
 
-    #btn_gnb_mobile .admin-shell-control-icon {
+    .admin-mobile-menu-button .admin-shell-control-icon {
         width: 1rem;
         height: 1rem;
     }
 
-    #gnb .gnb_menu_scroll_wrap {
+    .admin-sidebar-scroll-wrap {
         @apply relative flex-1 min-h-0;
     }
 
-    #gnb .gnb_menu_scroll {
+    .admin-sidebar-scroll {
         @apply h-full overflow-y-auto px-4 pb-4 pt-5;
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
 
-    #gnb .gnb_menu_scroll::-webkit-scrollbar {
+    .admin-sidebar-scroll::-webkit-scrollbar {
         width: 0;
         height: 0;
     }
 
-    #gnb .gnb_scrollbar {
+    .admin-sidebar-scrollbar {
         @apply pointer-events-none absolute bottom-2 right-1 top-2 w-2 rounded-full;
         opacity: 0;
         transition: opacity 140ms ease;
     }
 
-    #gnb .gnb_scrollbar_thumb {
+    .admin-sidebar-scrollbar-thumb {
         @apply absolute left-0 w-full;
         height: 0;
         transform: translateY(0);
@@ -109,34 +109,34 @@
         transition: background 140ms ease;
     }
 
-    #gnb .gnb_menu_scroll_wrap.is-scrollable.is-scrollbar-visible .gnb_scrollbar {
+    .admin-sidebar-scroll-wrap.is-scrollable.is-scrollbar-visible .admin-sidebar-scrollbar {
         opacity: 1;
     }
 
-    #gnb .gnb_menu_scroll_wrap.is-scrollable.is-scrollbar-visible .gnb_scrollbar_thumb {
+    .admin-sidebar-scroll-wrap.is-scrollable.is-scrollbar-visible .admin-sidebar-scrollbar-thumb {
         background: color-mix(in oklab, var(--color-default-500) 82%, transparent);
     }
 
-    #gnb .gnb_label {
+    .gnb_label {
         @apply mb-3 px-2 text-xs font-semibold tracking-wide text-default-400;
     }
 
-    #gnb .admin-nav-icon-sprite {
+    .admin-nav-icon-sprite {
         position: absolute;
         width: 0;
         height: 0;
         overflow: hidden;
     }
 
-    #gnb .admin-nav-list {
+    .admin-nav-list {
         @apply space-y-1.5;
     }
 
-    #gnb .admin-nav-trigger-main {
+    .admin-nav-trigger-main {
         @apply flex min-w-0 items-center gap-2.5;
     }
 
-    #gnb .admin-nav-icon {
+    .admin-nav-icon {
         width: 1rem;
         height: 1rem;
         flex-shrink: 0;
@@ -149,31 +149,31 @@
         transition: color 140ms ease;
     }
 
-    #gnb .admin-nav-item > .admin-nav-trigger {
+    .admin-nav-item > .admin-nav-trigger {
         @apply flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-sm font-medium text-default-700 transition-colors hover:text-slate-900 dark:hover:text-default-900;
     }
 
-    #gnb .admin-nav-item > .admin-nav-trigger:hover .admin-nav-icon {
+    .admin-nav-item > .admin-nav-trigger:hover .admin-nav-icon {
         color: var(--color-default-700);
     }
 
-    #gnb .admin-nav-item.is-open > .admin-nav-trigger {
+    .admin-nav-item.is-open > .admin-nav-trigger {
         @apply text-slate-900 dark:text-default-900;
     }
 
-    #gnb .admin-nav-item.is-open > .admin-nav-trigger .admin-nav-icon {
+    .admin-nav-item.is-open > .admin-nav-trigger .admin-nav-icon {
         color: var(--color-default-700);
     }
 
-    #gnb .admin-nav-item.is-open > .admin-nav-trigger .admin-nav-trigger-label {
+    .admin-nav-item.is-open > .admin-nav-trigger .admin-nav-trigger-label {
         @apply font-semibold;
     }
 
-    #gnb .admin-nav-caret {
+    .admin-nav-caret {
         @apply ml-3 inline-flex text-default-500 transition-transform duration-150;
     }
 
-    #gnb .admin-nav-caret-icon {
+    .admin-nav-caret-icon {
         width: 0.9rem;
         height: 0.9rem;
         fill: none;
@@ -183,23 +183,23 @@
         stroke-linejoin: round;
     }
 
-    #gnb .admin-nav-item.is-open .admin-nav-caret {
+    .admin-nav-item.is-open .admin-nav-caret {
         @apply rotate-180;
     }
 
-    #gnb .admin-nav-panel {
+    .admin-nav-panel {
         @apply ml-2 pb-1 pl-5;
     }
 
-    #gnb .admin-nav-panel > .admin-nav-sub-list {
+    .admin-nav-panel > .admin-nav-sub-list {
         @apply space-y-0.5 py-0.5;
     }
 
-    #gnb .admin-nav-sub-item {
+    .admin-nav-sub-item {
         @apply relative;
     }
 
-    #gnb .admin-nav-sub-item::before {
+    .admin-nav-sub-item::before {
         content: "";
         position: absolute;
         left: -0.85rem;
@@ -210,21 +210,21 @@
         pointer-events: none;
     }
 
-    #gnb .admin-nav-sub-item:first-child::before {
+    .admin-nav-sub-item:first-child::before {
         top: calc(0.8rem - 8px);
     }
 
-    #gnb .admin-nav-sub-item:last-child::before {
+    .admin-nav-sub-item:last-child::before {
         top: calc(-0.45rem - 8px);
         bottom: auto;
         height: 1.25rem;
     }
 
-    #gnb .admin-nav-sub-item:only-child::before {
+    .admin-nav-sub-item:only-child::before {
         display: none;
     }
 
-    #gnb .admin-nav-sub-item::after {
+    .admin-nav-sub-item::after {
         content: "";
         position: absolute;
         left: -0.85rem;
@@ -237,195 +237,194 @@
         pointer-events: none;
     }
 
-    #gnb .admin-nav-sub-item > a {
+    .admin-nav-sub-item > a {
         @apply block rounded-md px-2 py-1 text-sm text-default-600 transition-colors hover:text-slate-900 dark:hover:text-default-900;
     }
 
-    #gnb .admin-nav-sub-item.is-current > a {
+    .admin-nav-sub-item.is-current > a {
         @apply font-semibold text-primary;
     }
 
-    #gnb .gnb_profile {
+    .admin-sidebar-profile {
         @apply mt-auto flex items-center gap-3 border-t border-default-300 p-4;
     }
 
-    #gnb .gnb_profile_avatar {
+    .admin-sidebar-profile-avatar {
         @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-sm font-semibold text-white;
     }
 
-    #gnb .gnb_profile_meta {
+    .admin-sidebar-profile-meta {
         @apply min-w-0 flex-1;
     }
 
-    #gnb .gnb_profile_meta strong {
+    .admin-sidebar-profile-meta strong {
         @apply block truncate text-sm font-semibold text-slate-900 dark:text-slate-100;
     }
 
-    #gnb .gnb_profile_meta span {
+    .admin-sidebar-profile-meta span {
         @apply block truncate text-xs text-default-500;
     }
 
-    #gnb .gnb_profile_logout {
+    .admin-sidebar-profile-logout {
         @apply inline-flex h-8 w-8 items-center justify-center rounded-lg border border-default-300 text-default-500 transition hover:bg-default-100 hover:text-default-700;
     }
 
-    #adminSidebarBackdrop {
+    .admin-sidebar-backdrop {
         @apply fixed inset-0 z-30 bg-slate-900/40 lg:hidden;
     }
 
-    #wrapper {
+    .admin-wrapper {
         @apply min-h-screen bg-default-100 transition-all duration-300;
         padding-left: var(--admin-sidebar-width);
     }
 
-    #hd_top {
+    .admin-topbar {
         @apply sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-default-300 bg-card/95 px-4 py-0 backdrop-blur lg:px-8;
         min-height: var(--admin-shell-bar-height);
     }
 
-    #hd_top .hd_top_left {
+    .admin-topbar-left {
         @apply flex min-w-0 items-center gap-3;
     }
 
-    #btn_gnb_mobile {
+    .admin-mobile-menu-button {
         @apply inline-flex h-8 w-8 items-center justify-center rounded-lg border border-default-300 bg-default-100 text-xs text-default-600 lg:hidden;
     }
 
-    #hd_top .hd_breadcrumb {
+    .admin-breadcrumb {
         @apply flex min-w-0 items-center gap-2 text-sm text-default-500;
     }
 
-    #hd_top .hd_breadcrumb strong {
+    .admin-breadcrumb strong {
         @apply truncate font-semibold text-slate-900 dark:text-slate-100;
     }
 
-    #hd_top .hd_top_right {
+    .admin-topbar-right {
         @apply flex items-center gap-2;
     }
 
-    #tnb > ul {
+    .admin-toolbar > ul {
         @apply flex items-center gap-2;
     }
 
-    #tnb .tnb_li {
+    .admin-toolbar-item {
         @apply relative;
     }
 
-    #tnb .tnb_li > a,
-    #tnb .tnb_li > button {
+    .admin-toolbar-item > a,
+    .admin-toolbar-item > button {
         @apply inline-flex h-9 items-center rounded-lg border border-default-300 bg-card px-3 text-sm font-medium text-default-700 transition hover:bg-default-100;
     }
 
-    #tnb .tnb_li > a.tnb_icon_btn,
-    #tnb .tnb_li > button.tnb_icon_btn {
+    .admin-toolbar-item > a.admin-toolbar-icon-button,
+    .admin-toolbar-item > button.admin-toolbar-icon-button {
         @apply w-9 justify-center px-0;
     }
 
-    #tnb .tnb_mb_area {
+    .admin-toolbar-menu {
         @apply absolute right-0 top-11 z-30 min-w-32 space-y-1 rounded-xl border border-default-300 bg-card p-1 shadow-sm;
     }
 
-    #tnb .tnb_mb_area a {
+    .admin-toolbar-menu a {
         @apply block rounded-lg px-3 py-2 text-sm text-default-600 transition hover:bg-default-100 hover:text-slate-900;
     }
 
-    #container {
+    .admin-content {
         @apply px-4 pb-8 pt-6 lg:px-8;
     }
 
-    #container_title {
+    .admin-content-title {
         @apply text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100;
     }
 
-    #container_subtitle {
+    .admin-content-subtitle {
         @apply mb-5 mt-2 text-sm text-default-500;
     }
 
-    #container.admin-page-config-form {
+    .admin-content.admin-page-config-form {
         @apply pt-4;
     }
 
-    #container.admin-page-config-form #container_title {
+    .admin-content.admin-page-config-form .admin-content-title {
         @apply mb-1 text-2xl;
     }
 
-    #container.admin-page-config-form #container_subtitle {
+    .admin-content.admin-page-config-form .admin-content-subtitle {
         @apply mt-0 mb-3;
     }
 
-    #container > section,
-    #container > form > section,
-    #container > .section-card {
+    .admin-content > section,
+    .admin-content > form > section,
+    .admin-content > .section-card {
         @apply relative mb-5 flex h-fit flex-col break-words rounded-[var(--radius)] bg-card bg-clip-border shadow;
     }
 
-    #container > section > h2,
-    #container > form > section > h2,
-    #container > .section-card > h2 {
+    .admin-content > section > h2,
+    .admin-content > form > section > h2,
+    .admin-content > .section-card > h2 {
         @apply mb-0 flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-default-300 px-5 py-3.75 text-md font-medium leading-normal text-body-color;
     }
 
-    #container > section > .tbl_wrap,
-    #container > form > section > .tbl_wrap,
-    #container > .section-card > .tbl_wrap {
+    .admin-content > section > .tbl_wrap,
+    .admin-content > form > section > .tbl_wrap,
+    .admin-content > .section-card > .tbl_wrap {
         @apply flex-auto p-0 transition-all duration-300;
     }
 
-    #container > section > .local_desc,
-    #container > form > section > .local_desc,
-    #container > .section-card > .local_desc {
+    .admin-content > section > .local_desc,
+    .admin-content > form > section > .local_desc,
+    .admin-content > .section-card > .local_desc {
         @apply flex-auto px-5 pb-5 pt-4 transition-all duration-300;
     }
 
-    #container > section > :not(h1):not(h2):not(h3):not(.card-header),
-    #container > form > section > :not(h1):not(h2):not(h3):not(.card-header),
-    #container > .section-card > :not(h1):not(h2):not(h3):not(.card-header) {
+    .admin-content > section > :not(h1):not(h2):not(h3):not(.card-header),
+    .admin-content > form > section > :not(h1):not(h2):not(h3):not(.card-header),
+    .admin-content > .section-card > :not(h1):not(h2):not(h3):not(.card-header) {
         @apply px-5;
     }
 
-    #container > section > :not(h1):not(h2):not(h3):first-child,
-    #container > form > section > :not(h1):not(h2):not(h3):first-child,
-    #container > .section-card > :not(h1):not(h2):not(h3):first-child {
+    .admin-content > section > :not(h1):not(h2):not(h3):first-child,
+    .admin-content > form > section > :not(h1):not(h2):not(h3):first-child,
+    .admin-content > .section-card > :not(h1):not(h2):not(h3):first-child {
         @apply pt-5;
     }
 
-    #container > section > :not(h1):not(h2):not(h3):last-child,
-    #container > form > section > :not(h1):not(h2):not(h3):last-child,
-    #container > .section-card > :not(h1):not(h2):not(h3):last-child {
+    .admin-content > section > :not(h1):not(h2):not(h3):last-child,
+    .admin-content > form > section > :not(h1):not(h2):not(h3):last-child,
+    .admin-content > .section-card > :not(h1):not(h2):not(h3):last-child {
         @apply pb-5;
     }
 
-    #container > section > table,
-    #container > form > section > table,
-    #container > .section-card > table {
+    .admin-content > section > table,
+    .admin-content > form > section > table,
+    .admin-content > .section-card > table {
         @apply w-full border-collapse;
     }
 
-    #container > section > table thead th,
-    #container > form > section > table thead th,
-    #container > .section-card > table thead th {
+    .admin-content > section > table thead th,
+    .admin-content > form > section > table thead th,
+    .admin-content > .section-card > table thead th {
         @apply border-b border-default-300 bg-default-100 px-3 py-2 align-middle text-left text-sm font-semibold text-default-700;
     }
 
-    #container > section > table tbody td,
-    #container > form > section > table tbody td,
-    #container > .section-card > table tbody td {
+    .admin-content > section > table tbody td,
+    .admin-content > form > section > table tbody td,
+    .admin-content > .section-card > table tbody td {
         @apply border-b border-default-300 px-3 py-2 align-middle text-sm;
     }
 
-    #container > section > table tbody tr:last-child td,
-    #container > form > section > table tbody tr:last-child td,
-    #container > .section-card > table tbody tr:last-child td {
+    .admin-content > section > table tbody tr:last-child td,
+    .admin-content > form > section > table tbody tr:last-child td,
+    .admin-content > .section-card > table tbody tr:last-child td {
         @apply border-b-0;
     }
 
-    #container > form:has(> section),
-    #container > form#fconfigform {
+    .admin-content > form:has(> section),
+    .admin-content > form.admin-form-layout {
         @apply mb-0 border-0 bg-transparent p-0 shadow-none;
     }
 
-    #config_tabs_nav,
-    #member_tabs_nav {
+    .admin-anchor-tabs {
         @apply sticky relative w-full;
         background-color: var(--color-body-bg);
         top: var(--admin-shell-bar-height);
@@ -434,158 +433,63 @@
         transition: box-shadow 140ms ease, border-color 140ms ease;
     }
 
-    #config_tabs_nav.is-stuck,
-    #member_tabs_nav.is-stuck {
+    .admin-anchor-tabs.is-stuck {
         @apply shadow-none;
     }
 
-    #content_tabs_bar {
-        @apply sticky relative w-full rounded-[var(--radius)] border border-default-300 bg-default-100/95 shadow backdrop-blur;
-        --config-tabs-inline-pad: 0.75rem;
-        top: var(--admin-shell-bar-height);
-        z-index: 15;
-        margin: 0 0 0.375rem;
-        padding: 0 var(--config-tabs-inline-pad);
-        transition: box-shadow 140ms ease, border-color 140ms ease;
-    }
-
-    @media (min-width: 64rem) {
-        #content_tabs_bar {
-            --config-tabs-inline-pad: 1.25rem;
-            margin-left: 0;
-            margin-right: 0;
-            padding-left: var(--config-tabs-inline-pad);
-            padding-right: var(--config-tabs-inline-pad);
-        }
-    }
-
-    #content_tabs_bar.is-stuck {
-        @apply shadow;
-    }
-
-    #content_tabs_bar::before,
-    #content_tabs_bar::after {
-        content: "";
-        position: absolute;
-        top: 0.125rem;
-        bottom: 0.125rem;
-        width: 2rem;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 160ms ease;
-        z-index: 2;
-    }
-
-    #content_tabs_bar::before {
-        left: var(--config-tabs-inline-pad);
-        border-top-left-radius: var(--radius);
-        border-bottom-left-radius: var(--radius);
-        background: linear-gradient(
-            to right,
-            color-mix(in oklab, var(--color-default-100) 96%, transparent) 0%,
-            color-mix(in oklab, var(--color-default-100) 88%, transparent) 34%,
-            color-mix(in oklab, var(--color-default-200) 45%, transparent) 72%,
-            transparent 100%
-        );
-    }
-
-    #content_tabs_bar::after {
-        right: var(--config-tabs-inline-pad);
-        border-top-right-radius: var(--radius);
-        border-bottom-right-radius: var(--radius);
-        background: linear-gradient(
-            to left,
-            color-mix(in oklab, var(--color-default-100) 96%, transparent) 0%,
-            color-mix(in oklab, var(--color-default-100) 88%, transparent) 34%,
-            color-mix(in oklab, var(--color-default-200) 45%, transparent) 72%,
-            transparent 100%
-        );
-    }
-
-    #content_tabs_bar.has-overflow.is-overflow-left::before,
-    #content_tabs_bar.has-overflow.is-overflow-right::after {
-        opacity: 0.78;
-    }
-
-    #config_tabs_nav,
-    #member_tabs_nav,
-    #content_tabs_nav {
+    .admin-anchor-tabs {
         @apply flex flex-nowrap items-center gap-1 overflow-x-auto py-0.5;
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
 
-    #config_tabs_nav::-webkit-scrollbar,
-    #member_tabs_nav::-webkit-scrollbar,
-    #content_tabs_nav::-webkit-scrollbar {
+    .admin-anchor-tabs::-webkit-scrollbar {
         width: 0;
         height: 0;
     }
 
-    #config_tabs_nav:hover,
-    #config_tabs_nav:focus-within,
-    #member_tabs_nav:hover,
-    #member_tabs_nav:focus-within,
-    #content_tabs_bar:hover #content_tabs_nav,
-    #content_tabs_bar:focus-within #content_tabs_nav {
+    .admin-anchor-tabs:hover,
+    .admin-anchor-tabs:focus-within {
         scrollbar-width: thin;
     }
 
-    #config_tabs_nav:hover::-webkit-scrollbar,
-    #config_tabs_nav:focus-within::-webkit-scrollbar,
-    #member_tabs_nav:hover::-webkit-scrollbar,
-    #member_tabs_nav:focus-within::-webkit-scrollbar,
-    #content_tabs_bar:hover #content_tabs_nav::-webkit-scrollbar,
-    #content_tabs_bar:focus-within #content_tabs_nav::-webkit-scrollbar {
+    .admin-anchor-tabs:hover::-webkit-scrollbar,
+    .admin-anchor-tabs:focus-within::-webkit-scrollbar {
         width: 0.35rem;
         height: 0.35rem;
     }
 
-    #config_tabs_nav:hover::-webkit-scrollbar-track,
-    #config_tabs_nav:focus-within::-webkit-scrollbar-track,
-    #member_tabs_nav:hover::-webkit-scrollbar-track,
-    #member_tabs_nav:focus-within::-webkit-scrollbar-track,
-    #content_tabs_bar:hover #content_tabs_nav::-webkit-scrollbar-track,
-    #content_tabs_bar:focus-within #content_tabs_nav::-webkit-scrollbar-track {
+    .admin-anchor-tabs:hover::-webkit-scrollbar-track,
+    .admin-anchor-tabs:focus-within::-webkit-scrollbar-track {
         background: transparent;
     }
 
-    #config_tabs_nav:hover::-webkit-scrollbar-thumb,
-    #config_tabs_nav:focus-within::-webkit-scrollbar-thumb,
-    #member_tabs_nav:hover::-webkit-scrollbar-thumb,
-    #member_tabs_nav:focus-within::-webkit-scrollbar-thumb,
-    #content_tabs_bar:hover #content_tabs_nav::-webkit-scrollbar-thumb,
-    #content_tabs_bar:focus-within #content_tabs_nav::-webkit-scrollbar-thumb {
+    .admin-anchor-tabs:hover::-webkit-scrollbar-thumb,
+    .admin-anchor-tabs:focus-within::-webkit-scrollbar-thumb {
         border-radius: 9999px;
         background: color-mix(in oklab, var(--color-default-500) 72%, transparent);
     }
 
-    #config_tabs_nav:hover::-webkit-scrollbar-thumb:hover,
-    #config_tabs_nav:focus-within::-webkit-scrollbar-thumb:hover,
-    #member_tabs_nav:hover::-webkit-scrollbar-thumb:hover,
-    #member_tabs_nav:focus-within::-webkit-scrollbar-thumb:hover,
-    #content_tabs_bar:hover #content_tabs_nav::-webkit-scrollbar-thumb:hover,
-    #content_tabs_bar:focus-within #content_tabs_nav::-webkit-scrollbar-thumb:hover {
+    .admin-anchor-tabs:hover::-webkit-scrollbar-thumb:hover,
+    .admin-anchor-tabs:focus-within::-webkit-scrollbar-thumb:hover {
         background: color-mix(in oklab, var(--color-default-500) 82%, transparent);
     }
 
-    #config_tabs_nav .tab-trigger-line-primary,
-    #member_tabs_nav .tab-trigger-line-primary,
-    #content_tabs_nav .tab-trigger-line-primary {
+    .admin-anchor-tabs .tab-trigger-line-primary {
         @apply shrink-0 whitespace-nowrap rounded-t-[var(--radius)] border border-transparent px-3 py-1 text-sm text-default-500;
     }
 
-    #config_tabs_nav .tab-trigger-line-primary.active,
-    #config_tabs_nav .tab-trigger-line-primary[aria-selected="true"],
-    #member_tabs_nav .tab-trigger-line-primary.active,
-    #member_tabs_nav .tab-trigger-line-primary[aria-selected="true"],
-    #content_tabs_nav .tab-trigger-line-primary.active,
-    #content_tabs_nav .tab-trigger-line-primary[aria-selected="true"] {
+    .admin-anchor-tabs .tab-trigger-line-primary.active,
+    .admin-anchor-tabs .tab-trigger-line-primary[aria-selected="true"] {
         @apply border-default-300 border-b-transparent bg-card font-semibold text-primary;
     }
 
     .admin-form-layout > section[id^="anc_"] {
         scroll-margin-top: calc(var(--admin-shell-bar-height) + var(--config-tabs-height, 3.25rem) + 0.75rem);
+    }
+
+    .admin-form-layout {
+        @apply space-y-5;
     }
 
     .admin-form-layout > .admin-form-sticky-actions {
@@ -598,6 +502,26 @@
             var(--color-body-bg) 2rem
         );
         backdrop-filter: blur(10px);
+    }
+
+    .admin-form-actions {
+        @apply flex items-center border-t border-dashed border-default-300 pt-4;
+    }
+
+    .admin-form-actions-primary {
+        @apply justify-end;
+    }
+
+    .admin-form-actions-split {
+        @apply justify-between;
+    }
+
+    .admin-captcha-panel {
+        @apply space-y-3 rounded-lg border border-default-200 bg-default-50 p-4;
+    }
+
+    .admin-captcha-title {
+        @apply text-base font-semibold;
     }
 
     .admin-form-layout > section.card {
@@ -693,6 +617,117 @@
 
     .admin-dashboard-empty {
         @apply text-center text-default-600;
+    }
+
+    .admin-file-delete-card {
+        @apply space-y-4 p-5;
+    }
+
+    .admin-file-delete-copy {
+        @apply text-sm text-default-700;
+    }
+
+    .admin-file-delete-list {
+        @apply space-y-2 text-sm text-default-800;
+    }
+
+    .admin-file-delete-result {
+        @apply text-sm;
+    }
+
+    .admin-export-intro-card {
+        @apply mb-5;
+    }
+
+    .admin-export-intro-body {
+        @apply space-y-3 text-sm leading-6 text-default-700;
+    }
+
+    .admin-export-total {
+        @apply mb-5 inline-flex items-center gap-2 rounded-lg border border-default-300 bg-card px-4 py-2 text-sm font-medium text-default-700 shadow-sm;
+    }
+
+    .admin-export-total-error {
+        @apply text-danger;
+    }
+
+    .admin-export-search-line {
+        @apply flex flex-col gap-2 lg:flex-row lg:flex-nowrap lg:items-center;
+    }
+
+    .admin-export-search-keyword {
+        @apply lg:w-72 xl:w-80;
+    }
+
+    .admin-export-select-auto {
+        @apply lg:w-auto;
+    }
+
+    .admin-export-search-options {
+        @apply shrink-0 whitespace-nowrap;
+    }
+
+    .admin-export-filter-stack {
+        @apply space-y-3;
+    }
+
+    .admin-export-custom-period {
+        @apply space-y-2;
+    }
+
+    .admin-export-filter-actions {
+        @apply flex items-center justify-end gap-2 px-0 pt-2;
+    }
+
+    .admin-export-progress {
+        @apply grid gap-5;
+    }
+
+    .admin-export-progress-desc {
+        @apply grid gap-1.5 text-sm text-default-700;
+    }
+
+    .admin-export-progress-summary {
+        @apply text-base font-semibold text-default-900;
+    }
+
+    .admin-export-progress-message {
+        @apply text-sm text-default-700;
+    }
+
+    .admin-export-progress-error {
+        @apply text-sm leading-6 text-danger;
+    }
+
+    .admin-export-progress-spinner {
+        @apply grid justify-items-center gap-3 rounded-lg border border-default-300 bg-default-50 px-4 py-5 text-center text-sm leading-6 text-default-700;
+    }
+
+    .admin-export-progress-spinner-icon {
+        @apply h-8 w-8 rounded-full border-4 border-default-300 border-t-primary;
+        animation: admin-export-spin 0.8s linear infinite;
+    }
+
+    .admin-export-progress-loading {
+        @apply m-0;
+    }
+
+    .admin-export-progress-box {
+        @apply grid gap-3;
+    }
+
+    .admin-export-progress-downloads {
+        @apply flex flex-wrap gap-2;
+    }
+
+    .admin-export-progress-downloads p {
+        @apply basis-full text-sm text-default-700;
+    }
+
+    @keyframes admin-export-spin {
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     .member-summary,
@@ -797,56 +832,57 @@
         @apply w-full overflow-auto;
     }
 
-    #fmemberlist .table {
+    .admin-member-list-form .table {
         width: 100%;
         border-radius: 0 !important;
         border-collapse: collapse;
     }
 
-    #fmemberlist .table thead th {
+    .admin-member-list-form .table thead th {
         @apply border-b border-default-300 bg-default-100 px-2.5 py-3 text-left align-middle text-xs font-semibold text-default-700;
     }
 
-    #fmemberlist .table tbody td {
+    .admin-member-list-form .table tbody td {
         @apply border-b border-default-300 px-2.5 py-3 text-sm align-middle;
     }
 
-    #fmemberlist .table tbody tr:last-child td {
+    .admin-member-list-form .table tbody tr:last-child td {
         @apply border-b-0;
     }
 
-    #fmemberlist .table :is(th, td):first-child {
+    .admin-member-list-form .table :is(th, td):first-child {
         @apply pl-4;
     }
 
-    #fmemberlist .table :is(th, td):last-child {
+    .admin-member-list-form .table :is(th, td):last-child {
         @apply pr-4;
     }
 
-    #fmemberlist .table thead th.text-end,
-    #fmemberlist .table tbody td.text-end {
+    .admin-member-list-form .table thead th.text-end,
+    .admin-member-list-form .table tbody td.text-end {
         @apply text-right;
     }
 
-    #fmemberlist .member-cell-fixed,
-    #fmemberlist .member-cell-manage {
+    .admin-member-list-form .member-cell-fixed,
+    .admin-member-list-form .member-cell-manage {
         white-space: nowrap;
     }
 
-    #fmemberlist .member-cell-manage {
+    .admin-member-list-form .member-cell-manage {
         min-width: 9.75rem;
+        text-align: right;
     }
 
-    #fmemberlist .member-cell-email {
+    .admin-member-list-form .member-cell-email {
         white-space: normal;
         word-break: break-all;
     }
 
-    #fmemberlist .sv_wrap {
+    .admin-member-list-form .sv_wrap {
         @apply static inline-flex items-center;
     }
 
-    #fmemberlist .sv_member {
+    .admin-member-list-form .sv_member {
         @apply inline-flex items-center border-0 bg-transparent p-0 text-left align-baseline shadow-none;
         color: inherit;
         font: inherit;
@@ -854,12 +890,12 @@
         cursor: pointer;
     }
 
-    #fmemberlist .sv_member:hover,
-    #fmemberlist .sv_member:focus {
+    .admin-member-list-form .sv_member:hover,
+    .admin-member-list-form .sv_member:focus {
         @apply text-primary underline outline-none;
     }
 
-    #fmemberlist .sv {
+    .admin-member-list-form .sv {
         z-index: 140;
         min-width: 8.5rem;
         width: max-content;
@@ -867,44 +903,44 @@
         white-space: nowrap;
     }
 
-    #fmemberlist .hs-dropdown.hs-dropdown-open .hs-dropdown-menu,
-    #fmemberlist .hs-dropdown.open .hs-dropdown-menu {
+    .admin-member-list-form .hs-dropdown.hs-dropdown-open .hs-dropdown-menu,
+    .admin-member-list-form .hs-dropdown.open .hs-dropdown-menu {
         @apply block opacity-100;
     }
 
-    #fmemberlist .member-level {
+    .admin-member-list-form .member-level {
         @apply font-semibold text-default-700;
     }
 
-    #fmemberlist .member-status {
+    .admin-member-list-form .member-status {
         @apply inline-flex items-center justify-center whitespace-nowrap px-[0.7rem] py-[0.35rem] text-xs font-semibold leading-none;
         border-radius: 999px;
     }
 
-    #fmemberlist .member-status.is-normal {
+    .admin-member-list-form .member-status.is-normal {
         background: color-mix(in oklab, var(--color-success) 14%, white);
         color: var(--color-success-hover);
     }
 
-    #fmemberlist .member-status.is-blocked {
+    .admin-member-list-form .member-status.is-blocked {
         background: color-mix(in oklab, var(--color-warning) 14%, white);
         color: var(--color-warning-hover);
     }
 
-    #fmemberlist .member-status.is-left {
+    .admin-member-list-form .member-status.is-left {
         background: color-mix(in oklab, var(--color-danger) 12%, white);
         color: var(--color-danger-hover);
     }
 
-    #fmemberlist .member-manage {
+    .admin-member-list-form .member-manage {
         @apply flex flex-nowrap items-center justify-end gap-1.5 whitespace-nowrap;
     }
 
-    #fmemberlist .member-manage .btn {
+    .admin-member-list-form .member-manage .btn {
         flex: 0 0 auto;
     }
 
-    #fmemberlist .member-manage form {
+    .admin-member-list-form .member-manage form {
         @apply m-0;
     }
 
@@ -913,105 +949,105 @@
         background: color-mix(in oklab, var(--color-default-50) 70%, white);
     }
 
-    #ft {
+    .admin-footer {
         @apply px-4 pb-6 pt-2 text-xs text-default-500 lg:px-8;
     }
 
-    #ft p {
+    .admin-footer-inner {
         @apply flex flex-wrap items-center justify-between gap-3 rounded-xl border border-default-300 bg-card px-4 py-3;
     }
 
-    .scroll_top {
+    .admin-footer-scroll-top {
         @apply inline-flex items-center rounded-lg border border-default-300 bg-default-100 px-3 py-1.5 text-xs font-medium text-default-600 transition hover:bg-default-200;
     }
 
-    #adminPopupContainer #popupOverlay {
+    .admin-popup-overlay {
         @apply fixed inset-0 z-50 bg-slate-900/45 p-4;
     }
 
-    #adminPopupContainer #popupOverlay > div {
+    .admin-popup-dialog {
         @apply mx-auto mt-12 w-full max-w-2xl rounded-2xl border border-default-300 bg-card shadow-xl;
     }
 
-    #adminPopupContainer #popupOverlay > div > div:first-child {
+    .admin-popup-header {
         @apply flex items-center justify-between border-b border-default-300 px-5 py-4;
     }
 
-    #adminPopupContainer #popupTitle {
+    .admin-popup-title {
         @apply text-lg font-semibold text-slate-900 dark:text-slate-100;
     }
 
-    #adminPopupContainer .popup-close-btn {
+    .admin-popup-close {
         @apply inline-flex items-center rounded-lg border border-default-300 bg-default-100 px-3 py-1.5 text-xs text-default-600 hover:bg-default-200;
     }
 
-    #adminPopupContainer #popupBody {
+    .admin-popup-body {
         @apply px-5 py-4;
     }
 
-    #adminPopupContainer #popupFooter {
+    .admin-popup-footer {
         @apply border-t border-default-300 px-5 py-4;
     }
 
-    body.admin-sidebar-condensed #hd {
+    body.admin-sidebar-condensed .admin-sidebar-frame {
         width: var(--admin-sidebar-collapsed-width);
     }
 
-    body.admin-sidebar-condensed #wrapper {
+    body.admin-sidebar-condensed .admin-wrapper {
         padding-left: var(--admin-sidebar-collapsed-width);
     }
 
-    body.admin-sidebar-condensed #gnb > h2 {
+    body.admin-sidebar-condensed .admin-sidebar-brand {
         @apply relative justify-center px-3;
     }
 
-    body.admin-sidebar-condensed #gnb > h2 > a {
+    body.admin-sidebar-condensed .admin-sidebar-brand-link {
         @apply justify-center;
     }
 
-    body.admin-sidebar-condensed #gnb #btn_gnb {
+    body.admin-sidebar-condensed .admin-sidebar-toggle {
         @apply hidden;
     }
 
-    body.admin-sidebar-condensed #gnb > h2 > a > span:last-child,
-    body.admin-sidebar-condensed #gnb .gnb_label,
-    body.admin-sidebar-condensed #gnb .admin-nav-trigger-label,
-    body.admin-sidebar-condensed #gnb .gnb_profile_meta,
-    body.admin-sidebar-condensed #gnb .gnb_profile_logout {
+    body.admin-sidebar-condensed .admin-sidebar-brand-name,
+    body.admin-sidebar-condensed .gnb_label,
+    body.admin-sidebar-condensed .admin-nav-trigger-label,
+    body.admin-sidebar-condensed .admin-sidebar-profile-meta,
+    body.admin-sidebar-condensed .admin-sidebar-profile-logout {
         @apply hidden;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-item > .admin-nav-trigger,
-    body.admin-sidebar-condensed #gnb .gnb_profile {
+    body.admin-sidebar-condensed .admin-nav-item > .admin-nav-trigger,
+    body.admin-sidebar-condensed .admin-sidebar-profile {
         @apply justify-center;
     }
 
-    body.admin-sidebar-condensed #gnb .gnb_profile {
+    body.admin-sidebar-condensed .admin-sidebar-profile {
         @apply border-t-0 px-0 pb-4 pt-2;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-caret {
+    body.admin-sidebar-condensed .admin-nav-caret {
         @apply hidden;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-item {
+    body.admin-sidebar-condensed .admin-nav-item {
         position: relative;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-trigger-main {
+    body.admin-sidebar-condensed .admin-nav-trigger-main {
         @apply w-full justify-center;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-icon {
+    body.admin-sidebar-condensed .admin-nav-icon {
         color: var(--color-default-600);
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-item:hover > .admin-nav-trigger .admin-nav-icon,
-    body.admin-sidebar-condensed #gnb .admin-nav-item:focus-within > .admin-nav-trigger .admin-nav-icon {
+    body.admin-sidebar-condensed .admin-nav-item:hover > .admin-nav-trigger .admin-nav-icon,
+    body.admin-sidebar-condensed .admin-nav-item:focus-within > .admin-nav-trigger .admin-nav-icon {
         color: var(--color-primary);
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-panel {
+    body.admin-sidebar-condensed .admin-nav-panel {
         display: block !important;
         position: absolute;
         left: calc(100% + 0.5rem);
@@ -1027,38 +1063,38 @@
         transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-item:hover > .admin-nav-panel,
-    body.admin-sidebar-condensed #gnb .admin-nav-item:focus-within > .admin-nav-panel {
+    body.admin-sidebar-condensed .admin-nav-item:hover > .admin-nav-panel,
+    body.admin-sidebar-condensed .admin-nav-item:focus-within > .admin-nav-panel {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
         transform: translateX(0);
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-panel > .admin-nav-sub-list {
+    body.admin-sidebar-condensed .admin-nav-panel > .admin-nav-sub-list {
         @apply rounded-xl border border-default-300 bg-card p-3 shadow-sm;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-sub-item::before,
-    body.admin-sidebar-condensed #gnb .admin-nav-sub-item::after {
+    body.admin-sidebar-condensed .admin-nav-sub-item::before,
+    body.admin-sidebar-condensed .admin-nav-sub-item::after {
         display: none;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-sub-item > a {
+    body.admin-sidebar-condensed .admin-nav-sub-item > a {
         @apply rounded-lg px-3 py-1.5;
     }
 
-    body.admin-sidebar-condensed #gnb .gnb_menu_scroll_wrap,
-    body.admin-sidebar-condensed #gnb .gnb_menu_scroll {
+    body.admin-sidebar-condensed .admin-sidebar-scroll-wrap,
+    body.admin-sidebar-condensed .admin-sidebar-scroll {
         overflow: visible;
     }
 
-    body.admin-sidebar-condensed #gnb .gnb_scrollbar {
+    body.admin-sidebar-condensed .admin-sidebar-scrollbar {
         display: none;
     }
 
     @media (min-width: 1024px) {
-        body.admin-sidebar-condensed #btn_gnb_mobile {
+        body.admin-sidebar-condensed .admin-mobile-menu-button {
             @apply inline-flex;
         }
     }
@@ -1073,19 +1109,19 @@
             justify-content: center;
         }
 
-        #hd {
+        .admin-sidebar-frame {
             width: var(--admin-sidebar-width);
         }
 
-        body:not(.admin-sidebar-open) #hd {
+        body:not(.admin-sidebar-open) .admin-sidebar-frame {
             pointer-events: none;
         }
 
-        body.admin-sidebar-open #hd {
+        body.admin-sidebar-open .admin-sidebar-frame {
             pointer-events: auto;
         }
 
-        #gnb {
+        .admin-sidebar {
             position: fixed;
             inset: 0 auto 0 0;
             width: var(--admin-sidebar-width);
@@ -1095,21 +1131,21 @@
             @apply shadow-xl;
         }
 
-        body.admin-sidebar-open #gnb {
+        body.admin-sidebar-open .admin-sidebar {
             transform: translateX(0);
         }
 
-        #wrapper,
-        body.admin-sidebar-condensed #wrapper {
+        .admin-wrapper,
+        body.admin-sidebar-condensed .admin-wrapper {
             padding-left: 0;
         }
 
-        #adminSidebarBackdrop {
+        .admin-sidebar-backdrop {
             z-index: 40;
             pointer-events: auto;
         }
 
-        #gnb .gnb_scrollbar {
+        .admin-sidebar-scrollbar {
             display: none;
         }
     }

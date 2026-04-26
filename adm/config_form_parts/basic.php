@@ -20,7 +20,7 @@
                 <div class="af-field">
                     <select id="cf_admin" name="cf_admin" required class="form-select">
                         <?php foreach ($config_basic_view['admin_member_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -122,7 +122,7 @@
                     <p class="hint-text">kcaptcha 사용시 <?php echo $config_basic_view['cf_captcha_mp3_hint']; ?> 밑의 음성 폴더를 선택합니다.</p>
                     <select name="cf_captcha_mp3" id="cf_captcha_mp3" required class="form-select">
                         <?php foreach ($config_basic_view['cf_captcha_mp3_options'] as $option) { ?>
-                            <option value="<?php echo $option['value']; ?>"<?php echo $option['selected'] ? ' selected' : ''; ?>><?php echo $option['label']; ?></option>
+                            <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
                         <?php } ?>
                     </select>
                 </div>

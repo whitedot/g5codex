@@ -114,29 +114,29 @@ window.AdminMemberExport = {
 
         const showDownloadPopup = () => {
             const bodyHTML = `
-                <div class="excel-download-progress">
-                    <div class="progress-desc">
-                        <p class="progress-summary">총 <strong>0</strong>개 파일로 분할됩니다</p>
-                        <p class="progress-message"><strong>(0 / 0)</strong> 파일 다운로드 중</p>
-                        <p class="progress-error"></p>
+                <div class="admin-export-progress">
+                    <div class="admin-export-progress-desc">
+                        <p class="admin-export-progress-summary">총 <strong>0</strong>개 파일로 분할됩니다</p>
+                        <p class="admin-export-progress-message"><strong>(0 / 0)</strong> 파일 다운로드 중</p>
+                        <p class="admin-export-progress-error"></p>
                     </div>
-                    <div class="progress-spinner">
-                        <div class="spinner"></div>
-                        <p class="loading-message">
+                    <div class="admin-export-progress-spinner">
+                        <div class="admin-export-progress-spinner-icon"></div>
+                        <p class="admin-export-progress-loading">
                             엑셀 파일을 생성 중입니다. 잠시만 기다려주세요.<br>
                             현재 데이터 기준으로 <strong id="estimatedTimeText"></strong> 정도 소요될 수 있습니다.<br>
                             <strong>페이지를 벗어나거나 닫으면 다운로드가 중단</strong>되니, 작업 완료까지 기다려 주세요.
                         </p>
                     </div>
-                    <div class="progress-box">
-                        <div class="progress-download-box"></div>
+                    <div class="admin-export-progress-box">
+                        <div class="admin-export-progress-downloads"></div>
                     </div>
                 </div>
             `;
 
             PopupManager.render(config.popupProgressTitle, bodyHTML, '', { disableOutsideClose: true });
 
-            const closeButton = document.querySelector('.popup-close-btn');
+            const closeButton = document.querySelector('.admin-popup-close');
             if (closeButton) {
                 closeButton.removeAttribute('onclick');
                 closeButton.addEventListener('click', handlePopupCloseWithConfirm);
@@ -147,12 +147,12 @@ window.AdminMemberExport = {
             const data = JSON.parse(event.data);
             const { status, downloadType, message, total, totalChunks, currentChunk, zipFile, files, filePath } = data;
             const titleEl = document.getElementById('popupTitle');
-            const summaryEl = document.querySelector('.progress-summary');
-            const messageEl = document.querySelector('.progress-message');
-            const spinnerEl = document.querySelector('.progress-spinner');
-            const resultEl = document.querySelector('.loading-message');
-            const downloadBoxEl = document.querySelector('.progress-download-box');
-            const errorEl = document.querySelector('.progress-error');
+            const summaryEl = document.querySelector('.admin-export-progress-summary');
+            const messageEl = document.querySelector('.admin-export-progress-message');
+            const spinnerEl = document.querySelector('.admin-export-progress-spinner');
+            const resultEl = document.querySelector('.admin-export-progress-loading');
+            const downloadBoxEl = document.querySelector('.admin-export-progress-downloads');
+            const errorEl = document.querySelector('.admin-export-progress-error');
 
             if (!summaryEl || !messageEl || !downloadBoxEl || !errorEl) {
                 return;
@@ -232,11 +232,11 @@ window.AdminMemberExport = {
 
         const handleDownloadError = event => {
             const errorMessage = event?.message || event?.data || '알 수 없는 오류가 발생했습니다.';
-            const summaryEl = document.querySelector('.progress-summary');
-            const messageEl = document.querySelector('.progress-message');
-            const errorEl = document.querySelector('.progress-error');
-            const loadingMessage = document.querySelector('.loading-message');
-            const spinnerEl = document.querySelector('.progress-spinner');
+            const summaryEl = document.querySelector('.admin-export-progress-summary');
+            const messageEl = document.querySelector('.admin-export-progress-message');
+            const errorEl = document.querySelector('.admin-export-progress-error');
+            const loadingMessage = document.querySelector('.admin-export-progress-loading');
+            const spinnerEl = document.querySelector('.admin-export-progress-spinner');
 
             if (summaryEl) {
                 summaryEl.innerHTML = config.downloadFailedSummary;
