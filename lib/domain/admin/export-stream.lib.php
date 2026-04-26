@@ -1,0 +1,201 @@
+<?php
+if (!defined('_GNUBOARD_')) {
+    exit;
+}
+
+function admin_prepare_member_export_runtime()
+{
+    ini_set('memory_limit', '-1');
+    session_write_close();
+}
+
+function admin_read_member_export_stream_request(array $query)
+{
+    return array(
+        'mode' => isset($query['mode']) ? trim((string) $query['mode']) : '',
+        'params' => admin_read_member_export_params($query),
+    );
+}
+
+function admin_validate_member_export_stream_request(array $request, array $runtime)
+{
+    if (empty($request['params']) || !is_array($request['params'])) {
+        return '데이터가 올바르게 전달되지 않아 작업에 실패하였습니다.';
+    }
+
+    if ($request['mode'] !== 'start') {
+        return '잘못된 요청 입니다.';
+    }
+
+    if (empty($runtime['environment_ready'])) {
+        return isset($runtime['environment_error']) && $runtime['environment_error'] !== ''
+            ? $runtime['environment_error']
+            : '회원 엑셀 내보내기 실행 환경이 준비되지 않았습니다.';
+    }
+
+    return '';
+}
+
+function admin_fail_member_export_stream(array $params, $message, array $runtime)
+{
+    admin_send_member_export_progress('error', $message);
+    admin_write_member_export_log($params, array(
+        'success' => false,
+        'error' => $message,
+    ), $runtime['actor_id']);
+}
+
+function admin_complete_member_export_stream_request(array $query, $auth, $sub_menu, array $runtime)
+{
+    auth_check_menu($auth, $sub_menu, 'w');
+
+    admin_prepare_member_export_runtime();
+
+    $request = admin_read_member_export_stream_request($query);
+    $params = $request['params'];
+
+    admin_delete_member_export_files();
+    admin_set_member_export_sse_headers();
+
+    $stream_error = admin_validate_member_export_stream_request($request, $runtime);
+    if ($stream_error !== '') {
+        admin_fail_member_export_stream(is_array($params) ? $params : array(), $stream_error, $runtime);
+        exit;
+    }
+
+    return array(
+        'request' => $request,
+        'params' => $params,
+        'runtime' => $runtime,
+    );
+}
+
+function admin_build_member_export_stream_page_request(array $query, array $tables, array $member_row = array())
+{
+    return array(
+        'query' => $query,
+        'runtime' => admin_build_member_export_runtime_context($tables, $member_row),
+    );
+}
+
+function admin_complete_member_export_stream_page(array $page_request, $auth, $sub_menu)
+{
+    check_demo();
+
+    $stream_context = admin_complete_member_export_stream_request($page_request['query'], $auth, $sub_menu, $page_request['runtime']);
+    $params = $stream_context['params'];
+    $runtime = $stream_context['runtime'];
+
+    try {
+        admin_run_member_export($params, $runtime);
+    } catch (Exception $e) {
+        error_log('[Admin Member Export Error] ' . $e->getMessage());
+        admin_send_member_export_progress('error', $e->getMessage());
+        admin_write_member_export_log($params, array(
+            'success' => false,
+            'error' => $e->getMessage(),
+        ), $runtime['actor_id']);
+    }
+}
+
+function admin_run_member_export(array $params, array $runtime)
+{
+    $total = admin_count_member_export_members($params, $runtime['member_table']);
+    $pages = 1;
+
+    if ($total > ADMIN_MEMBER_EXPORT_MAX_SIZE) {
+        throw new Exception('엑셀 다운로드 가능 범위(최대 ' . number_format(ADMIN_MEMBER_EXPORT_MAX_SIZE) . '건)를 초과했습니다.<br>조건을 추가로 설정하신 후 다시 시도해 주세요.');
+    }
+
+    if ($total <= 0) {
+        throw new Exception('조회된 데이터가 없어 엑셀 파일을 생성할 수 없습니다.<br>조건을 추가로 설정하신 후 다시 시도해 주세요.');
+    }
+
+    $file_name = 'member_' . ADMIN_MEMBER_EXPORT_BASE_DATE;
+    $file_list = array();
+    $zip_file_name = '';
+
+    if ($total > ADMIN_MEMBER_EXPORT_PAGE_SIZE) {
+        $pages = (int) ceil($total / ADMIN_MEMBER_EXPORT_PAGE_SIZE);
+        admin_send_member_export_progress('progress', '', 2, $total, 0, $pages, 0);
+
+        for ($i = 1; $i <= $pages; $i++) {
+            $params['page'] = $i;
+            admin_send_member_export_progress('progress', '', 2, $total, ($pages == $i ? $total : $i * ADMIN_MEMBER_EXPORT_PAGE_SIZE), $pages, $i);
+
+            try {
+                $file_list[] = admin_create_member_export_xlsx($params, $file_name, $i, $runtime['member_table']);
+            } catch (Exception $e) {
+                throw new Exception('총 ' . $pages . '개 중 ' . $i . '번째 파일을 생성하지 못했습니다<br>' . $e->getMessage());
+            }
+        }
+
+        if (count($file_list) > 1) {
+            admin_send_member_export_progress('zipping', '', 2, $total, $total, $pages, $i);
+            $zip_result = admin_create_member_export_zip($file_list, $file_name);
+
+            if ($zip_result['error']) {
+                admin_write_member_export_log($params, array('success' => false, 'error' => $zip_result['error']), $runtime['actor_id']);
+                admin_send_member_export_progress('zippingError', $zip_result['error']);
+            }
+
+            if ($zip_result && $zip_result['result']) {
+                admin_delete_member_export_files($file_list);
+                $zip_file_name = $zip_result['zipFile'];
+            }
+        }
+    } else {
+        admin_send_member_export_progress('progress', '', 1, $total, 0);
+        admin_send_member_export_progress('progress', '', 1, $total, $total / 2);
+        $file_list[] = admin_create_member_export_xlsx($params, $file_name, 0, $runtime['member_table']);
+        admin_send_member_export_progress('progress', '', 1, $total, $total);
+    }
+
+    admin_write_member_export_log($params, array(
+        'success' => true,
+        'total' => $total,
+        'files' => $file_list,
+        'zip' => $zip_file_name !== '' ? $zip_file_name : null,
+    ), $runtime['actor_id']);
+    admin_send_member_export_progress('done', '', 2, $total, $total, $pages, $pages, $file_list, $zip_file_name);
+}
+
+function admin_send_member_export_progress($status, $message = '', $downloadType = 1, $total = 1, $current = 1, $totalChunks = 1, $currentChunk = 1, $files = array(), $zipFile = '')
+{
+    if (connection_aborted()) {
+        return;
+    }
+
+    $data = array(
+        'status' => $status,
+        'message' => $message,
+        'downloadType' => $downloadType,
+        'total' => $total,
+        'current' => $current,
+        'totalChunks' => $totalChunks,
+        'currentChunk' => $currentChunk,
+        'files' => $files,
+        'zipFile' => $zipFile,
+        'filePath' => G5_DATA_URL . '/' . ADMIN_MEMBER_EXPORT_BASE_DIR . '/' . ADMIN_MEMBER_EXPORT_BASE_DATE,
+    );
+
+    echo 'data: ' . json_encode($data, JSON_UNESCAPED_UNICODE) . "\n\n";
+
+    if (ob_get_level()) {
+        ob_end_flush();
+    }
+    flush();
+}
+
+function admin_set_member_export_sse_headers()
+{
+    header('Content-Type: text/event-stream');
+    header('Cache-Control: no-cache');
+    header('Connection: keep-alive');
+    header('X-Accel-Buffering: no');
+
+    if (ob_get_level()) {
+        ob_end_flush();
+    }
+    ob_implicit_flush(true);
+}
