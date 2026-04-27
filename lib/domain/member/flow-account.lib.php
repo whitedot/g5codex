@@ -76,6 +76,10 @@ function member_prepare_cert_refresh_update(array $request, array $member, array
 
     $md5_cert_no = $certification_session['cert_no'];
     $cert_type = $certification_session['cert_type'];
+    if ($cert_type === 'simple') {
+        alert('본인인증 갱신에는 간편인증을 사용할 수 없습니다. 휴대폰 본인확인을 이용해 주십시오.');
+    }
+
     $update_fields = build_member_certify_fields('', $request['mb_name'], $mb_hp, $cert_type, $md5_cert_no);
 
     return array(

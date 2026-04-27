@@ -95,6 +95,9 @@ function member_validate_register_request($w, array &$request, array $member, ar
             if ($request['cert_no'] !== $certification_session['cert_no'] || !$certification_session['cert_no']) {
                 alert("회원가입을 위해서는 본인확인을 해주셔야 합니다.");
             }
+            if ($certification_session['cert_type'] === 'simple') {
+                alert('회원가입에는 간편인증을 사용할 수 없습니다. 휴대폰 본인확인을 이용해 주십시오.');
+            }
         }
 
         return array('old_email' => '');

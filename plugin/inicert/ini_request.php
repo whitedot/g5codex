@@ -44,8 +44,7 @@ if($flgFixedUser == 'Y') {
 
 switch($_GET['pageType']) {		
     case "register":
-        $resultPage = "/ini_result.php";
-        break;
+        alert_close('회원가입과 본인인증 갱신에는 간편인증을 사용할 수 없습니다.');
     case "find":
         $resultPage = "/ini_find_result.php";
         break;

@@ -11,8 +11,11 @@ function member_build_member_certify_client_config(array $config, $page_type)
     $hp_cert_url = '';
     $hp_cert_type = '';
     $hp_cert_error_message = '';
+    $allow_simple_cert = ($page_type === 'find');
+    $use_simple_cert = ($allow_simple_cert && !empty($config['cf_cert_simple']));
+    $use_hp_cert = !empty($config['cf_cert_hp']);
 
-    if (!empty($config['cf_cert_hp'])) {
+    if ($use_hp_cert) {
         switch ($config['cf_cert_hp']) {
             case 'kcp':
                 $hp_cert_url = G5_KCPCERT_URL . '/kcpcert_form.php';
@@ -24,12 +27,18 @@ function member_build_member_certify_client_config(array $config, $page_type)
         }
     }
 
+    $show_certify_options = $config['cf_cert_use'] != 0
+        && (
+            ($page_type === 'find' && $config['cf_cert_find'] != 0 && ($use_simple_cert || $use_hp_cert))
+            || ($page_type !== 'find' && $use_hp_cert)
+        );
+
     return array(
-        'use_certify_js' => ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_hp'])),
+        'use_certify_js' => ($config['cf_cert_use'] && ($use_simple_cert || $use_hp_cert)),
         'certify_script_url' => G5_JS_URL . '/certify.js?v=' . G5_JS_VER,
-        'show_certify_options' => ($config['cf_cert_use'] != 0 && $page_type !== 'find') || ($config['cf_cert_use'] != 0 && $config['cf_cert_find'] != 0),
-        'show_simple_cert_button' => !empty($config['cf_cert_simple']),
-        'show_hp_cert_button' => !empty($config['cf_cert_hp']),
+        'show_certify_options' => $show_certify_options,
+        'show_simple_cert_button' => $use_simple_cert,
+        'show_hp_cert_button' => $use_hp_cert,
         'simple_cert_url_json' => member_json_string(G5_INICERT_URL . '/ini_request.php'),
         'hp_cert_url_json' => member_json_string($hp_cert_url),
         'hp_cert_type_json' => member_json_string($hp_cert_type),

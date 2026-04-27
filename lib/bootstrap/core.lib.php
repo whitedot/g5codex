@@ -86,8 +86,7 @@ function g5_render_install_required()
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>오류! <?php echo G5_VERSION ?> 설치하기</title>
-<link rel="stylesheet" href="install/install.css">
+<title>오류! 데이터베이스 설정 필요</title>
 </head>
 <body>
 
@@ -101,10 +100,7 @@ function g5_render_install_required()
     <ul>
         <li><strong><?php echo G5_DATA_DIR . '/' . G5_DBCONFIG_FILE ?></strong></li>
     </ul>
-    <p>그누보드 설치 후 다시 실행하시기 바랍니다.</p>
-    <div class="inner_btn">
-        <a href="<?php echo G5_URL; ?>/install/"><?php echo G5_VERSION ?> 설치하기</a>
-    </div>
+    <p>배포 환경의 DB 설정 파일을 준비한 뒤 다시 실행하십시오.</p>
 </div>
 <div id="ins_ft">
     <strong>GNUBOARD5</strong>

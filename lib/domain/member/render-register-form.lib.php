@@ -13,8 +13,9 @@ class MemberRegisterFormViewDataFactory
         $hp_cert_url = '';
         $hp_cert_type = '';
         $hp_cert_error_message = '';
+        $use_hp_cert = !empty($config['cf_cert_hp']);
 
-        if (!empty($config['cf_cert_hp'])) {
+        if ($use_hp_cert) {
             switch ($config['cf_cert_hp']) {
                 case 'kcp':
                     $hp_cert_url = G5_KCPCERT_URL . '/kcpcert_form.php';
@@ -27,11 +28,11 @@ class MemberRegisterFormViewDataFactory
         }
 
         return array(
-            'use_certify_js' => ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_hp'])),
+            'use_certify_js' => ($config['cf_cert_use'] && $use_hp_cert),
             'certify_script_url' => G5_JS_URL . '/certify.js?v=' . G5_JS_VER,
-            'show_certify_section' => !empty($config['cf_cert_use']),
-            'show_simple_cert_button' => !empty($config['cf_cert_simple']),
-            'show_hp_cert_button' => !empty($config['cf_cert_hp']),
+            'show_certify_section' => (!empty($config['cf_cert_use']) && $use_hp_cert),
+            'show_simple_cert_button' => false,
+            'show_hp_cert_button' => $use_hp_cert,
             'simple_cert_url_json' => member_json_string(G5_INICERT_URL . '/ini_request.php'),
             'hp_cert_url_json' => member_json_string($hp_cert_url),
             'hp_cert_type_json' => member_json_string($hp_cert_type),
@@ -49,8 +50,9 @@ class MemberRegisterFormViewDataFactory
         $is_update = ($w === 'u');
         $email_certify_help_text = '';
         $certify_config = self::buildCertifyConfig($config);
-        $show_hp_field = ($config['cf_use_hp'] || ($config['cf_cert_use'] && ($config['cf_cert_hp'] || $config['cf_cert_simple'])));
-        $show_old_hp_field = ($config['cf_cert_use'] && ($config['cf_cert_hp'] || $config['cf_cert_simple']));
+        $register_cert_hp_enabled = ($config['cf_cert_use'] && $config['cf_cert_hp']);
+        $show_hp_field = ($config['cf_use_hp'] || $register_cert_hp_enabled);
+        $show_old_hp_field = $register_cert_hp_enabled;
         $show_open_checkbox = (!isset($member['mb_open_date']) || empty($member['mb_open_date']) || $member['mb_open_date'] <= date("Y-m-d", G5_SERVER_TIME - ($config['cf_open_modify'] * 86400)));
         $open_locked_until_text = date(
             "Y년 m월 j일",
@@ -99,8 +101,8 @@ class MemberRegisterFormViewDataFactory
             'required' => $is_create ? 'required' : '',
             'readonly' => $is_update ? 'readonly' : '',
             'name_readonly' => ($is_update || ($config['cf_cert_use'] && $config['cf_cert_req'])) ? 'readonly' : '',
-            'hp_required' => ($config['cf_req_hp'] || (($config['cf_cert_use'] && $config['cf_cert_req']) && ($config['cf_cert_hp'] || $config['cf_cert_simple']))) ? 'required' : '',
-            'hp_readonly' => (($config['cf_cert_use'] && $config['cf_cert_req']) && ($config['cf_cert_hp'] || $config['cf_cert_simple'])) ? 'readonly' : '',
+            'hp_required' => ($config['cf_req_hp'] || (($config['cf_cert_use'] && $config['cf_cert_req']) && $config['cf_cert_hp'])) ? 'required' : '',
+            'hp_readonly' => (($config['cf_cert_use'] && $config['cf_cert_req']) && $config['cf_cert_hp']) ? 'readonly' : '',
             'show_hp_field' => $show_hp_field,
             'show_old_hp_field' => $show_old_hp_field,
             'agree' => isset($request['agree']) ? (string) $request['agree'] : '',
@@ -108,7 +110,7 @@ class MemberRegisterFormViewDataFactory
             'email_certify_help_text' => $email_certify_help_text,
             'show_email_certify_help' => !empty($config['cf_use_email_certify']),
             'desc_name_text' => !empty($config['cf_cert_use']) ? ' 본인확인 시 자동입력' : '',
-            'desc_phone_text' => (!empty($config['cf_cert_use']) && ($config['cf_cert_simple'] || $config['cf_cert_hp'])) ? ' 본인확인 시 자동입력' : '',
+            'desc_phone_text' => (!empty($config['cf_cert_use']) && $config['cf_cert_hp']) ? ' 본인확인 시 자동입력' : '',
             'show_certify_required_text' => !empty($config['cf_cert_use']),
             'show_certify_status' => ($certify_status_text !== ''),
             'certify_status_text' => $certify_status_text,
@@ -134,7 +136,7 @@ class MemberRegisterFormViewDataFactory
             'show_leave_link' => $is_update,
             'cancel_url' => G5_URL,
             'leave_url' => G5_MEMBER_URL . '/member_confirm.php?url=member_leave.php',
-            'require_certification_on_submit' => ($is_create && $config['cf_cert_use'] && $config['cf_cert_req']),
+            'require_certification_on_submit' => ($is_create && $config['cf_cert_use'] && $config['cf_cert_req'] && $config['cf_cert_hp']),
             'require_hp_validation_on_submit' => (($config['cf_use_hp'] || $config['cf_cert_hp']) && $config['cf_req_hp']),
             'show_hidden_mb_sex' => isset($member['mb_sex']),
             'hidden_mb_sex_value' => isset($member['mb_sex']) ? $member['mb_sex'] : '',

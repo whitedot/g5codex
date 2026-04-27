@@ -9,6 +9,19 @@ define('_GNUBOARD_', true);
 
 include_once($g5_path['path'].'/version.php');   // 설정 파일
 
+$g5_runtime_config_file = $g5_path['path'].'/config.runtime.php';
+$g5_runtime_config = is_file($g5_runtime_config_file) ? include $g5_runtime_config_file : array();
+if (!is_array($g5_runtime_config)) {
+    $g5_runtime_config = array();
+}
+
+function g5_runtime_config_value($key, $default)
+{
+    global $g5_runtime_config;
+
+    return array_key_exists($key, $g5_runtime_config) ? $g5_runtime_config[$key] : $default;
+}
+
 // 기본 시간대 설정
 date_default_timezone_set("Asia/Seoul");
 
@@ -23,11 +36,11 @@ date_default_timezone_set("Asia/Seoul");
 보안서버주소가 없다면 공란으로 두시면 되며 보안서버주소 뒤에 / 는 붙이지 않습니다.
 입력 예) https://www.domain.com:443/gnuboard5
 */
-define('G5_DOMAIN', '');
-define('G5_HTTPS_DOMAIN', '');
+define('G5_DOMAIN', g5_runtime_config_value('domain', ''));
+define('G5_HTTPS_DOMAIN', g5_runtime_config_value('https_domain', ''));
 
-define('G5_DEBUG', false);
-define('G5_COLLECT_QUERY', false);
+define('G5_DEBUG', (bool) g5_runtime_config_value('debug', false));
+define('G5_COLLECT_QUERY', (bool) g5_runtime_config_value('collect_query', false));
 define('G5_MEMBER_ONLY', true);
 define('G5_ADMIN_PAGING_PAGES', 10);
 
@@ -35,20 +48,20 @@ define('G5_ADMIN_PAGING_PAGES', 10);
 // DB에 테이블 생성 시 테이블의 기본 스토리지 엔진을 설정할 수 있습니다.
 // InnoDB 또는 MyISAM 으로 설정 가능합니다.
 // 빈값으로 두면 DB 버전이나 호스팅사 정책의 기본값에 따라 설정됩니다.
-define('G5_DB_ENGINE', '');
+define('G5_DB_ENGINE', g5_runtime_config_value('db_engine', ''));
 
 // Set Database table default Charset
 // utf8, utf8mb4 등 지정 가능 기본값은 utf8, 설치전에 utf8mb4 으로 수정 시 모든 테이블에 이모지 입력이 가능합니다.
 // utf8mb4 인코딩은 MySQL 또는 MariaDB 5.5 버전 이상을 요구합니다.
-define('G5_DB_CHARSET', 'utf8');
+define('G5_DB_CHARSET', g5_runtime_config_value('db_charset', 'utf8'));
 
 /*
 www.sir.kr 과 sir.kr 도메인은 서로 다른 도메인으로 인식합니다. 쿠키를 공유하려면 .sir.kr 과 같이 입력하세요.
 이곳에 입력이 없다면 www 붙은 도메인과 그렇지 않은 도메인은 쿠키를 공유하지 않으므로 로그인이 풀릴 수 있습니다.
 */
-define('G5_COOKIE_DOMAIN',  '');
+define('G5_COOKIE_DOMAIN',  g5_runtime_config_value('cookie_domain', ''));
 
-define('G5_DBCONFIG_FILE',  'dbconfig.php');
+define('G5_DBCONFIG_FILE',  g5_runtime_config_value('dbconfig_file', 'dbconfig.php'));
 
 define('G5_ADMIN_DIR',      'adm');
 define('G5_MEMBER_DIR',     'member');
@@ -156,8 +169,8 @@ define('G5_MOBILE_AGENT',   'phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry
 
 // SMTP
 // lib/mailer.lib.php 에서 사용
-define('G5_SMTP',      '127.0.0.1');
-define('G5_SMTP_PORT', '25');
+define('G5_SMTP',      g5_runtime_config_value('smtp_host', '127.0.0.1'));
+define('G5_SMTP_PORT', g5_runtime_config_value('smtp_port', '25'));
 
 
 /********************
@@ -173,7 +186,7 @@ define('G5_MYSQL_PASSWORD_LENGTH', 41);         // mysql password length 41, old
 
 // SQL 에러를 표시할 것인지 지정
 // 에러를 표시하려면 true 로 변경
-define('G5_DISPLAY_SQL_ERROR', false);
+define('G5_DISPLAY_SQL_ERROR', (bool) g5_runtime_config_value('display_sql_error', false));
 
 // escape string 처리 함수 지정
 // addslashes 로 변경 가능
