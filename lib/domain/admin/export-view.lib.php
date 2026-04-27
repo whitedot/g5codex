@@ -75,9 +75,9 @@ function admin_build_member_export_filter_view(array $filter_state, array $optio
         'use_intercept_checked_attr' => !empty($params['use_intercept']) ? 'checked' : '',
         'use_hp_checked_attr' => $filter_state['use_hp_checked_attr'],
         'ad_range_only_checked_attr' => $ad_range_only ? 'checked' : '',
-        'ad_range_wrap_class_attr' => $ad_range_only ? '' : 'is-hidden',
-        'custom_period_class_attr' => ($ad_range_only && $ad_range_type === 'custom_period') ? '' : 'is-hidden',
-        'channel_row_class_attr' => ($ad_range_only && in_array($ad_range_type, array('month_confirm', 'custom_period'), true)) ? '' : 'is-hidden',
+        'ad_range_section_class_attr' => $ad_range_only ? '' : 'is-hidden',
+        'custom_period_section_class_attr' => ($ad_range_only && $ad_range_type === 'custom_period') ? '' : 'is-hidden',
+        'channel_section_class_attr' => ($ad_range_only && in_array($ad_range_type, array('month_confirm', 'custom_period'), true)) ? '' : 'is-hidden',
         'agree_date_start_value_attr' => $filter_state['agree_date_start_value_attr'],
         'agree_date_end_value_attr' => $filter_state['agree_date_end_value_attr'],
         'active_ad_range_html' => $filter_state['active_ad_range_html'],
@@ -131,20 +131,6 @@ function admin_build_member_export_level_options($selected_value)
     return $items;
 }
 
-function admin_member_export_supports_xlsx()
-{
-    return admin_archive_supports_zip();
-}
-
-function admin_member_export_runtime_error_message()
-{
-    if (admin_member_export_supports_xlsx()) {
-        return '';
-    }
-
-    return '압축 파일 생성 환경이 준비되지 않아 회원 엑셀 내보내기를 실행할 수 없습니다. 서버 PHP 설정과 파일 쓰기 권한을 확인한 뒤 다시 시도해 주세요.';
-}
-
 function admin_build_member_export_client_config(array $links)
 {
     return array(
@@ -183,26 +169,6 @@ function admin_build_member_export_total_view($total_count, $total_error)
         'has_error' => $has_error,
         'error_text' => $has_error ? get_text((string) $total_error) : '',
         'count_text' => admin_format_count_text($total_count, '건'),
-    );
-}
-
-function admin_build_member_export_runtime_context(array $tables, array $member_row = array())
-{
-    return array(
-        'member_table' => isset($tables['member_table']) ? $tables['member_table'] : '',
-        'actor_id' => isset($member_row['mb_id']) ? $member_row['mb_id'] : 'guest',
-        'environment_ready' => admin_member_export_supports_xlsx(),
-        'environment_error' => admin_member_export_runtime_error_message(),
-    );
-}
-
-function admin_build_member_export_page_request(array $query, array $config, array $tables, array $member_row = array())
-{
-    $runtime = admin_build_member_export_runtime_context($tables, $member_row);
-
-    return array(
-        'runtime' => $runtime,
-        'view' => admin_build_member_export_page_view($query, $config, $runtime),
     );
 }
 

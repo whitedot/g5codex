@@ -6,7 +6,7 @@ window.AdminMemberExport = {
         }
 
         const form = root.querySelector('[data-admin-member-export-form]');
-        const downloadButton = root.querySelector('#btnExcelDownload');
+        const downloadButton = root.querySelector('[data-admin-member-export-download]');
         const adRangeToggle = form ? form.querySelector('input[name="ad_range_only"]') : null;
         const adRangeType = form ? form.querySelector('#ad_range_type') : null;
         const customPeriod = root.querySelector('[data-admin-member-export-custom-period]');
@@ -36,7 +36,7 @@ window.AdminMemberExport = {
 
         const toggleAdRangeSections = () => {
             const adRangeEnabled = !!(adRangeToggle && adRangeToggle.checked);
-            root.querySelectorAll('.ad_range_wrap').forEach(element => {
+            root.querySelectorAll('[data-admin-member-export-conditional]').forEach(element => {
                 element.classList.toggle('is-hidden', !adRangeEnabled);
             });
 

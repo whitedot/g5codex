@@ -1,6 +1,6 @@
 # Gnuboard5 Readable Refactor Plan
 
-기준일: 2026-04-26
+기준일: 2026-04-27
 
 ## 목표
 
@@ -48,7 +48,7 @@ require_once './_common.php';
 $request = admin_read_example_request(g5_get_runtime_get_input());
 $page_view = admin_build_example_page_view($request, $member, $config);
 
-$g5['title'] = $page_view['title'];
+admin_apply_page_view($page_view);
 require_once './admin.head.php';
 // render
 require_once './admin.tail.php';
@@ -193,7 +193,7 @@ PHP 화면 파일에는 Tailwind utility class를 길게 직접 쌓지 않는다
 
 - 기존 refactor check 스크립트를 유지하고, 새 금지 패턴이 반복되면 작은 check를 추가한다.
 - PHP 구문 검사, `npm run check:refactor`, `npm run build`, `git diff --check`를 변경 범위에 맞게 실행한다.
-- Excel export, 회원 저장, 로그인, 비밀번호 재설정처럼 운영 리스크가 큰 흐름은 수동 시나리오를 문서화한다.
+- Excel export, 회원 저장, 로그인, 비밀번호 재설정처럼 운영 리스크가 큰 흐름은 `docs/architecture/manual-test-scenarios.md`에 수동 시나리오로 문서화한다.
 
 완료 기준:
 

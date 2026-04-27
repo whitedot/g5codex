@@ -13,6 +13,16 @@ function member_find_password_lost_candidate($email)
     );
 }
 
+function member_count_by_email($email)
+{
+    $member_table = member_get_member_table_name();
+
+    return (int) sql_fetch_value_prepared(
+        " select count(*) as cnt from {$member_table} where mb_email = :mb_email ",
+        array('mb_email' => $email)
+    );
+}
+
 function member_store_password_lost_certify($mb_id, $mb_lost_certify)
 {
     $member_table = member_get_member_table_name();

@@ -1,6 +1,6 @@
 # Admin Include Map
 
-기준일: 2026-04-26
+기준일: 2026-04-27
 
 ## 목적
 
@@ -43,9 +43,14 @@ member.lib.php
 ├─ member-form.lib.php
 │  ├─ member-form-request.lib.php
 │  ├─ member-form-view.lib.php
+│  ├─ member-form-validation.lib.php
+│  ├─ member-form-persist.lib.php
 │  └─ member-form-update.lib.php
 ├─ member-list.lib.php
 │  ├─ member-list-request.lib.php
+│  ├─ member-list-query.lib.php
+│  ├─ member-list-validation.lib.php
+│  ├─ member-list-persist.lib.php
 │  ├─ member-list-update.lib.php
 │  └─ member-list-view.lib.php
 └─ dashboard.lib.php
@@ -55,15 +60,16 @@ config.lib.php
 └─ config-update.lib.php
 ```
 
-회원 목록과 회원 폼은 요청 파싱, 화면 데이터, 저장/삭제 흐름을 분리한다. 설정 화면도 view와 update를 분리한다.
+회원 목록과 회원 폼은 요청 파싱, 조회, 검증, 저장, 화면 데이터, 완료 흐름을 분리한다. 설정 화면도 view와 update를 분리한다.
 
 ## Export/XLSX 도메인
 
 ```text
 export.lib.php
-├─ export-query.lib.php
 ├─ export-config.lib.php
+├─ export-query.lib.php
 ├─ export-file.lib.php
+├─ export-runtime.lib.php
 ├─ export-stream.lib.php
 ├─ export-view.lib.php
 └─ export-maintenance.lib.php

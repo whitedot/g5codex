@@ -75,32 +75,6 @@ function admin_build_member_list_table_columns(array $request)
     );
 }
 
-function admin_build_member_list_search(array $request, array $member, $is_admin)
-{
-    $search_params = array();
-    $sql_search = ' where (1) ';
-
-    if ($request['stx'] !== '') {
-        if ($request['sfl'] === 'mb_level') {
-            $sql_search .= " and {$request['sfl']} = :stx_exact ";
-            $search_params['stx_exact'] = (int) $request['stx'];
-        } elseif ($request['sfl'] === 'mb_hp') {
-            $sql_search .= " and {$request['sfl']} like :stx_suffix ";
-            $search_params['stx_suffix'] = '%' . $request['stx'];
-        } else {
-            $sql_search .= " and {$request['sfl']} like :stx_prefix ";
-            $search_params['stx_prefix'] = $request['stx'] . '%';
-        }
-    }
-
-    if ($is_admin != 'super') {
-        $sql_search .= ' and mb_level <= :max_member_level ';
-        $search_params['max_member_level'] = (int) $member['mb_level'];
-    }
-
-    return array('sql_search' => $sql_search, 'search_params' => $search_params);
-}
-
 function admin_build_member_list_filter_query(array $request, array $overrides = array())
 {
     return http_build_query(array_merge(array('sfl' => $request['sfl'], 'stx' => $request['stx']), $overrides), '', '&');
@@ -207,28 +181,11 @@ function admin_build_member_list_item(array $row, array $member, $is_admin, $qst
 
 function admin_build_member_list_view(array $request, array $member, $is_admin, array $config, $qstr)
 {
-    global $g5;
-
     $server_input = g5_get_runtime_server_input();
-    $sql_common = " from {$g5['member_table']} ";
-    $search = admin_build_member_list_search($request, $member, $is_admin);
-    $sql_search = $search['sql_search'];
-    $search_params = $search['search_params'];
-    $sql_order = " order by {$request['sst']} {$request['sod']} ";
-
-    $total_count = (int) sql_fetch_value_prepared(" select count(*) as cnt {$sql_common} {$sql_search} {$sql_order} ", $search_params);
-    $total_page = (int) ceil($total_count / $request['rows']);
-    $from_record = ($request['page'] - 1) * $request['rows'];
-    $leave_count = (int) sql_fetch_value_prepared(" select count(*) as cnt {$sql_common} {$sql_search} and mb_leave_date <> '' {$sql_order} ", $search_params);
-    $intercept_count = (int) sql_fetch_value_prepared(" select count(*) as cnt {$sql_common} {$sql_search} and mb_intercept_date <> '' {$sql_order} ", $search_params);
-
-    $list_params = $search_params;
-    $list_params['from_record'] = (int) $from_record;
-    $list_params['page_rows'] = (int) $request['rows'];
-    $result = sql_query_prepared(" select * {$sql_common} {$sql_search} {$sql_order} limit :from_record, :page_rows ", $list_params);
+    $page_data = admin_fetch_member_list_page_data($request, $member, $is_admin);
 
     $items = array();
-    for ($i = 0; $row = sql_fetch_array($result); $i++) {
+    foreach ($page_data['rows'] as $row) {
         $items[] = admin_build_member_list_item($row, $member, $is_admin, $qstr);
     }
 
@@ -247,8 +204,8 @@ function admin_build_member_list_view(array $request, array $member, $is_admin, 
         'page' => $request['page'],
     );
     $paging_url = '?' . $qstr . '&amp;page=';
-    $leave_count_text = admin_format_count_text($leave_count, '명');
-    $intercept_count_text = admin_format_count_text($intercept_count, '명');
+    $leave_count_text = admin_format_count_text($page_data['leave_count'], '명');
+    $intercept_count_text = admin_format_count_text($page_data['intercept_count'], '명');
 
     return array(
         'list_all_url_attr' => admin_escape_attr(isset($server_input['SCRIPT_NAME']) ? $server_input['SCRIPT_NAME'] : ''),
@@ -267,19 +224,19 @@ function admin_build_member_list_view(array $request, array $member, $is_admin, 
         'table_columns' => admin_build_member_list_table_columns($request),
         'hidden_fields' => admin_build_hidden_field_views($hidden_fields),
         'caption' => '회원관리 목록',
-        'total_count' => $total_count,
-        'total_count_text' => admin_format_count_text($total_count, '명'),
-        'total_page' => $total_page,
-        'leave_count' => $leave_count,
+        'total_count' => $page_data['total_count'],
+        'total_count_text' => admin_format_count_text($page_data['total_count'], '명'),
+        'total_page' => $page_data['total_page'],
+        'leave_count' => $page_data['leave_count'],
         'leave_count_text' => $leave_count_text,
-        'intercept_count' => $intercept_count,
+        'intercept_count' => $page_data['intercept_count'],
         'intercept_count_text' => $intercept_count_text,
         'items' => $items,
         'colspan' => 8,
         'empty_message' => '자료가 없습니다.',
         'admin_token' => get_admin_token(),
         'paging_url' => $paging_url,
-        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], $total_page, $paging_url),
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], $page_data['total_page'], $paging_url),
         'title' => '회원관리',
         'admin_container_class' => 'admin-page-member-list',
         'admin_page_subtitle' => '회원 상태를 한눈에 확인하고, 조건 검색과 빠른 관리 동선을 자연스럽게 이어가세요.',

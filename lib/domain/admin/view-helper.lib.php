@@ -31,6 +31,15 @@ function admin_build_hidden_field_views(array $fields)
     return $views;
 }
 
+function admin_apply_page_view(array $page_view)
+{
+    global $g5, $admin_container_class, $admin_page_subtitle;
+
+    $g5['title'] = isset($page_view['title']) ? $page_view['title'] : '';
+    $admin_container_class = isset($page_view['admin_container_class']) ? $page_view['admin_container_class'] : '';
+    $admin_page_subtitle = isset($page_view['admin_page_subtitle']) ? $page_view['admin_page_subtitle'] : '';
+}
+
 function admin_escape_attr($value)
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');

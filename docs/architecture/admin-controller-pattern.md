@@ -1,5 +1,7 @@
 # Admin Controller Pattern
 
+기준일: 2026-04-27
+
 ## 목적
 
 이 문서는 `adm/*.php` 화면 컨트롤러를 어떤 책임 경계로 유지할지 정의한다.
@@ -29,6 +31,7 @@ controller
 - `./_common.php` 포함
 - 필요한 최소 권한 체크만 선언
 - 화면 준비 상태 계산이나 대량 검증은 헬퍼 함수 호출로 위임
+- 화면형 controller는 page view를 만든 뒤 `admin_apply_page_view($page_view)`로 관리자 shell 상태를 적용
 - 저장/삭제 후에는 redirect로 종료
 - 완료형 controller는 가능하면 `admin_complete_*()` 호출 1회로 끝낸다
 - AJAX controller는 가능하면 `admin_complete_*()` 또는 `admin_process_*()` 호출 1회로 끝낸다
@@ -42,7 +45,7 @@ controller
 - 관리자 회원 관리 화면처럼 뷰 준비가 많은 흐름 처리
 - 현재는 `ui.lib.php`, `member.lib.php`, `config.lib.php`, `export.lib.php`를 로드하는 진입 로더 역할만 수행
   `member.lib.php`도 다시 `member-form.lib.php`, `member-list.lib.php`를 로드하는 세부 로더로 분리됨
-- 화면형 controller는 가능하면 여기서 `title`, 화면 메타데이터, 폼 상태를 한 번에 받아 렌더한다
+- 화면형 controller는 가능하면 여기서 `title`, 화면 메타데이터, 폼 상태를 한 번에 받고, `admin_apply_page_view()`로 shell 상태를 적용한다
 - 가능하면 `page_view`와 실제 폼/리스트 데이터는 구분한다
 - `member_list.php`, `config_form.php`, `index.php`는 `admin_build_*_page_view()` 이름을 우선 사용한다
 - view helper 는 가능하면 HTML 문자열보다 화면용 데이터 구조를 우선 반환한다
@@ -107,5 +110,5 @@ controller
 ## 다음 정리 우선순위
 
 1. export 흐름은 `docs/architecture/admin-export-pattern.md` 의 파일 책임과 naming 규칙을 기준으로 유지한다.
-2. 운영 Excel 열기, 대용량 분할, ZIP 묶음, 실패 메시지, 로그 기록을 수동 운영 시나리오로 확인한다.
-3. 신규 admin 화면을 추가할 때는 `adm/*.php` 에서 `$_GET`/`$_POST`/`$_SERVER` 를 직접 읽지 않고 runtime request context helper 와 page view 계약을 우선 사용한다.
+2. 운영 Excel 열기, 대용량 분할, ZIP 묶음, 실패 메시지, 로그 기록은 `docs/architecture/manual-test-scenarios.md` 기준으로 확인한다.
+3. 신규 admin 화면을 추가할 때는 `adm/*.php` 에서 `$_GET`/`$_POST`/`$_SERVER` 를 직접 읽지 않고 runtime request context helper, page view 계약, `admin_apply_page_view()`를 우선 사용한다.

@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-            <div class="af-row ad_range_wrap <?php echo $member_export_filter_view['ad_range_wrap_class_attr']; ?>">
+            <div class="af-row admin-export-conditional-row <?php echo $member_export_filter_view['ad_range_section_class_attr']; ?>" data-admin-member-export-conditional>
                 <div class="af-label">
                     <label for="ad_range_type" class="form-label">회원범위</label>
                 </div>
@@ -127,8 +127,8 @@
                             <?php } ?>
                         </select>
 
-                        <div class="ad_range_wrap admin-export-filter-stack">
-                            <div class="<?php echo $member_export_filter_view['custom_period_class_attr']; ?> admin-export-custom-period" data-admin-member-export-custom-period>
+                        <div class="admin-export-ad-range-state admin-export-filter-stack" data-admin-member-export-conditional>
+                            <div class="<?php echo $member_export_filter_view['custom_period_section_class_attr']; ?> admin-export-custom-period" data-admin-member-export-custom-period>
                                 <div class="af-inline">
                                     <input type="date" name="agree_date_start" max="9999-12-31" value="<?php echo $member_export_filter_view['agree_date_start_value_attr']; ?>" class="form-input">
                                     <span class="ui-form-inline-note">~</span>
@@ -138,14 +138,16 @@
                             </div>
 
                             <?php if ($member_export_filter_view['active_ad_range_html'] !== '') { ?>
-                                <div><p class="hint-text hint-text-flush"><?php echo $member_export_filter_view['active_ad_range_html']; ?></p></div>
+                                <div class="admin-export-filter-note">
+                                    <p class="hint-text hint-text-flush"><?php echo $member_export_filter_view['active_ad_range_html']; ?></p>
+                                </div>
                             <?php } ?>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="af-row ad_range_wrap <?php echo $member_export_filter_view['channel_row_class_attr']; ?>" data-admin-member-export-channel-row>
+            <div class="af-row admin-export-conditional-row admin-export-channel-row <?php echo $member_export_filter_view['channel_section_class_attr']; ?>" data-admin-member-export-conditional data-admin-member-export-channel-row>
                 <div class="af-label">
                     <label class="form-label">확인 채널</label>
                 </div>
@@ -157,7 +159,7 @@
             </div>
 
             <div class="admin-export-filter-actions">
-                <button type="button" id="btnExcelDownload" class="btn btn-solid-primary" <?php echo $member_export_filter_view['download_disabled_attr']; ?>>엑셀파일 다운로드</button>
+                <button type="button" class="btn btn-solid-primary" data-admin-member-export-download <?php echo $member_export_filter_view['download_disabled_attr']; ?>>엑셀파일 다운로드</button>
                 <a href="<?php echo $member_export_filter_view['reset_url_attr']; ?>" class="btn btn-surface-default-soft">초기화</a>
             </div>
         </div>

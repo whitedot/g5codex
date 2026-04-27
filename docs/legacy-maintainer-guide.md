@@ -1,6 +1,6 @@
 # Legacy Maintainer Guide
 
-기준일: 2026-04-26
+기준일: 2026-04-27
 
 ## 목적
 
@@ -17,6 +17,7 @@
 5. `docs/architecture/admin-controller-pattern.md`
 6. `docs/architecture/admin-include-map.md`
 7. `docs/architecture/admin-export-pattern.md`
+8. `docs/architecture/manual-test-scenarios.md`
 
 ## 큰 구조
 
@@ -37,17 +38,17 @@
 | 로그인 | `member/login.php`, `member/login_check.php` | `lib/domain/member/request-auth.lib.php`, `validation-auth.lib.php`, `flow-auth.lib.php`, `render-page-view.lib.php`, `render-response.lib.php` |
 | 로그아웃 | `member/logout.php` | `lib/domain/member/request-auth.lib.php`, `flow-auth.lib.php` |
 | 회원가입/정보수정 화면 | `member/register_form.php` | `lib/domain/member/request-register.lib.php`, `render-register-form.lib.php`, `page.lib.php` |
-| 회원가입/정보수정 저장 | `member/register_form_update.php`, `member/member_leave.php` | `lib/domain/member/validation-register.lib.php`, `persist-register.lib.php`, `flow-register.lib.php` |
+| 회원가입/정보수정 저장 | `member/register_form_update.php`, `member/member_leave.php` | `lib/domain/member/validation-register.lib.php`, `persist-register.lib.php`, `persist-register-email.lib.php`, `flow-register.lib.php` |
 | 비밀번호 찾기/재설정 | `member/password_*` | `lib/domain/member/request-auth.lib.php`, `validation-auth.lib.php`, `persist-auth.lib.php`, `flow-auth.lib.php` |
-| 이메일 인증/수신중지 | `member/email_*`, `member/register_email*` | `lib/domain/member/request-auth.lib.php`, `validation-auth.lib.php`, `flow-auth.lib.php` |
+| 이메일 인증/수신중지 | `member/email_*`, `member/register_email*` | `lib/domain/member/request-auth.lib.php`, `validation-auth.lib.php`, `validation-register-email.lib.php`, `persist-register-email.lib.php`, `flow-auth.lib.php`, `flow-register-email.lib.php` |
 | 회원 AJAX 중복 검사 | `member/ajax.mb_*.php` | `lib/domain/member/request-ajax.lib.php`, `validation-ajax.lib.php`, `flow-ajax.lib.php` |
 | 관리자 대시보드 | `adm/index.php` | `lib/domain/admin/dashboard.lib.php`, `lib/domain/admin/ui.lib.php` |
-| 관리자 회원 목록 | `adm/member_list.php` | `lib/domain/admin/member-list.lib.php`, `adm/member_list_parts/*` |
-| 관리자 회원 일괄 처리 | `adm/member_list_update.php` | `lib/domain/admin/member-list.lib.php` |
-| 관리자 회원 등록/수정 | `adm/member_form.php`, `adm/member_form_update.php` | `lib/domain/admin/member-form.lib.php`, `adm/member_form_parts/*` |
+| 관리자 회원 목록 | `adm/member_list.php` | `lib/domain/admin/member-list-request.lib.php`, `member-list-query.lib.php`, `member-list-view.lib.php`, `adm/member_list_parts/*` |
+| 관리자 회원 일괄 처리 | `adm/member_list_update.php` | `lib/domain/admin/member-list-request.lib.php`, `member-list-validation.lib.php`, `member-list-persist.lib.php`, `member-list-update.lib.php` |
+| 관리자 회원 등록/수정 | `adm/member_form.php`, `adm/member_form_update.php` | `lib/domain/admin/member-form-request.lib.php`, `member-form-view.lib.php`, `member-form-validation.lib.php`, `member-form-persist.lib.php`, `member-form-update.lib.php`, `adm/member_form_parts/*` |
 | 관리자 설정 | `adm/config_form.php`, `adm/config_form_update.php` | `lib/domain/admin/config.lib.php`, `adm/config_form_parts/*` |
-| 관리자 회원 export 화면 | `adm/member_list_exel.php` | `lib/domain/admin/export-view.lib.php`, `export-config.lib.php` |
-| 관리자 회원 export 다운로드 | `adm/member_list_exel_export.php` | `lib/domain/admin/export-stream.lib.php`, `export-file.lib.php`, `xlsx.lib.php` |
+| 관리자 회원 export 화면 | `adm/member_list_exel.php` | `lib/domain/admin/export-request.lib.php`, `export-filter.lib.php`, `export-runtime.lib.php`, `export-view.lib.php`, `export-config.lib.php` |
+| 관리자 회원 export 다운로드 | `adm/member_list_exel_export.php` | `lib/domain/admin/export-runtime.lib.php`, `export-stream.lib.php`, `export-file.lib.php`, `xlsx.lib.php` |
 | 관리자 shell/menu | `adm/admin.head.php`, `adm/admin.tail.php`, `adm/head.sub.admin.php` | `lib/domain/admin/ui.lib.php`, `lib/domain/admin/bootstrap.lib.php`, `adm/admin-core.js`, `adm/admin-config-form.js`, `adm/admin-member-export.js`, `adm/admin-member-form.js`, `adm/admin-member-list.js`, `adm/admin-shell.js`, `adm/admin.js` |
 
 ## 어디에 코드를 추가할까
@@ -57,6 +58,7 @@
 - DB 조회, 저장, 삭제는 `persist*.lib.php`나 admin 전용 query/export 파일에 둔다.
 - redirect, alert, 세션 정리, 후처리는 `flow*.lib.php`에 둔다.
 - 화면에 넘길 배열 조립은 `render*.lib.php`, `page*.lib.php`, admin view 파일에 둔다.
+- 화면형 admin controller는 page view를 만든 뒤 `admin_apply_page_view()`로 shell 제목과 container 상태를 적용한다.
 - 여러 도메인이 공유하는 순수 유틸리티는 `lib/support/`에 둔다.
 - 기존 include 경로가 꼭 필요할 때만 `lib/common.*.lib.php` 또는 `lib/member.*.lib.php` 호환 로더를 손댄다.
 
@@ -112,3 +114,4 @@ git diff --check
 
 문서만 고친 경우에도 `git diff --check`는 실행한다. PHP include 경로나 controller 예시를 건드렸다면 `check:refactor`까지 실행한다.
 `check:refactor`는 aggregate loader에 업무 로직이 들어오는 경우와 반복 Tailwind utility 조합이 PHP 화면 파일에 다시 추가되는 경우도 함께 잡는다.
+자동 검사 후에도 Excel export, 회원 인증/가입, 관리자 회원 저장 같은 운영 흐름은 `docs/architecture/manual-test-scenarios.md` 기준으로 수동 확인한다.

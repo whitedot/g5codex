@@ -1,5 +1,7 @@
 # Procedural Domain Starter
 
+기준일: 2026-04-27
+
 ## 목적
 
 이 문서는 `community`, `shop`, `booking` 같은 신규 도메인을 추가할 때 바로 복제해서 사용할 수 있는 절차형 도메인 스타터 템플릿이다.
@@ -18,7 +20,7 @@ lib/domain/{domain}/
 └─ page.lib.php
 ```
 
-필요하면 아래처럼 세분화한다.
+필요하면 아래처럼 세분화한다. `member` 도메인의 `persist-register-email.lib.php`처럼 한 업무의 저장 책임이 커지면 업무 단위 파일을 추가하고, aggregate loader에는 include 선언만 둔다.
 
 ```text
 lib/domain/{domain}/
@@ -30,6 +32,28 @@ lib/domain/{domain}/
 ├─ persist-write.lib.php
 ├─ flow-write.lib.php
 ├─ render-page-view.lib.php
+├─ page-controller.lib.php
+└─ page-shell.lib.php
+```
+
+`community` 도메인을 새로 시작한다면 첫 구조는 아래처럼 잡는다.
+
+```text
+lib/domain/community/
+├─ request.lib.php
+├─ request-list.lib.php
+├─ request-write.lib.php
+├─ validation.lib.php
+├─ validation-list.lib.php
+├─ validation-write.lib.php
+├─ persist.lib.php
+├─ persist-list.lib.php
+├─ persist-write.lib.php
+├─ flow.lib.php
+├─ flow-write.lib.php
+├─ render.lib.php
+├─ render-page-view.lib.php
+├─ page.lib.php
 ├─ page-controller.lib.php
 └─ page-shell.lib.php
 ```
@@ -67,8 +91,7 @@ require_once './_common.php';
 $request = admin_read_list_request(g5_get_runtime_get_input());
 $page_view = admin_build_list_page_view($request, $member, $is_admin, $config);
 
-$g5['title'] = $page_view['title'];
-$admin_container_class = isset($page_view['admin_container_class']) ? $page_view['admin_container_class'] : '';
+admin_apply_page_view($page_view);
 require_once './admin.head.php';
 // render...
 require_once './admin.tail.php';
@@ -154,6 +177,7 @@ admin_complete_member_export_stream_page($page_request, $auth, $sub_menu);
 - runtime request context와 session 정규화
 - 기본값 설정
 - 형식 변환
+- aggregate loader에는 세부 request 파일 include만 둔다
 
 ### validation
 
@@ -161,12 +185,14 @@ admin_complete_member_export_stream_page($page_request, $auth, $sub_menu);
 - 권한
 - 접근 가능 여부
 - 상태 검증
+- DB 직접 조회보다 persist 결과를 기준으로 판단한다
 
 ### persist
 
 - 조회/저장/삭제
 - 트랜잭션
 - 도메인별 DB 접근
+- 화면 메시지와 redirect를 직접 처리하지 않는다
 
 ### flow
 
@@ -175,6 +201,7 @@ admin_complete_member_export_stream_page($page_request, $auth, $sub_menu);
 - 이벤트 호출
 - 메일/알림
 - 세션 정리
+- validation과 persist를 조합하고 사용자 응답 종료를 담당한다
 
 ### render/page
 

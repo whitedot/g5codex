@@ -15,9 +15,7 @@ $consent_view = $page_view['sections']['consent'];
 $profile_view = $page_view['sections']['profile'];
 $history_view = $page_view['sections']['history'];
 
-$g5['title'] = $page_view['title'];
-$admin_container_class = $page_view['admin_container_class'];
-$admin_page_subtitle = $page_view['admin_page_subtitle'];
+admin_apply_page_view($page_view);
 require_once './admin.head.php';
 ?>
 

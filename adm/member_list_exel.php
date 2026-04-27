@@ -8,9 +8,7 @@ $page_request = admin_build_member_export_page_request(g5_get_runtime_get_input(
 $member_export_view = $page_request['view'];
 $member_export_filter_view = $member_export_view['filter_view'];
 
-$g5['title'] = $member_export_view['title'];
-$admin_container_class = $member_export_view['admin_container_class'];
-$admin_page_subtitle = $member_export_view['admin_page_subtitle'];
+admin_apply_page_view($member_export_view);
 require_once './admin.head.php';
 ?>
 <div

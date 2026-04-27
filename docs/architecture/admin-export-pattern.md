@@ -1,5 +1,7 @@
 # Admin Export Pattern
 
+기준일: 2026-04-27
+
 ## 목적
 
 관리자 회원 export 흐름은 화면, 요청 정규화, 조회, 파일 생성, 스트리밍 응답을 분리해서 유지한다.
@@ -14,8 +16,9 @@
 - `lib/domain/admin/export-filter.lib.php`: where 조건과 count query를 담당한다.
 - `lib/domain/admin/export-query.lib.php`: sheet 컬럼 구성과 회원 row 조회 statement를 담당한다.
 - `lib/domain/admin/export-file.lib.php`: 파일 생성, 정리, 로그 로더다. 실제 구현은 `export-file-create.lib.php`, `export-file-cleanup.lib.php`, `export-log.lib.php`에 둔다.
+- `lib/domain/admin/export-runtime.lib.php`: XLSX/ZIP 실행 가능 여부, 실행 actor, member table 같은 런타임 context를 담당한다.
 - `lib/domain/admin/export-stream.lib.php`: SSE 준비, stream request 검증, 진행 이벤트, 전체 export 실행 순서를 담당한다.
-- `lib/domain/admin/export-view.lib.php`: 화면 view-model, client config, runtime readiness 메시지를 담당한다.
+- `lib/domain/admin/export-view.lib.php`: 화면 view-model, select option, client config, runtime 메시지 출력값을 담당한다.
 - `lib/domain/admin/export-maintenance.lib.php`: 수동 파일 정리 action을 담당한다.
 
 ## Naming 규칙
@@ -35,3 +38,4 @@
 
 - `npm run check:admin-refactor`
 - `npm run check:refactor`
+- `docs/architecture/manual-test-scenarios.md`의 관리자 회원 export 시나리오

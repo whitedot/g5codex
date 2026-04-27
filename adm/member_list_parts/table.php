@@ -9,14 +9,14 @@
             <table class="table">
                 <caption><?php echo $member_list_view['caption']; ?></caption>
                 <colgroup>
-                    <col style="width: 3.5rem;">
-                    <col style="width: 9rem;">
-                    <col style="width: 8rem;">
-                    <col style="width: 9rem;">
+                    <col class="member-col-select">
+                    <col class="member-col-id">
+                    <col class="member-col-name">
+                    <col class="member-col-nick">
                     <col>
-                    <col style="width: 6rem;">
-                    <col style="width: 6rem;">
-                    <col style="width: 10rem;">
+                    <col class="member-col-level">
+                    <col class="member-col-status">
+                    <col class="member-col-manage">
                 </colgroup>
                 <thead class="ui-table-head">
                     <tr>
@@ -43,7 +43,7 @@
                                 <label for="chk_<?php echo $index; ?>" class="sr-only"><?php echo $item['mb_name']; ?> <?php echo $item['mb_nick_text']; ?>님</label>
                                 <input type="checkbox" name="chk[]" value="<?php echo $index; ?>" id="chk_<?php echo $index; ?>">
                             </td>
-                            <td headers="mb_list_id" class="member-cell-fixed font-medium"><?php echo $item['display_mb_id']; ?></td>
+                            <td headers="mb_list_id" class="member-cell-fixed member-cell-id"><?php echo $item['display_mb_id']; ?></td>
                             <td headers="mb_list_name" class="member-cell-fixed"><?php echo $item['mb_name']; ?></td>
                             <td headers="mb_list_nick" class="member-cell-fixed"><?php echo $item['sideview_html']; ?></td>
                             <td headers="mb_list_email" class="member-cell-email"><?php echo $item['mb_email']; ?></td>
@@ -71,7 +71,7 @@
                         </tr>
                     <?php } ?>
                     <?php if (empty($member_list_view['items'])) { ?>
-                        <tr><td colspan="<?php echo $member_list_view['colspan']; ?>"><?php echo $member_list_view['empty_message']; ?></td></tr>
+                        <tr><td colspan="<?php echo $member_list_view['colspan']; ?>" class="ui-table-empty"><?php echo $member_list_view['empty_message']; ?></td></tr>
                     <?php } ?>
                 </tbody>
             </table>

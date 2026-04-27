@@ -5,9 +5,7 @@ require_once './_common.php';
 $dashboard_request = admin_read_dashboard_request(g5_get_runtime_get_input());
 $dashboard_view = admin_build_dashboard_page_view($dashboard_request, $member, $is_admin, $auth);
 
-$g5['title'] = $dashboard_view['title'];
-$admin_container_class = $dashboard_view['admin_container_class'];
-$admin_page_subtitle = $dashboard_view['admin_page_subtitle'];
+admin_apply_page_view($dashboard_view);
 require_once './admin.head.php';
 
 if ($dashboard_view['additional_content_before']) {

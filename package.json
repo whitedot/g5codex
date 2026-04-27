@@ -22,16 +22,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whitedot/gnuboard5.git"
+    "url": "git+https://github.com/whitedot/g5codex.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/whitedot/gnuboard5/issues"
+    "url": "https://github.com/whitedot/g5codex/issues"
   },
-  "homepage": "https://github.com/whitedot/gnuboard5#readme",
+  "homepage": "https://github.com/whitedot/g5codex#readme",
   "dependencies": {
     "@tailwindcss/cli": "4.2.4",
     "@tailwindcss/typography": "0.5.19",

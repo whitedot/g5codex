@@ -100,6 +100,12 @@ assertNoMatches(
 );
 
 assertNoMatches(
+  'legacy admin page view shell assignment',
+  explicitRequestPages,
+  /\$g5\['title'\]\s*=\s*\$[A-Za-z_][A-Za-z0-9_]*\['title'\]|\$admin_container_class\s*=\s*\$[A-Za-z_][A-Za-z0-9_]*\['admin_container_class'\]|\$admin_page_subtitle\s*=\s*\$[A-Za-z_][A-Za-z0-9_]*\['admin_page_subtitle'\]/
+);
+
+assertNoMatches(
   'legacy member export page wiring',
   [path.join(admDir, 'member_list_exel.php')],
   /onclick="location\.href='\\?'"|member_list_exel_export\.php\?\$\{query\}/
@@ -156,13 +162,13 @@ assertNoMatches(
 assertNoMatches(
   'legacy member export filter raw output keys',
   [path.join(admDir, 'member_list_exel_parts', 'filter.php')],
-  /\['(?:form_token|use_stx_checked|stx_value|stx_cond_like_checked|stx_cond_equal_checked|use_level_checked|use_date_checked|date_start_value|date_end_value|use_intercept_checked|use_hp_checked|ad_range_only_checked|ad_range_wrap_class|custom_period_class|channel_row_class|agree_date_start_value|agree_date_end_value|ad_mailling_checked|reset_url)'\]/
+  /\['(?:form_token|use_stx_checked|stx_value|stx_cond_like_checked|stx_cond_equal_checked|use_level_checked|use_date_checked|date_start_value|date_end_value|use_intercept_checked|use_hp_checked|ad_range_only_checked|ad_range_wrap_class(?:_attr)?|custom_period_class(?:_attr)?|channel_row_class(?:_attr)?|agree_date_start_value|agree_date_end_value|ad_mailling_checked|reset_url)'\]/
 );
 
 assertNoMatches(
   'legacy member export filter view-model keys',
   [path.join(adminDomainDir, 'export-view.lib.php')],
-  /'(?:form_token|use_stx_checked|stx_value|stx_cond_like_checked|stx_cond_equal_checked|use_level_checked|use_date_checked|date_start_value|date_end_value|use_intercept_checked|use_hp_checked|ad_range_only_checked|ad_range_wrap_class|custom_period_class|channel_row_class|agree_date_start_value|agree_date_end_value|ad_mailling_checked)'\s*=>/
+  /'(?:form_token|use_stx_checked|stx_value|stx_cond_like_checked|stx_cond_equal_checked|use_level_checked|use_date_checked|date_start_value|date_end_value|use_intercept_checked|use_hp_checked|ad_range_only_checked|ad_range_wrap_class(?:_attr)?|custom_period_class(?:_attr)?|channel_row_class(?:_attr)?|agree_date_start_value|agree_date_end_value|ad_mailling_checked)'\s*=>/
 );
 
 assertNoMatches(

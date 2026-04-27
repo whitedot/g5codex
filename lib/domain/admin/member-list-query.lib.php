@@ -1,0 +1,65 @@
+<?php
+if (!defined('_GNUBOARD_')) {
+    exit;
+}
+
+function admin_build_member_list_search(array $request, array $member, $is_admin)
+{
+    $search_params = array();
+    $sql_search = ' where (1) ';
+
+    if ($request['stx'] !== '') {
+        if ($request['sfl'] === 'mb_level') {
+            $sql_search .= " and {$request['sfl']} = :stx_exact ";
+            $search_params['stx_exact'] = (int) $request['stx'];
+        } elseif ($request['sfl'] === 'mb_hp') {
+            $sql_search .= " and {$request['sfl']} like :stx_suffix ";
+            $search_params['stx_suffix'] = '%' . $request['stx'];
+        } else {
+            $sql_search .= " and {$request['sfl']} like :stx_prefix ";
+            $search_params['stx_prefix'] = $request['stx'] . '%';
+        }
+    }
+
+    if ($is_admin != 'super') {
+        $sql_search .= ' and mb_level <= :max_member_level ';
+        $search_params['max_member_level'] = (int) $member['mb_level'];
+    }
+
+    return array('sql_search' => $sql_search, 'search_params' => $search_params);
+}
+
+function admin_fetch_member_list_page_data(array $request, array $member, $is_admin)
+{
+    global $g5;
+
+    $sql_common = " from {$g5['member_table']} ";
+    $search = admin_build_member_list_search($request, $member, $is_admin);
+    $sql_search = $search['sql_search'];
+    $search_params = $search['search_params'];
+    $sql_order = " order by {$request['sst']} {$request['sod']} ";
+
+    $total_count = (int) sql_fetch_value_prepared(" select count(*) as cnt {$sql_common} {$sql_search} {$sql_order} ", $search_params);
+    $total_page = (int) ceil($total_count / $request['rows']);
+    $from_record = ($request['page'] - 1) * $request['rows'];
+    $leave_count = (int) sql_fetch_value_prepared(" select count(*) as cnt {$sql_common} {$sql_search} and mb_leave_date <> '' {$sql_order} ", $search_params);
+    $intercept_count = (int) sql_fetch_value_prepared(" select count(*) as cnt {$sql_common} {$sql_search} and mb_intercept_date <> '' {$sql_order} ", $search_params);
+
+    $list_params = $search_params;
+    $list_params['from_record'] = (int) $from_record;
+    $list_params['page_rows'] = (int) $request['rows'];
+    $result = sql_query_prepared(" select * {$sql_common} {$sql_search} {$sql_order} limit :from_record, :page_rows ", $list_params);
+
+    $rows = array();
+    for ($i = 0; $row = sql_fetch_array($result); $i++) {
+        $rows[] = $row;
+    }
+
+    return array(
+        'total_count' => $total_count,
+        'total_page' => $total_page,
+        'leave_count' => $leave_count,
+        'intercept_count' => $intercept_count,
+        'rows' => $rows,
+    );
+}

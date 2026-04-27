@@ -10,9 +10,7 @@ $config = admin_read_config_row();
 $request_server = g5_get_runtime_server_input();
 $config_form_view = admin_build_config_form_page_view($config, isset($request_server['REMOTE_ADDR']) ? $request_server['REMOTE_ADDR'] : '');
 
-$g5['title'] = $config_form_view['title'];
-$admin_container_class = $config_form_view['admin_container_class'];
-$admin_page_subtitle = $config_form_view['admin_page_subtitle'];
+admin_apply_page_view($config_form_view);
 $config_basic_view = $config_form_view['basic_view'];
 $config_join_view = $config_form_view['join_view'];
 $config_cert_view = $config_form_view['cert_view'];

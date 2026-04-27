@@ -4,9 +4,7 @@ require_once './_common.php';
 
 $page_view = admin_complete_member_list_file_delete_request($is_admin);
 $delete_result_view = $page_view['result'];
-$g5['title'] = $page_view['title'];
-$admin_container_class = $page_view['admin_container_class'];
-$admin_page_subtitle = $page_view['admin_page_subtitle'];
+admin_apply_page_view($page_view);
 require_once G5_ADMIN_PATH . '/admin.head.php';
 ?>
 

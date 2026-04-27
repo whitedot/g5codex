@@ -166,6 +166,24 @@ assertNoMatches(
   /\bsql_query\s*\(|\bsql_fetch\s*\(|^(?!if \(!defined\('_GNUBOARD_'\)).*\b(?:if|foreach|for|while)\s*\(/
 );
 
+const memberShellWrappers = [
+  file('member/_head.php'),
+  file('member/_tail.php'),
+  file('member/_head.sub.php'),
+  file('member/_tail.sub.php'),
+];
+
+assertNoMatches(
+  'member shell wrapper direct layout include',
+  memberShellWrappers,
+  /include_once\s*\(|require_once\s*\(|include\s*\(|require\s*\(/
+);
+
+assertContains(file('member/_head.php'), /member_include_layout_head\(\);/, 'member/_head.php should delegate to page-shell helper');
+assertContains(file('member/_tail.php'), /member_include_layout_tail\(\);/, 'member/_tail.php should delegate to page-shell helper');
+assertContains(file('member/_head.sub.php'), /member_include_layout_head\(true\);/, 'member/_head.sub.php should delegate to page-shell helper');
+assertContains(file('member/_tail.sub.php'), /member_include_layout_tail\(true\);/, 'member/_tail.sub.php should delegate to page-shell helper');
+
 const memberRenderPages = [
   'login.php',
   'member_cert_refresh.php',

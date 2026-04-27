@@ -647,8 +647,20 @@
         @apply mb-5 inline-flex items-center gap-2 rounded-lg border border-default-300 bg-card px-4 py-2 text-sm font-medium text-default-700 shadow-sm;
     }
 
+    .admin-export-total-label {
+        @apply text-default-600;
+    }
+
+    .admin-export-total-value {
+        @apply text-default-900;
+    }
+
     .admin-export-total-error {
         @apply text-danger;
+    }
+
+    .admin-export-runtime-alert {
+        @apply grid gap-1.5;
     }
 
     .admin-export-search-line {
@@ -673,6 +685,17 @@
 
     .admin-export-custom-period {
         @apply space-y-2;
+    }
+
+    .admin-export-conditional-row.is-hidden,
+    .admin-export-ad-range-state.is-hidden,
+    .admin-export-channel-row.is-hidden,
+    .admin-export-custom-period.is-hidden {
+        @apply hidden;
+    }
+
+    .admin-export-filter-note {
+        @apply text-sm text-default-700;
     }
 
     .admin-export-filter-actions {
@@ -768,23 +791,20 @@
         @apply grid min-w-0 gap-[0.45rem];
     }
 
-    .member-field label {
+    .member-field-label {
         @apply m-0 text-[0.8125rem] font-semibold text-default-700;
     }
 
-    .member-field select,
-    .member-field input[type="text"] {
+    .member-field-input {
         width: 100%;
         min-height: 2.75rem;
-        border: 1px solid var(--color-default-300);
         border-radius: 0;
         background: var(--color-card);
         padding: 0.65rem 0.8rem;
         color: var(--color-default-900);
     }
 
-    .member-field select:focus,
-    .member-field input[type="text"]:focus {
+    .member-field-input:focus {
         border-color: color-mix(in oklab, var(--color-primary) 38%, var(--color-default-300));
         outline: none;
         box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 12%, transparent);
@@ -863,9 +883,38 @@
         @apply text-right;
     }
 
+    .admin-member-list-form .member-col-select {
+        width: 3.5rem;
+    }
+
+    .admin-member-list-form .member-col-id {
+        width: 9rem;
+    }
+
+    .admin-member-list-form .member-col-name {
+        width: 8rem;
+    }
+
+    .admin-member-list-form .member-col-nick {
+        width: 9rem;
+    }
+
+    .admin-member-list-form .member-col-level,
+    .admin-member-list-form .member-col-status {
+        width: 6rem;
+    }
+
+    .admin-member-list-form .member-col-manage {
+        width: 10rem;
+    }
+
     .admin-member-list-form .member-cell-fixed,
     .admin-member-list-form .member-cell-manage {
         white-space: nowrap;
+    }
+
+    .admin-member-list-form .member-cell-id {
+        @apply font-medium;
     }
 
     .admin-member-list-form .member-cell-manage {
