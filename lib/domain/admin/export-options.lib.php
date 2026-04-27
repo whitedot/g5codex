@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 화면의 select/radio option 원천을 담당한다.
+// option을 화면 출력용 attr/text 배열로 바꾸는 일은 export-view.lib.php에서 처리한다.
+
 function admin_get_member_export_config($type = null)
 {
     $config = array(

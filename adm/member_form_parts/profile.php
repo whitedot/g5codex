@@ -1,3 +1,4 @@
+<?php // 회원 등록/수정 프로필/메모 partial이다. 이 파일은 화면 출력만 담당하고 저장 로직은 갖지 않는다. ?>
 <section id="anc_mb_profile" class="card">
     <div class="card-header">
         <h2 class="card-title">관리 메모</h2>

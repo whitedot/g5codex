@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 등록/수정 화면의 view-model만 조립한다.
+// 저장 검증과 DB 변경은 member-form-update.lib.php 및 member-form-persist.lib.php를 확인한다.
+// 이 파일에 POST 저장이나 redirect 로직을 추가하지 않는다.
+
 function admin_get_member_form_defaults()
 {
     return array(

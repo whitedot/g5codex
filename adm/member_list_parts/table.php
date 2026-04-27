@@ -1,3 +1,4 @@
+<?php // 회원 목록 table partial이다. 컬럼, 행, action URL은 member-list-view.lib.php에서 준비하고 저장 처리는 member_list_update.php로 넘어간다. ?>
 <form name="fmemberlist" id="fmemberlist" action="./member_list_update.php" method="post" class="admin-member-list-form" data-admin-member-list="true">
     <?php foreach ($member_list_view['hidden_fields'] as $hidden_field) { ?>
         <input type="hidden" name="<?php echo $hidden_field['name_attr']; ?>" value="<?php echo $hidden_field['value_attr']; ?>">

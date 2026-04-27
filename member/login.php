@@ -1,4 +1,5 @@
 <?php
+// 검증 지도: 로그인 화면 controller다. 요청/검증은 request-auth/validation-auth, 화면 배열은 render-page-view에서 처리한다.
 include_once('./_common.php');
 
 $member_request_context = member_get_runtime_request_context();

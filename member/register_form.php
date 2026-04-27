@@ -1,4 +1,5 @@
 <?php
+// 검증 지도: 회원가입/정보수정 form 화면 controller다. 요청/검증은 request-register 및 validation-register-page, 화면 배열은 render-register-form에서 처리한다.
 include_once('./_common.php');
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 include_once(G5_LIB_PATH.'/register.lib.php');

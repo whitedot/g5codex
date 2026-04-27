@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 메뉴 파일 수집과 include 상태를 담당한다.
+// 실제 메뉴 HTML view-model은 ui-shell.lib.php에서 조립한다.
+
 function admin_bootstrap_collect_menu_files()
 {
     $amenu = array();

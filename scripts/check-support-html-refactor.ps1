@@ -1,3 +1,4 @@
+# PowerShell wrapper for check-support-html-refactor.js. Keep behavior in the JS file.
 $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot

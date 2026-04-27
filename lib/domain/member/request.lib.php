@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 request context와 GET/POST/session 정규화 helper를 담당한다.
+// 검증, DB 조회, 화면 출력은 validation/persist/render/flow 파일에서 처리한다.
+
 function member_get_runtime_request_context()
 {
     $context = g5_get_runtime_request_context();

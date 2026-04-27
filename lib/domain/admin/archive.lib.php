@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// ZIP 생성과 임시 archive 파일 정리 helper를 담당한다.
+// 회원 export 실행 가능 여부 판단은 export-runtime.lib.php에서 이 파일을 사용한다.
+
 function admin_archive_supports_zip()
 {
     return true;

@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/정보수정의 회원 row insert/update를 담당한다.
+// 이메일 인증 전용 조회/저장은 persist-register-email.lib.php로 분리한다.
+
 function member_build_create_agree_updates(array &$insert_fields, $mb_marketing_agree, $mb_mailling)
 {
     $agree_items = array();

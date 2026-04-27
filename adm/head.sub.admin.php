@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 관리자 head.sub 출력 파일이다.
+// meta/link/script tag_html 조립은 ui-shell.lib.php에서 담당한다.
+// 이 파일에는 개별 화면 조건이나 직접 asset 목록 조립을 추가하지 않는다.
 // 이 파일은 새로운 파일 생성시 반드시 포함되어야 함
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 

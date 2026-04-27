@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입 이메일 인증과 이메일 변경 인증의 DB 조회/저장만 담당한다.
+// 토큰/상태 검증은 validation-auth.lib.php 또는 validation-register-email.lib.php,
+// 메일 발송과 alert 종료는 flow-auth.lib.php 또는 flow-register-email.lib.php를 확인한다.
+
 function member_find_email_certify_candidate($mb_id)
 {
     $member_table = member_get_member_table_name();

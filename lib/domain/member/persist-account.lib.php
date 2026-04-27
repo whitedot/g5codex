@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 저장에서 재사용하는 insert/update field 조립과 DB 저장을 담당한다.
+// action 권한과 redirect는 admin member-form flow에서 처리한다.
+
 function member_build_admin_insert_fields(array $request)
 {
     $posts = $request['posts'];

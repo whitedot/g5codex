@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// XLSX 파일 내부 XML 작성 helper를 담당한다.
+// 어떤 데이터를 sheet에 넣을지는 export-query.lib.php와 export-file-create.lib.php에서 결정한다.
+
 function admin_xlsx_column_name($index)
 {
     $index = (int) $index;

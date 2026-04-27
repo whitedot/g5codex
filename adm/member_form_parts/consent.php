@@ -1,3 +1,4 @@
+<?php // 회원 등록/수정 수신/공개 설정 partial이다. 저장 검증과 DB 반영은 member-form-persist.lib.php에서 처리한다. ?>
 <section id="anc_mb_consent" class="card">
     <div class="card-header">
         <h2 class="card-title">수신 및 공개 설정</h2>

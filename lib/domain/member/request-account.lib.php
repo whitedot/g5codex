@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 저장에 재사용되는 회원 계정 입력 정규화를 담당한다.
+// 계정 값 검증과 DB 저장은 member validation/persist 파일에서 처리한다.
+
 if (!function_exists('member_require_register_lib')) {
     function member_require_register_lib()
     {

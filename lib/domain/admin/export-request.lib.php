@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export GET 요청 파라미터 정규화와 범위 보정을 담당한다.
+// SQL where 조립은 export-filter.lib.php, 화면 출력값은 export-view.lib.php에서 처리한다.
+
 function admin_build_member_export_vars(array $query)
 {
     $field_array = array_map('trim', explode(',', isset($query['fields']) ? $query['fields'] : ''));

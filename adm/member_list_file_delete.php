@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 관리자 회원 export 임시 파일 정리 화면 controller다.
+// 정리 실행과 결과 view는 export-maintenance.lib.php에서 담당한다.
+// 이 파일에는 파일 삭제 조건이나 경로 계산 로직을 직접 추가하지 않는다.
 $sub_menu = '100930';
 require_once './_common.php';
 

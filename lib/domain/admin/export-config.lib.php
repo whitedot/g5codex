@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 상수와 기본 경로 설정을 담당한다.
+// 실행 가능 여부와 actor context는 export-runtime.lib.php에서 판단한다.
+
 if (!defined('ADMIN_MEMBER_EXPORT_PAGE_SIZE')) {
     define('ADMIN_MEMBER_EXPORT_PAGE_SIZE', 10000);
 }

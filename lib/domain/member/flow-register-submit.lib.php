@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/정보수정 submit 완료 흐름을 담당한다.
+// 입력 검증은 validation-register-submit.lib.php, DB 저장은 persist-register*.lib.php에서 처리한다.
+
 function member_prepare_register_submit_state($w, array $request, array $member, array $config)
 {
     $mb_hp = hyphen_hp_number($request['mb_hp']);

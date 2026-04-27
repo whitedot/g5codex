@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 비밀번호 찾기 등 인증 관련 메일 발송 service를 담당한다.
+// 메일 발송 시점과 검증은 flow-auth-password.lib.php 및 validation-auth.lib.php에서 처리한다.
+
 class MemberNotificationService
 {
     public static function sendPasswordLostMail($email, array $mb, $change_password, $mb_nonce, $mb_lost_certify)

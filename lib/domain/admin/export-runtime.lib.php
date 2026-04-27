@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 실행에 필요한 런타임 context만 만든다.
+// 화면 출력값은 export-view.lib.php, SSE 다운로드 실행은 export-stream.lib.php를 확인한다.
+// 이 파일에 HTML 출력이나 파일 생성 로직을 추가하지 않는다.
+
 function admin_member_export_supports_xlsx()
 {
     return admin_archive_supports_zip();

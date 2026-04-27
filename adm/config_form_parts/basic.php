@@ -1,3 +1,4 @@
+<?php // 기본환경 설정 기본 정보 partial이다. 값과 escape는 config-view.lib.php에서 준비된 것을 출력한다. ?>
 <section id="anc_cf_basic" class="card">
     <div class="card-header">
         <h2 class="card-title">기본환경 설정</h2>

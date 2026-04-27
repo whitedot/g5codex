@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 로그인 성공 후 session 구성과 자동 로그인 cookie 처리를 담당한다.
+// 로그인 입력 검증과 후보 회원 조회는 validation-auth/persist-auth 파일에서 처리한다.
+
 function member_begin_login_session(array $mb, $member_view_path)
 {
     run_event('login_session_before', $mb, false);

@@ -1,3 +1,4 @@
+<?php // 회원 export 필터 form partial이다. option/value/hidden 상태는 export-view.lib.php에서 준비된 값을 출력만 한다. ?>
 <form id="fsearch" name="fsearch" method="get" class="card ui-form-theme ui-form-showcase" data-admin-member-export-form>
     <input type="hidden" name="token" value="<?php echo $member_export_filter_view['form_token_attr']; ?>">
     <div class="card-header">

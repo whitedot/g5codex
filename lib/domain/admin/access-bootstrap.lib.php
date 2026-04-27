@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 접근 초기화와 권한 테이블 로드를 담당한다.
+// 개별 화면의 읽기/쓰기 권한 체크는 controller 또는 complete flow에서 auth_check_menu()로 처리한다.
+
 function admin_bootstrap_load_auth(array $member)
 {
     global $g5;

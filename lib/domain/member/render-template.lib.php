@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 skin/template capture helper를 담당한다.
+// 템플릿에 전달할 data 배열은 render-page-view/register-form 파일에서 준비한다.
+
 class MemberTemplateRenderer
 {
     public static function capture($template_path, array $data = array())

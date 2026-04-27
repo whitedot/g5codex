@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 목록 선택수정의 DB update payload와 저장만 담당한다.
+// 권한/대상 회원 검증은 member-list-validation.lib.php에서 끝난 상태를 전제로 한다.
+// 이 파일에 alert/redirect/event 호출을 추가하지 않는다.
+
 function admin_build_member_list_update_payload(array $request, $index, array $mb)
 {
     $post_mb_certify = (!empty($request['mb_certify'][$index])) ? clean_xss_tags($request['mb_certify'][$index], 1, 1, 20) : '';

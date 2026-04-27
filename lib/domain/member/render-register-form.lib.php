@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/정보수정 form 화면의 view-model을 조립한다.
+// 저장 검증과 DB 반영은 validation-register-submit 및 persist-register 파일에서 처리한다.
+
 class MemberRegisterFormViewDataFactory
 {
     protected static function buildCertifyConfig(array $config)

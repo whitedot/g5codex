@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 AJAX 중복 검사 완료 흐름과 session 반영을 담당한다.
+// 요청 정규화와 검증 규칙은 request-ajax.lib.php 및 validation-ajax.lib.php에서 처리한다.
+
 function member_reset_ajax_identity_checks(array $fields)
 {
     foreach ($fields as $field) {

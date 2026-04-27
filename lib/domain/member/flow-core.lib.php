@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 도메인 공통 flow helper를 담당한다.
+// 개별 업무 순서는 flow-auth/register/account/ajax 파일에서 조합한다.
+
 function member_certify_hash_matches($cert_type, $mb_name, $mb_hp, $md5_cert_no)
 {
     if (!$cert_type || !$md5_cert_no) {

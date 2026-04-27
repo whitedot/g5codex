@@ -1,3 +1,4 @@
+<?php // 회원 목록 검색 form partial이다. option/value escape는 member-list-view.lib.php에서 준비된 값을 출력만 한다. ?>
 <div class="member-search-card">
     <form id="fsearch" name="fsearch" method="get">
         <div class="member-search-fields">

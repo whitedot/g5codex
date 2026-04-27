@@ -1,3 +1,5 @@
+// 관리자 회원 목록 화면 전용 동작.
+// 체크박스, sideview 위치, 삭제 form submit 보조만 담당하고, 권한/저장 검증은 member-list-*.lib.php에서 처리한다.
 window.AdminMemberList = {
     init() {
         const form = document.querySelector('[data-admin-member-list]');

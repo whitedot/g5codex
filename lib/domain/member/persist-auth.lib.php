@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 로그인/비밀번호 찾기/재설정에 필요한 회원 조회와 저장을 담당한다.
+// 이메일 인증 상태 변경은 persist-register-email.lib.php에서 처리한다.
+
 function member_find_password_lost_candidate($email)
 {
     $member_table = member_get_member_table_name();

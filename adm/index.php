@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 관리자 대시보드 화면 controller다.
+// 요청 정규화와 화면 배열은 dashboard.lib.php, shell/menu 출력은 admin.head.php와 ui-shell.lib.php를 확인한다.
+// 이 파일에는 대시보드용 SQL이나 메뉴 조립 로직을 직접 추가하지 않는다.
 $sub_menu = '100000';
 require_once './_common.php';
 

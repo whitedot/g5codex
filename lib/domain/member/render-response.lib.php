@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 자동 POST form과 짧은 response rendering helper를 담당한다.
+// 업무 판단과 redirect 목적지는 flow 파일에서 결정한 값을 받는다.
+
 class MemberResponseRenderer
 {
     private static function buildAutoPostFieldViews(array $fields)

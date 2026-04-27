@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 관리자 shell header 출력 파일이다.
+// header view-model은 ui-shell.lib.php에서 만들고, 각 화면의 title/container/subtitle은 admin_apply_page_view()로 전달된다.
+// 이 파일에는 화면별 업무 조건이나 DB 조회를 추가하지 않는다.
 if (!defined('_GNUBOARD_')) {
     exit;
 }

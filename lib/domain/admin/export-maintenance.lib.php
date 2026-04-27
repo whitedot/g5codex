@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 임시 파일 수동 정리 action과 결과 화면 view-model을 담당한다.
+// 실제 파일 삭제 helper는 export-file-cleanup.lib.php에서 처리한다.
+
 function admin_delete_directory_tree($folder_path)
 {
     $items = glob($folder_path . '/*');

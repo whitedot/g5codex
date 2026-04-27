@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 기본환경 설정 저장 요청 정규화와 완료 flow를 담당한다.
+// 화면 출력용 배열은 config-view.lib.php에서 만들고, 이 파일에는 HTML partial 로직을 추가하지 않는다.
+
 function admin_read_config_form_update_request(array $post, array $ori_config)
 {
     $request = array(

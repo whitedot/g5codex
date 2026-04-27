@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 관리자 기본환경 설정 화면 controller다.
+// 설정 조회와 화면 배열은 config-view.lib.php, 저장 흐름은 config_form_update.php와 config-update.lib.php를 확인한다.
+// 이 파일에는 POST 저장 로직이나 직접 SQL update를 추가하지 않는다.
 $sub_menu = "100100";
 require_once './_common.php';
 

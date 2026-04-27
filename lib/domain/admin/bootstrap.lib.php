@@ -3,8 +3,8 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
-// Executing this file initializes the admin request context.
-// Include pure helper/security loaders before this file.
+// 관리자 공통 부트스트랩 파일이다.
+// 실행 시 접근 권한, 메뉴, request alias를 준비한다. 개별 화면 업무 로직은 domain helper 파일에 둔다.
 require_once __DIR__ . '/access-bootstrap.lib.php';
 require_once __DIR__ . '/menu-bootstrap.lib.php';
 require_once __DIR__ . '/request-bootstrap.lib.php';

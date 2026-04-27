@@ -1,4 +1,5 @@
 <?php
+// 검증 지도: 로그인 submit action controller다. 입력 정규화/검증/세션 생성은 member auth request/validation/persist/flow 파일에서 처리한다.
 include_once('./_common.php');
 
 $g5['title'] = "로그인 검사";

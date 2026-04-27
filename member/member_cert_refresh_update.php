@@ -1,4 +1,5 @@
 <?php
+// 검증 지도: 회원 본인확인 갱신 저장 action controller다. 요청/검증/상태 변경은 account request/validation/flow 파일에서 처리한다.
 define('G5_CERT_IN_PROG', true);
 include_once('./_common.php');
 

@@ -1,3 +1,9 @@
+// 회원 리팩터 안전망.
+// 사람이 모든 member controller와 domain 파일을 열지 않아도 아래 퇴행을 잡는 것이 목적이다:
+// - controller가 $_POST/$_GET/$_SESSION 원본이나 예전 request alias로 돌아가는 경우
+// - aggregate loader에 함수, SQL, 분기 로직이 들어오는 경우
+// - member shell wrapper가 page-shell helper를 우회해 직접 layout include를 하는 경우
+// - skin 파일이 runtime/global/config 값을 직접 읽거나 JS 문자열 escape를 직접 처리하는 경우
 const {
   rel,
   file,

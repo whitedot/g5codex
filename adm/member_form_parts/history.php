@@ -1,3 +1,4 @@
+<?php // 회원 등록/수정 인증/활동 내역 partial이다. 표시용 상태는 member-form-view.lib.php에서 계산한다. ?>
 <section id="anc_mb_history" class="card">
     <div class="card-header">
         <h2 class="card-title">인증 및 활동 내역</h2>

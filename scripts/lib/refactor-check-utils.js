@@ -1,3 +1,5 @@
+// 리팩터 검사 스크립트 공통 유틸이다.
+// 파일 목록 수집, PHP lint 실행, 패턴 포함/금지 검사를 표준화해 check-*.js가 같은 방식으로 실패하게 한다.
 const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');

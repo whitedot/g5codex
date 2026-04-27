@@ -1,3 +1,5 @@
+// 관리자 회원 등록/수정 화면 전용 동작.
+// 비밀번호/captcha 보조와 client-side submit 확인만 담당하고, 실제 검증/저장은 member-form-*.lib.php에서 처리한다.
 window.AdminMemberForm = {
     init() {
         const root = document.querySelector('[data-admin-member-form]');

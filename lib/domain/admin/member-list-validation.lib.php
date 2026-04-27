@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 목록 선택수정/선택삭제의 검증 규칙만 담당한다.
+// 실제 DB 변경은 member-list-persist.lib.php, 처리 순서와 redirect는 member-list-update.lib.php를 확인한다.
+// 이 파일에 SQL update나 화면 배열 조립을 추가하지 않는다.
+
 function admin_validate_member_list_update_request(array $request)
 {
     if (empty($request['chk'])) {

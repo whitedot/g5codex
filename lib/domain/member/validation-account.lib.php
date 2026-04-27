@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 저장에서 재사용하는 계정 필드 검증을 담당한다.
+// 요청 정규화는 request-account.lib.php, DB 저장은 persist-account.lib.php 또는 admin persist 파일에서 처리한다.
+
 function member_validate_admin_member_request(array $request, array $member, $is_admin, $w)
 {
     member_require_register_lib();

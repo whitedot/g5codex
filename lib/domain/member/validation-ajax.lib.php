@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 AJAX 아이디/이메일/휴대폰/닉네임 중복 검사 규칙을 담당한다.
+// 이 파일은 짧은 die 응답을 유지하며, 요청 정규화는 request-ajax.lib.php에서 처리한다.
+
 function member_validate_ajax_mb_id(array $request)
 {
     if ($msg = empty_mb_id($request['mb_id'])) die($msg);

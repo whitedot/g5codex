@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 삭제/저장 action의 업무 순서 파일이다.
+// 요청 정규화는 member-form-request.lib.php, action 검증은 member-form-validation.lib.php,
+// 실제 DB 저장은 member-form-persist.lib.php에서 담당한다.
+
 function admin_build_member_delete_redirect($qstr)
 {
     return "./member_list.php?{$qstr}";

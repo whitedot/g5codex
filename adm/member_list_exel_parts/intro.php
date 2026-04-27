@@ -1,3 +1,4 @@
+<?php // 회원 export 안내 partial이다. 안내 항목과 runtime 오류 문구는 export-view.lib.php에서 준비한다. ?>
 <section class="card admin-export-intro-card">
     <div class="card-header">
         <h2 class="card-title">회원 엑셀 생성</h2>

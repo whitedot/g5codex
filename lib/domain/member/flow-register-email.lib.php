@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입 이메일 인증과 이메일 변경 인증 완료 흐름을 담당한다.
+// 이메일 관련 DB 조회/저장은 persist-register-email.lib.php에서 처리한다.
+
 function member_process_email_certify(array $request)
 {
     $member_row = member_find_email_certify_candidate($request['mb_id']);

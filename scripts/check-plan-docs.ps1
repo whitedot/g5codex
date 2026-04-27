@@ -1,3 +1,4 @@
+# PowerShell wrapper for check-plan-docs.js. Keep behavior in the JS file.
 $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot

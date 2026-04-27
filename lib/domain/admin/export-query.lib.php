@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export XLSX 컬럼 구성과 row 조회 statement를 담당한다.
+// 파일 저장과 ZIP 생성은 export-file-create.lib.php 및 archive helper에서 처리한다.
+
 function admin_get_member_export_sheet_config()
 {
     $type = 1;

@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export XLSX 파일과 ZIP 파일 생성을 담당한다.
+// 조회 조건과 row fetch는 export-query/filter 파일, 진행 이벤트는 export-stream.lib.php에서 처리한다.
+
 function admin_create_member_export_xlsx($params, $file_name, $index = 0, $member_table = '')
 {
     $config = admin_get_member_export_sheet_config();

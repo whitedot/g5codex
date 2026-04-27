@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 이 controller는 회원 export 화면을 렌더링한다.
+// runtime 준비 상태는 export-runtime.lib.php, 필터와 총건수 화면 배열은 export-view.lib.php,
+// 실제 다운로드/SSE 흐름은 member_list_exel_export.php와 export-stream.lib.php를 확인한다.
 $sub_menu = "200400";
 require_once './_common.php';
 

@@ -1,4 +1,5 @@
 <?php
+// 이메일 변경 인증 skin이다. action URL과 안내 문구는 render-page-view.lib.php에서 준비된 값을 출력한다.
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 ?>
 

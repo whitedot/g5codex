@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 referer 같은 request 기반 보안 검사를 담당한다.
+// 토큰 발급/검증은 token.lib.php, 화면별 권한 검사는 controller/flow에서 처리한다.
+
 function admin_referer_check($return = false)
 {
     $server_input = g5_get_runtime_server_input();

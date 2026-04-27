@@ -1,4 +1,4 @@
-/** 공통 UI 모듈 */
+/** 공통 UI 모듈. 화면별 업무 검증은 담당하지 않고 탭/팝업 같은 UI primitive만 제공한다. */
 window.CommonUI = window.CommonUI || {};
 
 window.CommonUI.bindTabs = function (tabSelector, contentSelector, options = {}) {

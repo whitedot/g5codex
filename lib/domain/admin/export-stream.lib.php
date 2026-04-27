@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 다운로드의 SSE 실행 순서 파일이다.
+// 요청 파라미터 정규화는 export-request.lib.php, runtime context는 export-runtime.lib.php,
+// 파일 생성/ZIP/정리는 export-file*.lib.php에서 담당한다.
+
 function admin_prepare_member_export_runtime()
 {
     ini_set('memory_limit', '-1');

@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 기존 G5 관리자 UI helper 호환 함수만 담당한다.
+// 새 화면의 view-model 조립은 ui-shell.lib.php 또는 각 domain view 파일에 둔다.
+
 function get_subdirectory_names($directory_path)
 {
     $result_array = array();

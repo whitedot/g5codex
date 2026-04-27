@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 목록 선택수정/선택삭제의 업무 순서 파일이다.
+// 요청 정규화는 member-list-request.lib.php, 행별 권한 검증은 member-list-validation.lib.php,
+// update payload와 DB 저장은 member-list-persist.lib.php에서 담당한다.
+
 function admin_process_member_list_update(array $request, array $member, $is_admin)
 {
     $mb_datas = array();

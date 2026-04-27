@@ -1,4 +1,5 @@
 <?php
+// 자동 POST form skin이다. field escape와 target/action 값은 render-response.lib.php에서 준비한다.
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 ?>
 <!doctype html>

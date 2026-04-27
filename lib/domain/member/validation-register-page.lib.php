@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/정보수정 화면 진입 전 상태 검증을 담당한다.
+// 실제 저장 submit 검증은 validation-register-submit.lib.php에서 처리한다.
+
 function member_validate_register_page_access($is_member)
 {
     if ($is_member) {

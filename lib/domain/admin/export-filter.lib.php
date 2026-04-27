@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export count/list 조회에 사용할 where 조건 조립을 담당한다.
+// request 값 정규화는 export-request.lib.php에서 끝난 상태를 전제로 한다.
+
 function admin_count_member_export_members(array $params, $member_table)
 {
     $where_data = admin_build_member_export_where($params);

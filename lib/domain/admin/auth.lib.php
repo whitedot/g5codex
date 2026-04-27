@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 권한 문자열 검사 helper를 담당한다.
+// 어떤 메뉴 권한을 요구할지는 controller 또는 업무 flow 파일에서 결정한다.
+
 function auth_check_menu($auth, $sub_menu, $attr, $return = false)
 {
     $check_auth = isset($auth[$sub_menu]) ? $auth[$sub_menu] : '';

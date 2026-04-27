@@ -1,4 +1,5 @@
 <?php
+// 비밀번호 찾기 안내 메일 template이다. 발송 조건과 token 생성은 flow-auth-password.lib.php에서 처리한다.
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 ?>
 <div>

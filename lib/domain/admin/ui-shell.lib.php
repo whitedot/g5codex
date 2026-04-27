@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 shell의 meta/link/script/menu/header/footer view-model을 담당한다.
+// 화면별 title/container/subtitle은 admin_apply_page_view()가 설정한 전역 상태를 입력으로 받는다.
+
 function admin_menu_icon_id($menu_code)
 {
     $prefix = substr((string) $menu_code, 0, 3);

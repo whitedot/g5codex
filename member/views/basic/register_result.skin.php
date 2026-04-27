@@ -1,4 +1,5 @@
 <?php
+// 회원가입 완료 skin이다. 회원 표시 값과 이메일 인증 안내 상태는 render-page-view.lib.php에서 준비한다.
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨

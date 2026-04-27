@@ -1,3 +1,4 @@
+<?php // 회원가입 동의 상세 modal partial이다. 표시 내용은 상위 skin view data에서 전달받는다. ?>
 <?php if (!defined('_GNUBOARD_')) exit; ?>
 <div id="consentDialog"
     class="modal-overlay modal-overlay-fade hs-overlay hidden pointer-events-none opacity-0"

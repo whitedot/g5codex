@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 form 관련 GET/POST 요청 정규화를 담당한다.
+// 검증과 저장은 member-form-validation.lib.php 및 member-form-persist.lib.php에서 처리한다.
+
 function admin_read_member_form_request(array $request)
 {
     return array(

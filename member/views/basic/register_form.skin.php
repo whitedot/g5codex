@@ -1,4 +1,5 @@
 <?php
+// 회원가입/정보수정 form skin이다. 입력 상태와 client config는 render-register-form.lib.php에서 준비한다.
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨

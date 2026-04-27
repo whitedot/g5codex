@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 화면의 view-model과 client config만 조립한다.
+// 실행 가능 여부 context는 export-runtime.lib.php, 실제 파일 생성/SSE는 export-stream.lib.php와 export-file*.lib.php를 확인한다.
+// 이 파일에 다운로드 실행이나 파일 삭제 로직을 추가하지 않는다.
+
 function admin_member_export_ad_range_texts()
 {
     return array(

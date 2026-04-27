@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 대시보드의 요청 정규화, 신규회원 조회, 화면 배열을 담당한다.
+// shell 출력은 adm/index.php와 ui-shell.lib.php에서 처리한다.
+
 function admin_read_dashboard_request(array $request)
 {
     return array(

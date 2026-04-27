@@ -1,3 +1,4 @@
+<?php // 기본환경 설정 회원가입 partial이다. 저장 처리는 config_form_update.php와 config-update.lib.php에서 담당한다. ?>
 <section id="anc_cf_join" class="card">
     <div class="card-header">
         <h2 class="card-title">회원가입 설정</h2>

@@ -1,4 +1,5 @@
 <?php
+// 검증 지도: 회원 본인확인 갱신 화면 controller다. 접근 검증은 validation-account, 화면 배열은 render-page-view에서 처리한다.
 define('G5_CERT_IN_PROG', true);
 include_once('./_common.php');
 

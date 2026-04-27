@@ -1,3 +1,5 @@
+// PHPExcel 퇴역 안전망.
+// lib/PHPExcel 복구나 legacy PHPExcel class/helper 참조가 저장소에 다시 들어오는 것을 막는다.
 const {
   fs,
   path,

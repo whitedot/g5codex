@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 form anchor tab view-model 조립을 담당한다.
+// 실제 section HTML은 adm/*_parts/*.php partial에서 출력한다.
+
 function admin_build_anchor_menu_view($tabs, $options = array())
 {
     if (!is_array($tabs) || empty($tabs)) {

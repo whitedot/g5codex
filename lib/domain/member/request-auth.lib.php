@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 로그인, 비밀번호 찾기, 이메일 인증 같은 인증 계열 요청 정규화를 담당한다.
+// 검증은 validation-auth.lib.php, DB 조회는 persist-auth/register-email 파일에서 처리한다.
+
 function member_read_password_lost_request(array $post)
 {
     return array(

@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 임시 파일 디렉터리 생성/정리를 담당한다.
+// 정리 화면의 page view와 권한 처리는 export-maintenance.lib.php에서 처리한다.
+
 function admin_ensure_member_export_directory($dir)
 {
     if (!is_dir($dir)) {

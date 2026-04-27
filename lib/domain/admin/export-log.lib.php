@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 export 성공/실패 audit log 기록을 담당한다.
+// 어떤 시점에 로그를 남길지는 export-stream.lib.php에서 결정한다.
+
 function admin_write_member_export_log($params, $result = array(), $actor_id = 'guest')
 {
     $max_size = 1024 * 1024 * 2;

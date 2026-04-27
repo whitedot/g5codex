@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 화면 출력용 escape/json helper를 담당한다.
+// 업무 상태 계산은 render-page-view.lib.php 또는 flow 파일에서 끝난 값을 받는다.
+
 function member_json_string($value)
 {
     return json_encode((string) $value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

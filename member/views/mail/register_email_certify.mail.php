@@ -1,4 +1,5 @@
 <?php
+// 회원가입 이메일 인증 메일 template이다. 발송 조건과 인증 URL 조립은 flow-register-notification.lib.php에서 처리한다.
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 ?>
 <!doctype html>

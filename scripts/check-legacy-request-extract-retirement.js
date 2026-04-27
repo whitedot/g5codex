@@ -1,3 +1,5 @@
+// legacy request/extract 퇴역 안전망.
+// 루트/설치/플러그인 경로에서 request extract opt-out이나 직접 request 재도입을 잡는다.
 const {
   path,
   projectRoot,

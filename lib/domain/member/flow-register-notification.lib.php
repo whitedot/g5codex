@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/이메일 변경 인증 메일 발송 service를 담당한다.
+// 발송 조건과 호출 순서는 flow-register-submit/email 파일에서 결정한다.
+
 class MemberRegisterNotificationService
 {
     public static function sendRegisterEmailCertify($mb_id, $mb_name, $mb_email)

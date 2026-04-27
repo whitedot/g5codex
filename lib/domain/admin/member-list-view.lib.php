@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 목록 화면에 넘길 view-model만 조립한다.
+// DB 조회는 member-list-query.lib.php, 선택수정/삭제 처리는 member-list-update.lib.php를 확인한다.
+// 이 파일에 POST 처리나 저장 로직을 추가하지 않는다.
+
 function admin_member_list_search_field_labels()
 {
     return array(

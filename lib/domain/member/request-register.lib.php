@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/정보수정 화면과 저장 요청 정규화를 담당한다.
+// 입력 검증은 validation-register*.lib.php, 저장은 persist-register*.lib.php에서 처리한다.
+
 function member_read_registration_request(array $post, array $session, array $query_state = array())
 {
     $w = member_read_request_w($post, $query_state);

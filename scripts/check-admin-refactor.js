@@ -1,3 +1,9 @@
+// 관리자 리팩터 안전망.
+// 사람이 모든 diff를 따라가지 않아도 아래 퇴행을 잡는 것이 목적이다:
+// - controller/partial에 extract(), 직접 SQL, 전역 상태 조립이 다시 들어오는 경우
+// - page view shell 적용을 admin_apply_page_view() 대신 수동 대입으로 되돌리는 경우
+// - export 화면/stream에서 예전 inline JS, legacy view key, PHPExcel 경로가 부활하는 경우
+// - aggregate loader에 include 선언 외 업무 로직이 들어오는 경우
 const {
   path,
   projectRoot,

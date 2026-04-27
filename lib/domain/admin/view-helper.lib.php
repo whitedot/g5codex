@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 화면 view-model 공통 helper를 담당한다.
+// admin_apply_page_view()는 page view의 title/container/subtitle을 admin shell 전역 상태로 반영한다.
+
 function admin_build_select_option_view($value, $label, $selected = false)
 {
     return array(

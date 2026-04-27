@@ -1,3 +1,5 @@
+// 관리자 기본환경 설정 화면 전용 동작.
+// 본인확인/captcha UI 보조만 담당하고, 설정 저장 검증은 config-update.lib.php에서 처리한다.
 window.AdminConfigForm = {
     initialAdminId: '',
 

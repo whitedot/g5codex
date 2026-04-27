@@ -1,3 +1,4 @@
+<?php // 회원 등록/수정 연락처 partial이다. 주소/연락처 view-model은 member-form-view.lib.php에서 준비한다. ?>
 <section id="anc_mb_contact" class="card">
     <div class="card-header">
         <h2 class="card-title">인증 연락처</h2>

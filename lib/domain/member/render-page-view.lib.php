@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 주요 화면의 page view 배열을 조립한다.
+// DB 조회/상태 변경은 persist/flow 파일에서 끝난 값을 받아 화면에 필요한 구조로 바꾼다.
+
 function member_build_member_certify_client_config(array $config, $page_type)
 {
     $hp_cert_url = '';

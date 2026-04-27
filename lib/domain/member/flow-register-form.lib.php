@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/정보수정 form 진입 전 session 상태와 진행 상태 초기화를 담당한다.
+// 화면 view-model은 render-register-form.lib.php에서 조립한다.
+
 function member_reset_registration_progress()
 {
     set_session('ss_mb_reg', '');

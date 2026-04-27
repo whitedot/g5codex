@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 AJAX 토큰 발급과 session token 읽기를 담당한다.
+// 개별 저장 action의 토큰 검증은 각 complete flow에서 check_admin_token()으로 처리한다.
+
 function admin_get_runtime_session_snapshot()
 {
     return isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array();

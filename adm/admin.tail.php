@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 관리자 shell footer와 공통 script 출력 파일이다.
+// footer/script view-model은 ui-shell.lib.php에서 만들고, 화면별 script 동작은 adm/admin-*.js에서 확인한다.
+// 이 파일에는 개별 화면 업무 로직을 추가하지 않는다.
 if (!defined('_GNUBOARD_')) {
     exit;
 }

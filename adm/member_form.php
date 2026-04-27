@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 이 controller는 관리자 회원 등록/수정 화면만 렌더링한다.
+// 입력 정규화는 member-form-request.lib.php, 화면 배열은 member-form-view.lib.php,
+// 저장 흐름은 member_form_update.php와 member-form-update.lib.php를 확인한다.
 $sub_menu = "200100";
 require_once './_common.php';
 

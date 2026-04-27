@@ -1,3 +1,5 @@
+// 공통 query/runtime 리팩터 안전망.
+// common/bootstrap/support 계층에서 legacy query alias나 직접 request 접근이 되살아나는 것을 막는다.
 const {
   rel,
   projectRoot,

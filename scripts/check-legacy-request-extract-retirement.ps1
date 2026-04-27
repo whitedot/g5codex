@@ -1,3 +1,4 @@
+# PowerShell wrapper for check-legacy-request-extract-retirement.js. Keep behavior in the JS file.
 $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $PSScriptRoot

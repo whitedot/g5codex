@@ -1,3 +1,4 @@
+<?php // 회원 등록/수정 기본 정보 partial이다. 값과 입력 상태는 member-form-view.lib.php에서 준비된 것을 출력만 한다. ?>
 <section id="anc_mb_basic" class="card">
     <div class="card-header">
         <h2 class="card-title">기본 정보</h2>

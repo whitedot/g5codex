@@ -1,3 +1,5 @@
+// support html 리팩터 안전망.
+// alert/confirm 계열 출력 helper가 다시 runtime 전역 접근이나 직접 HTML 조립으로 흐트러지는 것을 막는다.
 const {
   fs,
   path,

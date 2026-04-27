@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 목록의 검색 조건, count, row 조회만 담당한다.
+// 화면용 label/URL 조립은 member-list-view.lib.php, 선택수정 저장은 member-list-persist.lib.php를 확인한다.
+// 이 파일에 alert/redirect/HTML 출력 로직을 추가하지 않는다.
+
 function admin_build_member_list_search(array $request, array $member, $is_admin)
 {
     $search_params = array();

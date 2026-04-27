@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 이메일 인증과 이메일 변경 인증 검증을 담당한다.
+// 이메일 조회/토큰 정리/주소 반영은 persist-register-email.lib.php에서 처리한다.
+
 function member_validate_email_certify_member(array $member_row)
 {
     if (empty($member_row['mb_id'])) {

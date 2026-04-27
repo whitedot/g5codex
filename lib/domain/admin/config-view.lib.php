@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 기본환경 설정 화면의 view-model을 담당한다.
+// 저장 요청 정규화와 DB update는 config-update.lib.php에서 처리한다.
+
 function admin_require_super_admin($is_admin)
 {
     if ($is_admin != 'super') {

@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 화면 렌더링 진입 controller class다.
+// 어떤 skin을 사용할지와 head/tail include 순서를 관리하고, 업무 판단은 각 controller/domain에서 끝낸 값을 받는다.
+
 class MemberPageController
 {
     protected static function getTemplateMap()

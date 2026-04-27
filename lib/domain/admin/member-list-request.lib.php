@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 목록과 일괄 처리 요청 정규화를 담당한다.
+// 조회 SQL은 member-list-query.lib.php, 저장 검증/반영은 validation/persist/update 파일에서 처리한다.
+
 function admin_member_list_allowed_search_fields()
 {
     return array('mb_id', 'mb_nick', 'mb_name', 'mb_level', 'mb_email', 'mb_hp', 'mb_datetime', 'mb_ip');

@@ -1,4 +1,5 @@
 <?php
+// 회원가입 약관/동의 skin이다. 약관 값과 alert 문구는 render-page-view.lib.php에서 준비된 값을 출력한다.
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨

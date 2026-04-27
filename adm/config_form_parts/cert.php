@@ -1,3 +1,4 @@
+<?php // 기본환경 설정 본인확인 partial이다. 입력 상태는 config-view.lib.php에서 준비하고 저장은 config-update.lib.php로 위임한다. ?>
 <section id="anc_cf_cert" class="card">
     <div class="card-header">
         <h2 class="card-title">본인확인 설정</h2>

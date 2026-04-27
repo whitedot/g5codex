@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 비밀번호 찾기/재설정 완료 흐름을 담당한다.
+// 후보 회원 조회는 persist-auth.lib.php, 입력 검증은 validation-auth.lib.php에서 처리한다.
+
 function member_issue_password_lost_mail($email, array $mb)
 {
     $change_password = rand(100000, 999999);

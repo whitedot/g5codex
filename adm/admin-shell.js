@@ -1,3 +1,5 @@
+// 관리자 공통 shell 동작.
+// sidebar, profile menu, mobile overlay 같은 레이아웃 상태만 담당하고, 화면별 업무 로직은 각 admin-*.js로 분리한다.
 window.AdminShell = {
     initialized: false,
 

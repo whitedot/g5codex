@@ -1,3 +1,4 @@
+<?php // 기본환경 설정 메일 partial이다. 메일 설정 view-model은 config-view.lib.php에서 준비한다. ?>
 <section id="anc_cf_mail" class="card">
     <div class="card-header">
         <h2 class="card-title">인증 메일 설정</h2>

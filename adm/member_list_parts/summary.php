@@ -1,3 +1,4 @@
+<?php // 회원 목록 상단 요약 partial이다. 값 계산은 member-list-view.lib.php에서 끝난 상태를 전제로 한다. ?>
 <div class="member-summary">
     <div class="member-summary-links">
         <a href="<?php echo $member_list_view['list_all_url_attr']; ?>" class="btn btn-surface-default-soft">전체 보기</a>

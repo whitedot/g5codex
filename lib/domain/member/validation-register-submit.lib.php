@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원가입/정보수정 저장 submit 입력 검증을 담당한다.
+// DB 저장은 persist-register.lib.php, 후처리/메일/redirect는 flow-register*.lib.php에서 처리한다.
+
 function member_validate_utf8_identity_fields($mb_name, $mb_nick)
 {
     $tmp_mb_name = iconv('UTF-8', 'UTF-8//IGNORE', $mb_name);

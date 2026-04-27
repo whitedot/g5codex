@@ -1,3 +1,5 @@
+// 계획/가이드 문서 안전망.
+// 오래된 계획 문서 참조, 사라진 render 파일명, 필수 PowerShell wrapper 누락을 잡는다.
 const {
   fs,
   file,

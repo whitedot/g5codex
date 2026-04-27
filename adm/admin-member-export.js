@@ -1,3 +1,5 @@
+// 관리자 회원 export 화면 전용 동작.
+// 필터 표시/숨김과 SSE progress UI만 담당하고, export 조건/파일 생성 규칙은 PHP export-*.lib.php에서 검증한다.
 window.AdminMemberExport = {
     init() {
         const root = document.querySelector('[data-admin-member-export]');

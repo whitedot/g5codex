@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 회원 이메일 변경 인증 메일 재발송 controller다.
+// 요청 정규화는 request-auth.lib.php, 변경 가능 여부 검증은 validation-register-email.lib.php,
+// 이메일 조회/중복 확인은 persist-register-email.lib.php, 메일 발송은 flow-register-email.lib.php를 확인한다.
 include_once('./_common.php');
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 include_once(G5_LIB_PATH.'/support/mail.lib.php');

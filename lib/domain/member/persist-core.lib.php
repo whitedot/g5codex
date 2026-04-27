@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 도메인 공통 DB 보조 함수와 본인확인 이력 저장을 담당한다.
+// 화면별 저장 순서는 persist-register/account/auth 파일 또는 flow 파일에서 결정한다.
+
 function member_insert_cert_history_if_verified($mb_id, $mb_name, $mb_hp, $cert_type, $md5_cert_no)
 {
     if (!member_certify_hash_matches($cert_type, $mb_name, $mb_hp, $md5_cert_no)) {

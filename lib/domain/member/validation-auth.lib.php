@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 로그인, 비밀번호 찾기/재설정, 이메일 인증의 검증 규칙을 담당한다.
+// DB 조회/저장은 persist-auth.lib.php와 persist-register-email.lib.php에서 처리한다.
+
 function member_validate_password_lost_request(array $request)
 {
     if (!$request['mb_email']) {

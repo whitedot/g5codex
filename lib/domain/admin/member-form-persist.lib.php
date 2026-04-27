@@ -3,6 +3,10 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 관리자 회원 등록/수정의 DB 저장만 담당한다.
+// action 권한/토큰 검증은 member-form-update.lib.php와 member-form-validation.lib.php에서 끝난 상태를 전제로 한다.
+// 이 파일에 redirect/event/shell 상태 조립을 추가하지 않는다.
+
 function admin_persist_member_form_request($w, array $request, array $member, $is_admin)
 {
     $mb_id = $request['mb_id'];

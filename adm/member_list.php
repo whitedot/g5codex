@@ -1,4 +1,7 @@
 <?php
+// 검증 지도: 이 controller는 회원 목록 화면의 실행 순서만 조립한다.
+// 입력 정규화는 member-list-request.lib.php, 조회 SQL은 member-list-query.lib.php,
+// 화면 배열은 member-list-view.lib.php, HTML 출력은 adm/member_list_parts/*.php를 확인한다.
 $sub_menu = "200100";
 require_once './_common.php';
 

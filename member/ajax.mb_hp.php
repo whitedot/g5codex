@@ -1,4 +1,5 @@
 <?php
+// 검증 지도: 휴대폰 AJAX 중복 검사 controller다. 요청 정규화는 request-ajax, 검증/응답 종료는 validation-ajax/flow-ajax에서 처리한다.
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/register.lib.php');
 

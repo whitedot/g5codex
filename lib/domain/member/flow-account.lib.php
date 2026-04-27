@@ -3,6 +3,9 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
+// 회원 계정 확인, 탈퇴, 본인확인 갱신 완료 흐름을 담당한다.
+// 요청 정규화는 request-account.lib.php, 상태 검증은 validation-account.lib.php에서 처리한다.
+
 function member_prepare_confirm_url($url)
 {
     while (1) {
