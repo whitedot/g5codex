@@ -8,7 +8,7 @@ if (!defined('_GNUBOARD_')) {
 
 function member_issue_password_lost_mail($email, array $mb)
 {
-    $change_password = random_int(100000, 999999);
+    $change_password = g5_secure_random_int(100000, 999999);
     $mb_lost_certify = get_encrypt_string($change_password);
     $mb_nonce = g5_generate_hex_token(16);
 

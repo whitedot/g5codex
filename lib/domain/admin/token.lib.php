@@ -24,7 +24,7 @@ function admin_read_session_value($key, $default = '')
 
 function get_admin_token()
 {
-    $token = function_exists('_token') ? _token() : bin2hex(random_bytes(16));
+    $token = function_exists('_token') ? _token() : g5_generate_hex_token(16);
     set_session('ss_admin_token', $token);
 
     return $token;

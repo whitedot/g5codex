@@ -199,6 +199,35 @@ function get_random_token_string($length=6)
     return g5_generate_hex_token($length);
 }
 
+function g5_secure_random_bytes($bytes)
+{
+    $bytes = (int) $bytes;
+    if ($bytes < 1) {
+        $bytes = 16;
+    }
+
+    if (function_exists('random_bytes')) {
+        return random_bytes($bytes);
+    }
+
+    if (function_exists('openssl_random_pseudo_bytes')) {
+        $strong = false;
+        $random = openssl_random_pseudo_bytes($bytes, $strong);
+        if ($random !== false && $strong === true && strlen($random) === $bytes) {
+            return $random;
+        }
+    }
+
+    if (function_exists('mcrypt_create_iv') && defined('MCRYPT_DEV_URANDOM')) {
+        $random = mcrypt_create_iv($bytes, MCRYPT_DEV_URANDOM);
+        if ($random !== false && strlen($random) === $bytes) {
+            return $random;
+        }
+    }
+
+    throw new RuntimeException('보안 난수를 생성할 수 없습니다.');
+}
+
 function g5_generate_hex_token($bytes = 16)
 {
     $bytes = (int) $bytes;
@@ -206,7 +235,40 @@ function g5_generate_hex_token($bytes = 16)
         $bytes = 16;
     }
 
-    return bin2hex(random_bytes($bytes));
+    return bin2hex(g5_secure_random_bytes($bytes));
+}
+
+function g5_secure_random_int($min, $max)
+{
+    $min = (int) $min;
+    $max = (int) $max;
+
+    if (function_exists('random_int')) {
+        return random_int($min, $max);
+    }
+
+    if ($min > $max) {
+        throw new InvalidArgumentException('최소값은 최대값보다 작거나 같아야 합니다.');
+    }
+
+    $range = $max - $min;
+    if ($range === 0) {
+        return $min;
+    }
+
+    $bytes = (int) ceil(log($range + 1, 2) / 8);
+    $mask = (1 << (int) ceil(log($range + 1, 2))) - 1;
+
+    do {
+        $random = 0;
+        $random_bytes = g5_secure_random_bytes($bytes);
+        for ($i = 0; $i < $bytes; $i++) {
+            $random = ($random << 8) | ord($random_bytes[$i]);
+        }
+        $random = $random & $mask;
+    } while ($random > $range);
+
+    return $min + $random;
 }
 
 function g5_hash_equals($known_string, $user_string)
