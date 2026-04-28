@@ -72,7 +72,7 @@ function community_build_post_item(array $row, $can_read_secret, array $category
     );
 }
 
-function community_build_adjacent_post_item(array $post, $label)
+function community_build_adjacent_post_item(array $post, $label, array $member, $is_admin)
 {
     if (empty($post['post_id'])) {
         return array(
@@ -83,7 +83,7 @@ function community_build_adjacent_post_item(array $post, $label)
         );
     }
 
-    $title = !empty($post['is_secret']) ? '비밀글입니다.' : $post['title'];
+    $title = community_can_view_secret_post($post, $member, $is_admin) ? $post['title'] : '비밀글입니다.';
 
     return array(
         'exists' => true,
@@ -135,6 +135,7 @@ function community_build_list_view(array $request, array $board, array $member, 
 function community_build_view_view(array $board, array $post, array $member, $is_admin)
 {
     $can_view_content = community_can_view_secret_post($post, $member, $is_admin);
+    $display_title = $can_view_content ? $post['title'] : '비밀글입니다.';
     $content = $can_view_content ? nl2br(get_text($post['content'])) : '비밀글은 작성자와 관리자만 열람할 수 있습니다.';
     $comments = array();
     $attachments = array();
@@ -164,9 +165,9 @@ function community_build_view_view(array $board, array $post, array $member, $is
     }
 
     return array(
-        'title' => get_text($post['title']),
+        'title' => get_text($display_title),
         'board_name_text' => get_text($board['name']),
-        'title_text' => get_text($post['title']),
+        'title_text' => get_text($display_title),
         'author_text' => get_text($post['mb_id']),
         'date_text' => get_text(substr($post['created_at'], 0, 16)),
         'view_count_text' => (int) $post['view_count'],
@@ -184,8 +185,8 @@ function community_build_view_view(array $board, array $post, array $member, $is
         'can_comment' => $can_view_content && community_can_comment_board($board, $member),
         'comments' => $comments,
         'attachments' => $attachments,
-        'prev_post' => community_build_adjacent_post_item($prev_post, '이전글'),
-        'next_post' => community_build_adjacent_post_item($next_post, '다음글'),
+        'prev_post' => community_build_adjacent_post_item($prev_post, '이전글', $member, $is_admin),
+        'next_post' => community_build_adjacent_post_item($next_post, '다음글', $member, $is_admin),
         'comment_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_update.php'),
         'comment_delete_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_delete.php'),
     );
