@@ -403,7 +403,7 @@
     #config_tabs_nav,
     #member_tabs_nav {
         @apply sticky relative w-full;
-        background-color: var(--color-body-bg);
+        background-color: var(--color-default-100);
         top: var(--admin-shell-bar-height);
         z-index: 15;
         margin: 0 0 0.375rem;
@@ -566,12 +566,12 @@
 
     .admin-form-layout > .admin-form-sticky-actions {
         @apply sticky bottom-0 z-20 px-1 pb-5 pt-4;
-        background-color: var(--color-body-bg);
+        background-color: var(--color-default-100);
         background-image: linear-gradient(
             to bottom,
-            color-mix(in oklab, var(--color-body-bg) 0%, transparent) 0%,
-            color-mix(in oklab, var(--color-body-bg) 88%, transparent) 0.9rem,
-            var(--color-body-bg) 2rem
+            color-mix(in oklab, var(--color-default-100) 0%, transparent) 0%,
+            color-mix(in oklab, var(--color-default-100) 88%, transparent) 0.9rem,
+            var(--color-default-100) 2rem
         );
         backdrop-filter: blur(10px);
     }
