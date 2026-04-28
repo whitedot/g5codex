@@ -259,6 +259,7 @@ function community_admin_save_board(array $request)
         return array('error' => '게시판 정보를 저장하지 못했습니다.', 'board_id' => $request['board_id']);
     }
 
+    community_cache_delete_group('community:board:' . $request['board_id'] . ':');
     community_admin_save_board_categories($request['board_id'], $request['categories']);
     if (!community_rebuild_latest_board(array(
         'board_id' => $request['board_id'],

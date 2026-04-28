@@ -29,10 +29,22 @@ function community_fetch_board($board_id, $include_hidden = false)
     $status_sql = '';
 
     if (!$include_hidden) {
+        $cache_key = 'community:board:' . $board_id . ':active';
+        $cached_board = community_cache_get($cache_key);
+        if (is_array($cached_board)) {
+            return $cached_board;
+        }
+
         $status_sql = " and status = 'active' ";
     }
 
-    return sql_fetch_prepared(" select * from {$table} where board_id = :board_id {$status_sql} ", $params);
+    $board = sql_fetch_prepared(" select * from {$table} where board_id = :board_id {$status_sql} ", $params);
+
+    if (!$include_hidden && !empty($board['board_id'])) {
+        community_cache_set($cache_key, $board, 300);
+    }
+
+    return $board;
 }
 
 function community_fetch_board_list($include_hidden = false)
@@ -50,14 +62,24 @@ function community_fetch_board_categories($board_id)
 {
     global $g5;
 
+    $cache_key = 'community:board:' . $board_id . ':categories';
+    $cached_categories = community_cache_get($cache_key);
+    if (is_array($cached_categories)) {
+        return $cached_categories;
+    }
+
     $table = $g5['community_board_category_table'];
 
-    return sql_fetch_all_prepared(
+    $categories = sql_fetch_all_prepared(
         " select * from {$table}
           where board_id = :board_id and status = 'active'
           order by list_order asc, category_id asc ",
         array('board_id' => $board_id)
     );
+
+    community_cache_set($cache_key, $categories, 300);
+
+    return $categories;
 }
 
 function community_fetch_board_category($board_id, $category_id)
