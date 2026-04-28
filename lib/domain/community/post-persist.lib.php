@@ -52,10 +52,24 @@ function community_fetch_board_list($include_hidden = false)
     $table = community_board_table();
     $status_sql = $include_hidden ? '' : " where status = 'active' ";
 
-    return sql_fetch_all_prepared(
+    if (!$include_hidden) {
+        $cache_key = 'community:board:list:active';
+        $cached_boards = community_cache_get($cache_key);
+        if (is_array($cached_boards)) {
+            return $cached_boards;
+        }
+    }
+
+    $boards = sql_fetch_all_prepared(
         " select * from {$table} {$status_sql} order by list_order asc, board_id asc ",
         array()
     );
+
+    if (!$include_hidden) {
+        community_cache_set($cache_key, $boards, 300);
+    }
+
+    return $boards;
 }
 
 function community_fetch_board_categories($board_id)
