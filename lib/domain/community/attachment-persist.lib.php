@@ -198,6 +198,7 @@ function community_store_uploaded_attachments($post_id, array $board, array $fil
     }
 
     $saved_count = 0;
+    $saved_attachment_ids = array();
     foreach ($files as $file) {
         $safe_name = get_safe_filename(basename($file['name']));
         $stored_name = replace_filename($safe_name);
@@ -205,18 +206,29 @@ function community_store_uploaded_attachments($post_id, array $board, array $fil
         $absolute_path = G5_DATA_PATH . '/' . $relative_path;
 
         if (!is_uploaded_file($file['tmp_name']) || !move_uploaded_file($file['tmp_name'], $absolute_path)) {
+            community_cleanup_stored_attachments($post_id, $saved_attachment_ids);
+            community_update_post_attachment_count($post_id);
             return array('error' => '첨부파일을 저장하지 못했습니다.', 'count' => $saved_count);
         }
 
         @chmod($absolute_path, G5_FILE_PERMISSION);
 
-        community_insert_attachment(array(
+        $attachment_id = community_insert_attachment(array(
             'post_id' => $post_id,
             'path' => $relative_path,
             'original_name' => $safe_name,
             'mime_type' => (string) $file['type'],
             'file_size' => (int) $file['size'],
         ));
+
+        if (!$attachment_id) {
+            @unlink($absolute_path);
+            community_cleanup_stored_attachments($post_id, $saved_attachment_ids);
+            community_update_post_attachment_count($post_id);
+            return array('error' => '첨부파일 정보를 저장하지 못했습니다.', 'count' => $saved_count);
+        }
+
+        $saved_attachment_ids[] = $attachment_id;
         $saved_count++;
     }
 
@@ -229,7 +241,7 @@ function community_insert_attachment(array $payload)
 {
     $table = community_attachment_table();
 
-    return (bool) sql_query_prepared(
+    if (!sql_query_prepared(
         " insert into {$table}
             set post_id = :post_id,
                 storage = 'local',
@@ -248,7 +260,18 @@ function community_insert_attachment(array $payload)
             'created_at' => G5_TIME_YMDHIS,
         ),
         false
-    );
+    )) {
+        return 0;
+    }
+
+    return sql_insert_id();
+}
+
+function community_cleanup_stored_attachments($post_id, array $attachment_ids)
+{
+    foreach ($attachment_ids as $attachment_id) {
+        community_delete_attachment($post_id, $attachment_id);
+    }
 }
 
 function community_delete_attachment_file(array $attachment)
