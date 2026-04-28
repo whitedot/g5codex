@@ -41,6 +41,7 @@ if (!defined('_GNUBOARD_')) {
                 <td><?php echo $item['is_notice'] ? '공지' : $item['post_id_text']; ?></td>
                 <td>
                     <a href="<?php echo $item['view_url_attr']; ?>"><?php echo $item['title_text']; ?></a>
+                    <?php if ($item['is_new']) { ?><span>새글</span><?php } ?>
                     <?php if ($item['is_secret']) { ?><span>비밀</span><?php } ?>
                     <?php if ($item['comment_count_text'] > 0) { ?><span><?php echo $item['comment_count_text']; ?></span><?php } ?>
                 </td>

@@ -83,3 +83,27 @@ function community_fetch_latest_posts($board_id = '', $limit = 10)
         $params
     );
 }
+
+function community_build_latest_items($board_id, $limit, array $member)
+{
+    $items = array();
+
+    foreach (community_fetch_latest_posts($board_id, $limit) as $row) {
+        $board = community_fetch_board($row['board_id']);
+        if (empty($board['board_id']) || !community_can_read_board($board, $member)) {
+            continue;
+        }
+
+        $items[] = array(
+            'board_name_text' => get_text($board['name']),
+            'title_text' => get_text($row['title']),
+            'author_text' => get_text($row['mb_id']),
+            'comment_count_text' => (int) $row['comment_count'],
+            'date_text' => get_text(substr($row['last_activity_at'], 0, 16)),
+            'is_new' => community_is_new_datetime($row['created_at']),
+            'view_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($row['board_id']) . '&post_id=' . (int) $row['post_id']),
+        );
+    }
+
+    return $items;
+}

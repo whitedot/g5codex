@@ -8,7 +8,7 @@ if (!defined('_GNUBOARD_')) {
     <header>
         <p><?php echo $community_view['board_name_text']; ?></p>
         <h2><?php echo $community_view['title_text']; ?></h2>
-        <p><?php echo $community_view['author_text']; ?> · <?php echo $community_view['date_text']; ?></p>
+        <p><?php echo $community_view['author_text']; ?> · <?php echo $community_view['date_text']; ?><?php if ($community_view['is_new']) { ?> · 새글<?php } ?></p>
     </header>
 
     <div class="community-post-content">
@@ -79,4 +79,13 @@ if (!defined('_GNUBOARD_')) {
             </form>
         <?php } ?>
     </div>
+
+    <nav class="community-post-nav">
+        <?php if ($community_view['prev_post']['exists']) { ?>
+            <a href="<?php echo $community_view['prev_post']['url_attr']; ?>"><?php echo $community_view['prev_post']['label_text']; ?>: <?php echo $community_view['prev_post']['title_text']; ?></a>
+        <?php } ?>
+        <?php if ($community_view['next_post']['exists']) { ?>
+            <a href="<?php echo $community_view['next_post']['url_attr']; ?>"><?php echo $community_view['next_post']['label_text']; ?>: <?php echo $community_view['next_post']['title_text']; ?></a>
+        <?php } ?>
+    </nav>
 </article>

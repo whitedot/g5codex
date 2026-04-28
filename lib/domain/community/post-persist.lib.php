@@ -135,6 +135,34 @@ function community_fetch_post_in_board($board_id, $post_id, $include_deleted = f
     );
 }
 
+function community_fetch_adjacent_post($board_id, array $post, $direction = 'prev')
+{
+    $table = community_post_table();
+    $operator = $direction === 'next' ? '>' : '<';
+    $order = $direction === 'next' ? 'asc' : 'desc';
+    $params = array(
+        'board_id' => $board_id,
+        'post_id' => (int) $post['post_id'],
+    );
+    $category_sql = '';
+
+    if ((int) $post['category_id'] > 0) {
+        $category_sql = ' and category_id = :category_id ';
+        $params['category_id'] = (int) $post['category_id'];
+    }
+
+    return sql_fetch_prepared(
+        " select * from {$table}
+          where board_id = :board_id
+            and status = 'published'
+            {$category_sql}
+            and post_id {$operator} :post_id
+          order by post_id {$order}
+          limit 1 ",
+        $params
+    );
+}
+
 function community_fetch_post_list_page($board_id, array $request = array())
 {
     $table = community_post_table();

@@ -18,6 +18,13 @@ function community_escape_textarea($value)
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
+function community_is_new_datetime($datetime, $seconds = 86400)
+{
+    $timestamp = strtotime((string) $datetime);
+
+    return $timestamp !== false && $timestamp >= (G5_SERVER_TIME - $seconds);
+}
+
 function community_category_options(array $categories, $selected_id)
 {
     $options = array();
@@ -46,7 +53,29 @@ function community_build_post_item(array $row, $can_read_secret)
         'comment_count_text' => (int) $row['comment_count'],
         'is_notice' => !empty($row['is_notice']),
         'is_secret' => $is_secret,
+        'is_new' => community_is_new_datetime($row['created_at']),
         'view_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($row['board_id']) . '&post_id=' . (int) $row['post_id']),
+    );
+}
+
+function community_build_adjacent_post_item(array $post, $label)
+{
+    if (empty($post['post_id'])) {
+        return array(
+            'exists' => false,
+            'label_text' => get_text($label),
+            'title_text' => '',
+            'url_attr' => '',
+        );
+    }
+
+    $title = !empty($post['is_secret']) ? '비밀글입니다.' : $post['title'];
+
+    return array(
+        'exists' => true,
+        'label_text' => get_text($label),
+        'title_text' => get_text($title),
+        'url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($post['board_id']) . '&post_id=' . (int) $post['post_id']),
     );
 }
 
@@ -88,6 +117,8 @@ function community_build_view_view(array $board, array $post, array $member, $is
     $content = $can_view_content ? nl2br(get_text($post['content'])) : '비밀글은 작성자와 관리자만 열람할 수 있습니다.';
     $comments = array();
     $attachments = array();
+    $prev_post = community_fetch_adjacent_post($board['board_id'], $post, 'prev');
+    $next_post = community_fetch_adjacent_post($board['board_id'], $post, 'next');
 
     if ($can_view_content && !empty($board['use_comment'])) {
         foreach (community_fetch_post_comments($post['post_id']) as $comment) {
@@ -118,6 +149,7 @@ function community_build_view_view(array $board, array $post, array $member, $is
         'author_text' => get_text($post['mb_id']),
         'date_text' => get_text(substr($post['created_at'], 0, 16)),
         'content_html' => $content,
+        'is_new' => community_is_new_datetime($post['created_at']),
         'list_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/board.php?board_id=' . rawurlencode($board['board_id'])),
         'write_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id'])),
         'edit_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id']) . '&post_id=' . (int) $post['post_id']),
@@ -130,6 +162,8 @@ function community_build_view_view(array $board, array $post, array $member, $is
         'can_comment' => $can_view_content && community_can_comment_board($board, $member),
         'comments' => $comments,
         'attachments' => $attachments,
+        'prev_post' => community_build_adjacent_post_item($prev_post, '이전글'),
+        'next_post' => community_build_adjacent_post_item($next_post, '다음글'),
         'comment_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_update.php'),
         'comment_delete_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_delete.php'),
     );
