@@ -576,6 +576,19 @@
         backdrop-filter: blur(10px);
     }
 
+    .admin-form-actions {
+        @apply flex flex-wrap items-center gap-2;
+    }
+
+    .admin-form-actions-primary {
+        @apply justify-end;
+    }
+
+    .admin-form-actions-split > button[type="submit"],
+    .admin-form-actions-split > input[type="submit"] {
+        margin-left: auto;
+    }
+
     .admin-form-layout > section.card {
         @apply overflow-hidden;
     }
