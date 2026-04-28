@@ -130,6 +130,20 @@ function community_admin_build_notification_log_qstr(array $request, array $over
     return http_build_query($query);
 }
 
+function community_admin_read_notification_log_update_request(array $post)
+{
+    $action = community_admin_read_scalar($post, 'action', '');
+    if (!in_array($action, array('retry'), true)) {
+        $action = '';
+    }
+
+    return array(
+        'action' => $action,
+        'notification_ids' => community_admin_read_selected_ids($post, 'notification_id'),
+        'return_query' => community_admin_read_scalar($post, 'return_query', ''),
+    );
+}
+
 function community_admin_post_status_values()
 {
     return array('published', 'hidden', 'deleted');

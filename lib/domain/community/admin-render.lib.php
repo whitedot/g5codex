@@ -179,6 +179,7 @@ function community_admin_build_notification_status_options($selected)
 function community_admin_build_notification_item(array $row)
 {
     return array(
+        'notification_id_attr' => (int) $row['notification_id'],
         'id_text' => (int) $row['notification_id'],
         'event_type_text' => get_text($row['event_type']),
         'target_text' => '글 ' . (int) $row['post_id'] . ' / 댓글 ' . (int) $row['comment_id'],
@@ -213,8 +214,11 @@ function community_admin_build_notification_log_view(array $request, array $conf
         'items' => $items,
         'empty_message' => '알림 로그가 없습니다.',
         'search_action_attr' => admin_escape_attr('./community_notification_log.php'),
+        'update_action_attr' => admin_escape_attr('./community_notification_log_update.php'),
+        'return_query_attr' => admin_escape_attr(community_admin_build_notification_log_qstr($request)),
         'stx_value' => get_sanitize_input($request['stx']),
         'status_options' => community_admin_build_notification_status_options($request['status']),
+        'admin_token' => get_admin_token(),
         'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
     );
 }

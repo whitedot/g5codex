@@ -330,6 +330,82 @@ function community_admin_fetch_notification_log_page(array $request)
     );
 }
 
+function community_admin_fetch_notification_log($notification_id)
+{
+    $table = community_admin_notification_table();
+
+    return sql_fetch_prepared(
+        " select * from {$table} where notification_id = :notification_id ",
+        array('notification_id' => (int) $notification_id)
+    );
+}
+
+function community_admin_retry_notification(array $row)
+{
+    if (!in_array($row['status'], array('failed', 'skipped', 'pending'), true)) {
+        return false;
+    }
+
+    $post = community_fetch_post($row['post_id'], true);
+    if (empty($post['post_id'])) {
+        return false;
+    }
+
+    $board = community_fetch_board($post['board_id'], true);
+    if (empty($board['board_id'])) {
+        return false;
+    }
+
+    $event_type = (string) $row['event_type'];
+    $target = array(
+        'post_id' => (int) $row['post_id'],
+        'comment_id' => (int) $row['comment_id'],
+    );
+    $recipient = array(
+        'mb_id' => (string) $row['recipient_mb_id'],
+        'mb_email' => (string) $row['recipient_email'],
+    );
+    $subject = (string) $row['subject'];
+
+    if ($event_type === 'comment_created') {
+        $comment = community_fetch_comment($row['comment_id']);
+        if (empty($comment['comment_id'])) {
+            return false;
+        }
+
+        $content = community_build_comment_notification_content($board, $post, $comment);
+    } elseif ($event_type === 'post_created') {
+        $content = community_build_post_notification_content($board, $post);
+    } else {
+        return false;
+    }
+
+    community_send_notification_mail($event_type, $target, $recipient, $subject, $content);
+
+    return true;
+}
+
+function community_admin_apply_notification_action(array $request)
+{
+    if ($request['action'] === '' || empty($request['notification_ids'])) {
+        return array('error' => '처리할 알림 로그와 작업을 선택하세요.', 'count' => 0);
+    }
+
+    $count = 0;
+    foreach ($request['notification_ids'] as $notification_id) {
+        $row = community_admin_fetch_notification_log($notification_id);
+        if (empty($row['notification_id'])) {
+            continue;
+        }
+
+        if ($request['action'] === 'retry' && community_admin_retry_notification($row)) {
+            $count++;
+        }
+    }
+
+    return array('error' => '', 'count' => $count);
+}
+
 function community_admin_post_table()
 {
     global $g5;

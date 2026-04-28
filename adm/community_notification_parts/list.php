@@ -24,39 +24,54 @@ if (!defined('_GNUBOARD_')) {
     </div>
 </form>
 
-<div class="tbl_head01 tbl_wrap">
-    <table>
-        <caption>커뮤니티 알림 로그</caption>
-        <thead>
-        <tr>
-            <th scope="col">번호</th>
-            <th scope="col">이벤트</th>
-            <th scope="col">대상</th>
-            <th scope="col">수신자</th>
-            <th scope="col">제목</th>
-            <th scope="col">상태</th>
-            <th scope="col">오류</th>
-            <th scope="col">생성일</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($community_notification_view['items'] as $item) { ?>
+<form method="post" action="<?php echo $community_notification_view['update_action_attr']; ?>">
+    <input type="hidden" name="token" value="<?php echo $community_notification_view['admin_token']; ?>">
+    <input type="hidden" name="return_query" value="<?php echo $community_notification_view['return_query_attr']; ?>">
+
+    <div class="tbl_head01 tbl_wrap">
+        <table>
+            <caption>커뮤니티 알림 로그</caption>
+            <thead>
             <tr>
-                <td><?php echo $item['id_text']; ?></td>
-                <td><?php echo $item['event_type_text']; ?></td>
-                <td><?php echo $item['target_text']; ?></td>
-                <td><?php echo $item['recipient_text']; ?></td>
-                <td><?php echo $item['subject_text']; ?></td>
-                <td><?php echo $item['status_text']; ?></td>
-                <td><?php echo $item['error_text']; ?></td>
-                <td><?php echo $item['created_at_text']; ?></td>
+                <th scope="col"><input type="checkbox" onclick="var checked=this.checked; document.querySelectorAll('input[name=&quot;notification_id[]&quot;]').forEach(function(el){el.checked = checked;});"></th>
+                <th scope="col">번호</th>
+                <th scope="col">이벤트</th>
+                <th scope="col">대상</th>
+                <th scope="col">수신자</th>
+                <th scope="col">제목</th>
+                <th scope="col">상태</th>
+                <th scope="col">오류</th>
+                <th scope="col">생성일</th>
             </tr>
-        <?php } ?>
-        <?php if (empty($community_notification_view['items'])) { ?>
-            <tr><td colspan="8" class="ui-table-empty"><?php echo $community_notification_view['empty_message']; ?></td></tr>
-        <?php } ?>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+            <?php foreach ($community_notification_view['items'] as $item) { ?>
+                <tr>
+                    <td><input type="checkbox" name="notification_id[]" value="<?php echo $item['notification_id_attr']; ?>"></td>
+                    <td><?php echo $item['id_text']; ?></td>
+                    <td><?php echo $item['event_type_text']; ?></td>
+                    <td><?php echo $item['target_text']; ?></td>
+                    <td><?php echo $item['recipient_text']; ?></td>
+                    <td><?php echo $item['subject_text']; ?></td>
+                    <td><?php echo $item['status_text']; ?></td>
+                    <td><?php echo $item['error_text']; ?></td>
+                    <td><?php echo $item['created_at_text']; ?></td>
+                </tr>
+            <?php } ?>
+            <?php if (empty($community_notification_view['items'])) { ?>
+                <tr><td colspan="9" class="ui-table-empty"><?php echo $community_notification_view['empty_message']; ?></td></tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="member-list-actions">
+        <select name="action" class="form-select">
+            <option value="">선택 작업</option>
+            <option value="retry">재발송</option>
+        </select>
+        <button type="submit" class="btn btn-solid-primary">적용</button>
+    </div>
+</form>
 
 <?php echo $community_notification_view['paging_html']; ?>
