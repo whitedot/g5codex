@@ -44,6 +44,23 @@ Important keys:
 - `dbconfig_file`: DB config filename under `data/`
 - `smtp_host`, `smtp_port`: mail transport settings
 
+## Frontend Asset Build
+
+Tailwind 4 source files live in:
+
+```text
+tailwind4/
+```
+
+Install dependencies and rebuild generated CSS with:
+
+```text
+npm ci
+npm run build
+```
+
+The build writes generated assets to `css/common.css`, `css/theme.css`, and `adm/css/admin.css`.
+
 ## Remaining Runtime Directories
 
 - `adm/`: admin pages and admin assets

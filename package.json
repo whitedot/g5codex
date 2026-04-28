@@ -1,0 +1,18 @@
+{
+  "name": "g5codex",
+  "version": "1.0.0",
+  "description": "Runtime assets for the G5 member-only application.",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "npm run build:theme && npm run build:theme:site && npm run build:admin",
+    "build:theme": "tailwindcss -i ./tailwind4/common.css -o ./css/common.css --minify",
+    "build:theme:site": "tailwindcss -i ./tailwind4/theme.css -o ./css/theme.css --minify",
+    "build:admin": "tailwindcss -i ./tailwind4/admin.css -o ./adm/css/admin.css --minify"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "4.2.4",
+    "@tailwindcss/typography": "0.5.19",
+    "tailwindcss": "4.2.4"
+  }
+}
