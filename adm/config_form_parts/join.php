@@ -40,18 +40,6 @@
 
             <div class="af-row">
                 <div class="af-label">
-                    <label for="cf_leave_day" class="form-label">회원탈퇴후 삭제일</label>
-                </div>
-                <div class="af-field">
-                    <div class="af-inline">
-                        <input type="text" name="cf_leave_day" value="<?php echo $config_join_view['cf_leave_day']; ?>" id="cf_leave_day" size="2" class="form-input">
-                        <span>일 후 자동 삭제</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="af-row">
-                <div class="af-label">
                     <label for="cf_prohibit_id" class="form-label">아이디,닉네임 금지단어</label>
                 </div>
                 <div class="af-field">

@@ -83,7 +83,6 @@ function admin_build_config_join_view(array $config)
         'cf_use_hp_checked' => admin_config_value($config, 'cf_use_hp', 0) ? ' checked' : '',
         'cf_req_hp_checked' => admin_config_value($config, 'cf_req_hp', 0) ? ' checked' : '',
         'cf_register_level_options' => admin_build_member_level_options(1, 9, admin_config_value($config, 'cf_register_level', '')),
-        'cf_leave_day' => (int) admin_config_value($config, 'cf_leave_day', 0),
         'cf_prohibit_id' => get_sanitize_input(admin_config_value($config, 'cf_prohibit_id', '')),
         'cf_prohibit_email' => get_sanitize_input(admin_config_value($config, 'cf_prohibit_email', '')),
         'cf_stipulation' => html_purifier(admin_config_value($config, 'cf_stipulation', '')),
