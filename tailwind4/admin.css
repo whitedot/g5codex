@@ -305,6 +305,10 @@
         @apply block rounded-lg px-3 py-2 text-sm text-default-600 transition hover:bg-default-100 hover:text-slate-900;
     }
 
+    .ui-link-primary {
+        @apply font-medium text-primary underline underline-offset-2 transition hover:text-primary-hover;
+    }
+
     #container {
         @apply px-4 pb-8 pt-6 lg:px-8;
     }
@@ -588,6 +592,10 @@
     .admin-form-actions-split > input[type="submit"],
     .admin-form-actions-split > [data-admin-member-export-download] {
         margin-left: auto;
+    }
+
+    .admin-page-member-export [data-admin-member-export] {
+        @apply grid gap-5;
     }
 
     .admin-form-layout > section.card {

@@ -158,11 +158,11 @@
                     </div>
                 </div>
             </div>
-
-            <div class="admin-export-filter-actions admin-form-sticky-actions admin-form-actions admin-form-actions-split">
-                <a href="<?php echo $member_export_filter_view['reset_url_attr']; ?>" class="btn btn-surface-default-soft">초기화</a>
-                <button type="button" class="btn btn-solid-primary" data-admin-member-export-download <?php echo $member_export_filter_view['download_disabled_attr']; ?>><?php echo $member_export_filter_view['download_button_text']; ?></button>
-            </div>
         </div>
     </fieldset>
 </form>
+
+<div class="admin-export-filter-actions admin-form-sticky-actions admin-form-actions admin-form-actions-split">
+    <a href="<?php echo $member_export_filter_view['reset_url_attr']; ?>" class="btn btn-surface-default-soft">초기화</a>
+    <button type="button" class="btn btn-solid-primary" data-admin-member-export-download <?php echo $member_export_filter_view['download_disabled_attr']; ?>><?php echo $member_export_filter_view['download_button_text']; ?></button>
+</div>

@@ -69,16 +69,16 @@ function admin_build_member_export_download_button_text($total_count, $total_err
     return '엑셀다운로드(' . admin_format_count_text($total_count, '건') . ')';
 }
 
-function admin_build_member_export_filter_title_count_text($total_count, $total_error)
+function admin_build_member_export_filter_title_count_text($member_total_count, $member_total_error)
 {
-    if ((string) $total_error !== '') {
+    if ((string) $member_total_error !== '') {
         return '';
     }
 
-    return ' (총회원수 ' . admin_format_count_text($total_count, '명') . ')';
+    return ' (총회원수 ' . admin_format_count_text($member_total_count, '명') . ')';
 }
 
-function admin_build_member_export_filter_view(array $filter_state, array $option_items, array $links, $form_token, $environment_ready, $total_count, $total_error)
+function admin_build_member_export_filter_view(array $filter_state, array $option_items, array $links, $form_token, $environment_ready, $total_count, $total_error, $member_total_count, $member_total_error)
 {
     $params = $filter_state['params'];
     $ad_range_only = !empty($params['ad_range_only']);
@@ -111,7 +111,7 @@ function admin_build_member_export_filter_view(array $filter_state, array $optio
         'ad_range_option_items' => $option_items['ad_range'],
         'download_disabled_attr' => $environment_ready ? '' : 'disabled aria-disabled="true"',
         'download_button_text' => get_text(admin_build_member_export_download_button_text($total_count, $total_error)),
-        'filter_title_count_text' => get_text(admin_build_member_export_filter_title_count_text($total_count, $total_error)),
+        'filter_title_count_text' => get_text(admin_build_member_export_filter_title_count_text($member_total_count, $member_total_error)),
         'reset_url_attr' => admin_escape_attr($links['reset_url']),
     );
 }
@@ -201,11 +201,19 @@ function admin_build_member_export_page_view(array $query, array $config, array 
     $params = admin_read_member_export_params($query);
     $total_count = 0;
     $total_error = '';
+    $member_total_count = 0;
+    $member_total_error = '';
 
     try {
         $total_count = admin_count_member_export_members($params, $runtime['member_table']);
     } catch (Exception $e) {
         $total_error = $e->getMessage();
+    }
+
+    try {
+        $member_total_count = admin_count_member_export_total_members($runtime['member_table']);
+    } catch (Exception $e) {
+        $member_total_error = $e->getMessage();
     }
 
     $filter_state = admin_build_member_export_filter_state($query, $config, $params);
@@ -227,8 +235,10 @@ function admin_build_member_export_page_view(array $query, array $config, array 
         'admin_page_subtitle' => '회원 조건을 조합해 내보내기 범위를 좁히고, 대용량 다운로드 진행 상태까지 한 화면에서 확인하세요.',
         'total_count' => $total_count,
         'total_error' => $total_error,
+        'member_total_count' => $member_total_count,
+        'member_total_error' => $member_total_error,
         'total_view' => admin_build_member_export_total_view($total_count, $total_error),
-        'filter_view' => admin_build_member_export_filter_view($filter_state, $option_items, $links, $form_token, $environment_ready, $total_count, $total_error),
+        'filter_view' => admin_build_member_export_filter_view($filter_state, $option_items, $links, $form_token, $environment_ready, $total_count, $total_error, $member_total_count, $member_total_error),
         'client_config_attrs' => admin_build_member_export_client_config_attrs($client_config),
         'environment_ready' => $environment_ready,
         'environment_ready_attr' => $environment_ready ? '1' : '0',

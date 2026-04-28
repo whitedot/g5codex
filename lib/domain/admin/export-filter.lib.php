@@ -21,6 +21,18 @@ function admin_count_member_export_members(array $params, $member_table)
     return (int) $row['cnt'];
 }
 
+function admin_count_member_export_total_members($member_table)
+{
+    $result = sql_query_prepared("SELECT COUNT(*) as cnt FROM {$member_table}", array());
+    if (!$result) {
+        throw new Exception('전체 회원수 조회에 실패하였습니다. 다시 시도해주세요.');
+    }
+
+    $row = sql_fetch_array($result);
+
+    return (int) $row['cnt'];
+}
+
 function admin_build_member_export_date_condition($column_name, $date_start, $date_end, $param_prefix)
 {
     if ($date_start && $date_end) {
