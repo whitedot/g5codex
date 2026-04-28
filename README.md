@@ -81,3 +81,7 @@ After deployment, verify these flows with a real database:
 6. Admin login
 7. Admin member list and member edit
 8. Member XLSX export
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE.txt`.

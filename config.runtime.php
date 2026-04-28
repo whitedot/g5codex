@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    'app_name' => 'G5 Member Runtime',
     'domain' => '',
     'https_domain' => '',
     'cookie_domain' => '',
