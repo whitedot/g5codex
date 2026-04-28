@@ -724,7 +724,7 @@ function community_admin_health_table_checks()
             'label' => '테이블: ' . $label,
             'status' => $exists ? 'ok' : 'error',
             'message' => $exists ? $table . ' 확인됨' : $table . ' 없음',
-            'action' => $exists ? '' : '신규 설치 또는 sql/community_schema.sql 적용 필요',
+            'action' => $exists ? '' : '신규 설치 또는 install/community_schema.sql 적용 필요',
         );
     }
 

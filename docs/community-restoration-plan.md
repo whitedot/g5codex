@@ -1133,11 +1133,11 @@ community:post:view:123
 
 현재 저장소에는 명확한 DB migration 체계가 없다. 초기에는 다음 중 하나로 시작한다.
 
-1. `sql/community_schema.sql` 추가
+1. `install/community_schema.sql` 추가
 2. 관리자 점검 화면에서 누락 테이블 생성
 3. 별도 CLI 설치 스크립트 추가
 
-권장 시작안은 SQL 파일이다. 신규 설치는 설치 프로그램이 `sql/community_schema.sql`을 함께 적용한다. 기존 운영 DB에 대한 변경은 운영 실수 가능성이 있으므로 관리자 확인 후 SQL 파일을 적용하는 방식으로 둔다.
+권장 시작안은 설치 프로그램 내부 SQL 파일이다. 신규 설치는 설치 프로그램이 `install/community_schema.sql`을 함께 적용한다. 기존 운영 DB에 대한 변경은 운영 실수 가능성이 있으므로 관리자 확인 후 SQL 파일을 적용하는 방식으로 둔다.
 
 마이그레이션 원칙:
 
