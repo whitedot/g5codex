@@ -565,7 +565,7 @@
     }
 
     .admin-form-layout > .admin-form-sticky-actions {
-        @apply sticky bottom-0 z-20 px-1 pb-5 pt-4;
+        @apply sticky bottom-0 z-20 px-5 pb-5 pt-4;
         background-color: var(--color-default-100);
         background-image: linear-gradient(
             to bottom,
@@ -590,7 +590,7 @@
     }
 
     .admin-form-layout > section.card {
-        @apply overflow-hidden;
+        @apply mb-5 overflow-hidden;
     }
 
     .admin-form-layout > section.card > .card-header {
