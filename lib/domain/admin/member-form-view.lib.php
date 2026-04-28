@@ -123,6 +123,7 @@ function admin_build_member_form_view(array $request, array $member, $is_admin, 
     $title_prefix = $mb['mb_intercept_date'] ? '차단된 ' : '';
 
     return array(
+        'w' => $w,
         'mb' => $mb,
         'display_mb_id' => member_get_display_id($mb),
         'mask_preserved_id' => member_should_mask_preserved_id($mb),
