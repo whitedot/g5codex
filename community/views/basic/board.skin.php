@@ -30,6 +30,7 @@ if (!defined('_GNUBOARD_')) {
         <thead>
         <tr>
             <th scope="col">번호</th>
+            <?php if (!empty($community_list_view['category_options'])) { ?><th scope="col">분류</th><?php } ?>
             <th scope="col">제목</th>
             <th scope="col">작성자</th>
             <th scope="col">조회</th>
@@ -40,6 +41,7 @@ if (!defined('_GNUBOARD_')) {
         <?php foreach ($community_list_view['items'] as $item) { ?>
             <tr<?php echo $item['is_notice'] ? ' class="is-notice"' : ''; ?>>
                 <td><?php echo $item['is_notice'] ? '공지' : $item['post_id_text']; ?></td>
+                <?php if (!empty($community_list_view['category_options'])) { ?><td><?php echo $item['category_name_text']; ?></td><?php } ?>
                 <td>
                     <a href="<?php echo $item['view_url_attr']; ?>"><?php echo $item['title_text']; ?></a>
                     <?php if ($item['is_new']) { ?><span>새글</span><?php } ?>
@@ -52,7 +54,7 @@ if (!defined('_GNUBOARD_')) {
             </tr>
         <?php } ?>
         <?php if (empty($community_list_view['items'])) { ?>
-            <tr><td colspan="5"><?php echo $community_list_view['empty_message']; ?></td></tr>
+            <tr><td colspan="<?php echo !empty($community_list_view['category_options']) ? 6 : 5; ?>"><?php echo $community_list_view['empty_message']; ?></td></tr>
         <?php } ?>
         </tbody>
     </table>

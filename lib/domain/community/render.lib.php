@@ -40,13 +40,26 @@ function community_category_options(array $categories, $selected_id)
     return $options;
 }
 
-function community_build_post_item(array $row, $can_read_secret)
+function community_category_name_map(array $categories)
+{
+    $map = array();
+    foreach ($categories as $category) {
+        $map[(int) $category['category_id']] = $category['name'];
+    }
+
+    return $map;
+}
+
+function community_build_post_item(array $row, $can_read_secret, array $category_map = array())
 {
     $is_secret = !empty($row['is_secret']);
     $title = $is_secret && !$can_read_secret ? '비밀글입니다.' : $row['title'];
+    $category_id = (int) $row['category_id'];
+    $category_name = $category_id > 0 && isset($category_map[$category_id]) ? $category_map[$category_id] : '';
 
     return array(
         'post_id_text' => (int) $row['post_id'],
+        'category_name_text' => get_text($category_name),
         'title_text' => get_text($title),
         'author_text' => get_text($row['mb_id']),
         'date_text' => get_text(substr($row['created_at'], 0, 16)),
@@ -83,11 +96,12 @@ function community_build_adjacent_post_item(array $post, $label)
 function community_build_list_view(array $request, array $board, array $member, $is_admin)
 {
     $categories = !empty($board['use_category']) ? community_fetch_board_categories($board['board_id']) : array();
+    $category_map = community_category_name_map($categories);
     $page_data = community_fetch_post_list_page($board['board_id'], $request);
     $items = array();
 
     foreach ($page_data['rows'] as $row) {
-        $items[] = community_build_post_item($row, community_can_view_secret_post($row, $member, $is_admin));
+        $items[] = community_build_post_item($row, community_can_view_secret_post($row, $member, $is_admin), $category_map);
     }
 
     $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
