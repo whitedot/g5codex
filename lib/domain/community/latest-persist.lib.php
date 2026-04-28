@@ -1,0 +1,85 @@
+<?php
+if (!defined('_GNUBOARD_')) {
+    exit;
+}
+
+function community_latest_table()
+{
+    global $g5;
+
+    return $g5['community_latest_table'];
+}
+
+function community_upsert_latest_post(array $board, array $post)
+{
+    if (empty($board['use_latest']) || empty($post['post_id']) || $post['status'] !== 'published') {
+        return false;
+    }
+
+    $table = community_latest_table();
+    $title = !empty($post['is_secret']) ? '비밀글입니다.' : $post['title'];
+
+    return (bool) sql_query_prepared(
+        " insert into {$table}
+            set scope = 'board',
+                board_id = :board_id,
+                post_id = :post_id,
+                title = :title,
+                mb_id = :mb_id,
+                comment_count = :comment_count,
+                created_at = :created_at,
+                last_activity_at = :last_activity_at,
+                updated_at = :updated_at
+          on duplicate key update
+                title = values(title),
+                mb_id = values(mb_id),
+                comment_count = values(comment_count),
+                last_activity_at = values(last_activity_at),
+                updated_at = values(updated_at) ",
+        array(
+            'board_id' => $board['board_id'],
+            'post_id' => (int) $post['post_id'],
+            'title' => $title,
+            'mb_id' => $post['mb_id'],
+            'comment_count' => (int) $post['comment_count'],
+            'created_at' => $post['created_at'],
+            'last_activity_at' => $post['last_activity_at'],
+            'updated_at' => G5_TIME_YMDHIS,
+        ),
+        false
+    );
+}
+
+function community_delete_latest_post($board_id, $post_id)
+{
+    $table = community_latest_table();
+
+    return (bool) sql_query_prepared(
+        " delete from {$table}
+          where scope = 'board' and board_id = :board_id and post_id = :post_id ",
+        array(
+            'board_id' => $board_id,
+            'post_id' => (int) $post_id,
+        ),
+        false
+    );
+}
+
+function community_fetch_latest_posts($board_id = '', $limit = 10)
+{
+    $table = community_latest_table();
+    $params = array('page_rows' => max(1, min(50, (int) $limit)));
+    $where = " where scope = 'board' ";
+
+    if ($board_id !== '') {
+        $where .= " and board_id = :board_id ";
+        $params['board_id'] = $board_id;
+    }
+
+    return sql_fetch_all_prepared(
+        " select * from {$table} {$where}
+          order by last_activity_at desc, post_id desc
+          limit :page_rows ",
+        $params
+    );
+}

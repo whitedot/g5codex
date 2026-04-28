@@ -90,19 +90,26 @@ $is_install = sql_table_exists($table_prefix . 'config', $dblink);
 
 if ($g5_install || $is_install === false) {
     // 테이블 생성 ------------------------------------
-    $file = implode('', file('./gnuboard5.sql'));
-    eval("\$file = \"$file\";");
+    $schema_files = array(
+        './gnuboard5.sql',
+        '../sql/community_schema.sql',
+    );
 
-    $file = preg_replace('/^--.*$/m', '', $file);
-    $file = preg_replace('/`g5_([^`]+`)/', '`'.$table_prefix.'$1', $file);
-    $f = explode(';', $file);
-    for ($i=0; $i<count($f); $i++) {
-        if (trim($f[$i]) == '') {
-            continue;
+    foreach ($schema_files as $schema_file) {
+        $file = implode('', file($schema_file));
+        eval("\$file = \"$file\";");
+
+        $file = preg_replace('/^--.*$/m', '', $file);
+        $file = preg_replace('/`g5_([^`]+`)/', '`'.$table_prefix.'$1', $file);
+        $f = explode(';', $file);
+        for ($i=0; $i<count($f); $i++) {
+            if (trim($f[$i]) == '') {
+                continue;
+            }
+
+            $sql = get_db_create_replace($f[$i]);
+            sql_query($sql, true, $dblink);
         }
-
-        $sql = get_db_create_replace($f[$i]);
-        sql_query($sql, true, $dblink);
     }
 }
 
@@ -230,6 +237,16 @@ fwrite($f, "\$g5['member_table'] = G5_TABLE_PREFIX.'member'; // 회원 테이블
 fwrite($f, "\$g5['uniqid_table'] = G5_TABLE_PREFIX.'uniqid'; // 유니크한 값을 만드는 테이블\n");
 fwrite($f, "\$g5['cert_history_table'] = G5_TABLE_PREFIX.'cert_history'; // 인증내역 테이블\n");
 fwrite($f, "\$g5['member_cert_history_table'] = G5_TABLE_PREFIX.'member_cert_history'; // 본인인증 변경내역 테이블\n");
+fwrite($f, "\$g5['community_board_table'] = G5_TABLE_PREFIX.'community_board'; // 커뮤니티 게시판 테이블\n");
+fwrite($f, "\$g5['community_board_category_table'] = G5_TABLE_PREFIX.'community_board_category'; // 커뮤니티 게시판 카테고리 테이블\n");
+fwrite($f, "\$g5['community_post_table'] = G5_TABLE_PREFIX.'community_post'; // 커뮤니티 게시글 테이블\n");
+fwrite($f, "\$g5['community_comment_table'] = G5_TABLE_PREFIX.'community_comment'; // 커뮤니티 댓글 테이블\n");
+fwrite($f, "\$g5['community_latest_table'] = G5_TABLE_PREFIX.'community_latest_index'; // 커뮤니티 최신글 인덱스 테이블\n");
+fwrite($f, "\$g5['community_notification_table'] = G5_TABLE_PREFIX.'community_notification_log'; // 커뮤니티 알림 로그 테이블\n");
+fwrite($f, "\$g5['community_point_ledger_table'] = G5_TABLE_PREFIX.'community_point_ledger'; // 커뮤니티 포인트 원장 테이블\n");
+fwrite($f, "\$g5['community_point_available_table'] = G5_TABLE_PREFIX.'community_point_available'; // 커뮤니티 사용 가능 포인트 테이블\n");
+fwrite($f, "\$g5['community_point_wallet_table'] = G5_TABLE_PREFIX.'community_point_wallet'; // 커뮤니티 포인트 지갑 테이블\n");
+fwrite($f, "\$g5['community_attachment_table'] = G5_TABLE_PREFIX.'community_attachment'; // 커뮤니티 첨부파일 테이블\n");
 
 fwrite($f, "?>");
 
