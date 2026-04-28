@@ -158,6 +158,95 @@ function community_point_update_wallet_totals($mb_id, $amount)
     return (bool) sql_query_prepared($sql, $params, false);
 }
 
+function community_point_update_wallet_expired($mb_id, $amount)
+{
+    $amount = abs((int) $amount);
+    if ($amount < 1) {
+        return true;
+    }
+
+    $table = community_point_wallet_table();
+
+    return (bool) sql_query_prepared(
+        " update {$table}
+             set balance = balance - :amount,
+                 expired_total = expired_total + :amount,
+                 updated_at = :updated_at
+           where mb_id = :mb_id ",
+        array(
+            'amount' => $amount,
+            'updated_at' => G5_TIME_YMDHIS,
+            'mb_id' => $mb_id,
+        ),
+        false
+    );
+}
+
+function community_point_expire_available($mb_id = '', $now = '')
+{
+    $now = $now !== '' ? $now : G5_TIME_YMDHIS;
+    $where = " where amount_remaining > 0
+                 and expires_at <> '0000-00-00 00:00:00'
+                 and expires_at < :now ";
+    $params = array('now' => $now);
+
+    if ($mb_id !== '') {
+        $where .= " and mb_id = :mb_id ";
+        $params['mb_id'] = $mb_id;
+    }
+
+    $available_table = community_point_available_table();
+    $rows = sql_fetch_all_prepared(
+        " select *
+            from {$available_table}
+            {$where}
+           order by expires_at asc, available_id asc ",
+        $params
+    );
+
+    $expired_count = 0;
+    $expired_amount = 0;
+
+    foreach ($rows as $row) {
+        $remaining = (int) $row['amount_remaining'];
+        if ($remaining < 1) {
+            continue;
+        }
+
+        $wallet = community_point_ensure_wallet($row['mb_id']);
+        $balance_after = (int) $wallet['balance'] - $remaining;
+
+        sql_query_prepared(
+            " update {$available_table}
+                 set amount_remaining = 0
+               where available_id = :available_id
+                 and amount_remaining = :amount_remaining ",
+            array(
+                'available_id' => (int) $row['available_id'],
+                'amount_remaining' => $remaining,
+            ),
+            false
+        );
+
+        community_point_insert_ledger($row['mb_id'], -$remaining, $balance_after, array(
+            'reason' => 'expire',
+            'target_type' => 'available',
+            'target_id' => (int) $row['available_id'],
+            'expires_at' => $row['expires_at'],
+            'created_by' => 'system',
+        ));
+        community_point_update_wallet_expired($row['mb_id'], $remaining);
+
+        $expired_count++;
+        $expired_amount += $remaining;
+    }
+
+    return array(
+        'expired_count' => $expired_count,
+        'expired_amount' => $expired_amount,
+    );
+}
+
 function community_point_consume_available($mb_id, $amount)
 {
     $amount = abs((int) $amount);
@@ -217,6 +306,8 @@ function community_point_grant($mb_id, $amount, array $meta)
         return array('error' => '', 'ledger_id' => 0, 'skipped' => true);
     }
 
+    community_point_expire_available($mb_id);
+
     $wallet = community_point_ensure_wallet($mb_id);
     $balance_after = (int) $wallet['balance'] + $amount;
     $ledger_id = community_point_insert_ledger($mb_id, $amount, $balance_after, $meta);
@@ -232,6 +323,8 @@ function community_point_adjust($mb_id, $amount, array $meta)
     if ($mb_id === '' || $amount === 0) {
         return array('error' => '회원 ID와 조정 포인트를 입력하세요.', 'ledger_id' => 0);
     }
+
+    community_point_expire_available($mb_id);
 
     $wallet = community_point_ensure_wallet($mb_id);
     $balance_after = (int) $wallet['balance'] + $amount;

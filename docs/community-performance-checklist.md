@@ -127,6 +127,21 @@ SELECT *
 
 기대 인덱스: `idx_member_available`
 
+## 만료 포인트 정산 대상
+
+```sql
+EXPLAIN
+SELECT *
+  FROM g5_community_point_available
+ WHERE amount_remaining > 0
+   AND expires_at <> '0000-00-00 00:00:00'
+   AND expires_at < NOW()
+ ORDER BY expires_at ASC,
+          available_id ASC;
+```
+
+기대 인덱스: `idx_available_expiry`
+
 ## 조치 기준
 
 - 기대 인덱스가 선택되지 않으면 실제 `WHERE`, `ORDER BY`, cardinality를 확인한다.

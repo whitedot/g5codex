@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `g5_community_point_available` (
   `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`available_id`),
   KEY `idx_member_available` (`mb_id`, `expires_at`, `available_id`),
+  KEY `idx_available_expiry` (`expires_at`, `available_id`),
   KEY `idx_source_ledger` (`source_ledger_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
