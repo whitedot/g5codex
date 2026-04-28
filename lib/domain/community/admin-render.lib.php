@@ -321,15 +321,21 @@ function community_admin_build_post_list_view(array $request, array $config)
 
 function community_admin_build_comment_item(array $row)
 {
+    $board_id = isset($row['post_board_id']) ? (string) $row['post_board_id'] : '';
+    $post_url = $board_id !== ''
+        ? G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($board_id) . '&post_id=' . (int) $row['post_id']
+        : './community_post_list.php?post_id=' . (int) $row['post_id'];
+
     return array(
         'comment_id_attr' => (int) $row['comment_id'],
         'comment_id_text' => (int) $row['comment_id'],
         'post_id_text' => (int) $row['post_id'],
+        'post_title_text' => get_text(isset($row['post_title']) ? cut_str($row['post_title'], 60) : ''),
         'author_text' => get_text($row['mb_id']),
         'content_text' => get_text(cut_str($row['content'], 120)),
         'status_text' => get_text(community_admin_post_status_label($row['status'])),
         'created_at_text' => get_text($row['created_at']),
-        'post_url_attr' => admin_escape_attr('./community_post_list.php?stx=' . rawurlencode((string) $row['post_id'])),
+        'post_url_attr' => admin_escape_attr($post_url),
     );
 }
 

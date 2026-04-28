@@ -49,7 +49,10 @@ if (!defined('_GNUBOARD_')) {
                 <tr>
                     <td><input type="checkbox" name="comment_id[]" value="<?php echo $item['comment_id_attr']; ?>"></td>
                     <td><?php echo $item['comment_id_text']; ?></td>
-                    <td><?php echo $item['post_id_text']; ?></td>
+                    <td>
+                        <a href="<?php echo $item['post_url_attr']; ?>" class="btn btn-sm btn-surface-default-soft" target="_blank">#<?php echo $item['post_id_text']; ?></a>
+                        <?php echo $item['post_title_text']; ?>
+                    </td>
                     <td><?php echo $item['content_text']; ?></td>
                     <td><?php echo $item['author_text']; ?></td>
                     <td><?php echo $item['status_text']; ?></td>

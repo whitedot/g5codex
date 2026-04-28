@@ -560,17 +560,17 @@ function community_admin_build_comment_search_sql(array $request, array &$params
     $where = array('1=1');
 
     if ($request['post_id'] > 0) {
-        $where[] = 'post_id = :post_id';
+        $where[] = 'c.post_id = :post_id';
         $params['post_id'] = $request['post_id'];
     }
 
     if ($request['status'] !== '') {
-        $where[] = 'status = :status';
+        $where[] = 'c.status = :status';
         $params['status'] = $request['status'];
     }
 
     if ($request['stx'] !== '') {
-        $where[] = '(content like :stx_like or mb_id like :stx_like)';
+        $where[] = '(c.content like :stx_like or c.mb_id like :stx_like or p.title like :stx_like)';
         $params['stx_like'] = '%' . $request['stx'] . '%';
     }
 
@@ -580,9 +580,16 @@ function community_admin_build_comment_search_sql(array $request, array &$params
 function community_admin_fetch_comment_list_page(array $request)
 {
     $table = community_admin_comment_table();
+    $post_table = community_admin_post_table();
     $params = array();
     $where = community_admin_build_comment_search_sql($request, $params);
-    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $count_row = sql_fetch_prepared(
+        " select count(*) as cnt
+            from {$table} c
+            left join {$post_table} p on p.post_id = c.post_id
+            {$where} ",
+        $params
+    );
     $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
     $from_record = ($request['page'] - 1) * $request['page_rows'];
 
@@ -591,8 +598,11 @@ function community_admin_fetch_comment_list_page(array $request)
     $list_params['page_rows'] = $request['page_rows'];
 
     $rows = sql_fetch_all_prepared(
-        " select * from {$table} {$where}
-          order by comment_id desc
+        " select c.*, p.board_id as post_board_id, p.title as post_title
+            from {$table} c
+            left join {$post_table} p on p.post_id = c.post_id
+            {$where}
+          order by c.comment_id desc
           limit :from_record, :page_rows ",
         $list_params
     );
