@@ -245,30 +245,6 @@
         @apply font-semibold text-primary;
     }
 
-    #gnb .gnb_profile {
-        @apply mt-auto flex items-center gap-3 border-t border-default-300 p-4;
-    }
-
-    #gnb .gnb_profile_avatar {
-        @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-sm font-semibold text-white;
-    }
-
-    #gnb .gnb_profile_meta {
-        @apply min-w-0 flex-1;
-    }
-
-    #gnb .gnb_profile_meta strong {
-        @apply block truncate text-sm font-semibold text-slate-900 dark:text-slate-100;
-    }
-
-    #gnb .gnb_profile_meta span {
-        @apply block truncate text-xs text-default-500;
-    }
-
-    #gnb .gnb_profile_logout {
-        @apply inline-flex h-8 w-8 items-center justify-center rounded-lg border border-default-300 text-default-500 transition hover:bg-default-100 hover:text-default-700;
-    }
-
     #adminSidebarBackdrop {
         @apply fixed inset-0 z-30 bg-slate-900/40 lg:hidden;
     }
@@ -975,19 +951,12 @@
 
     body.admin-sidebar-condensed #gnb > h2 > a > span:last-child,
     body.admin-sidebar-condensed #gnb .gnb_label,
-    body.admin-sidebar-condensed #gnb .admin-nav-trigger-label,
-    body.admin-sidebar-condensed #gnb .gnb_profile_meta,
-    body.admin-sidebar-condensed #gnb .gnb_profile_logout {
+    body.admin-sidebar-condensed #gnb .admin-nav-trigger-label {
         @apply hidden;
     }
 
-    body.admin-sidebar-condensed #gnb .admin-nav-item > .admin-nav-trigger,
-    body.admin-sidebar-condensed #gnb .gnb_profile {
+    body.admin-sidebar-condensed #gnb .admin-nav-item > .admin-nav-trigger {
         @apply justify-center;
-    }
-
-    body.admin-sidebar-condensed #gnb .gnb_profile {
-        @apply border-t-0 px-0 pb-4 pt-2;
     }
 
     body.admin-sidebar-condensed #gnb .admin-nav-caret {

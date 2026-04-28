@@ -169,18 +169,6 @@ $admin_head_view = admin_build_head_view(
             </div>
         </div>
 
-        <div class="gnb_profile admin-sidebar-profile">
-            <div class="gnb_profile_avatar admin-sidebar-profile-avatar"><?php echo $admin_head_view['admin_profile_initial_text']; ?></div>
-            <div class="gnb_profile_meta admin-sidebar-profile-meta">
-                <strong><?php echo $admin_head_view['admin_profile_display_name_text']; ?></strong>
-                <span><?php echo $admin_head_view['admin_profile_mail_text']; ?></span>
-            </div>
-            <a class="gnb_profile_logout admin-sidebar-profile-logout" href="<?php echo $admin_head_view['admin_logout_url_attr']; ?>" title="로그아웃" aria-label="로그아웃">
-                <svg class="admin-shell-control-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
-                    <use href="#admin-menu-icon-logout"></use>
-                </svg>
-            </a>
-        </div>
     </nav>
 
     <div id="adminSidebarBackdrop" class="admin-sidebar-backdrop hidden"></div>

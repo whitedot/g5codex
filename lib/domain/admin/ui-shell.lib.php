@@ -123,18 +123,6 @@ function admin_build_head_view(array $member, array $config, array $cookies, $ad
     }
 
     $admin_profile_raw_id = (string) (isset($member['mb_id']) ? $member['mb_id'] : '');
-    $admin_profile_name = get_text((string) (isset($member['mb_nick']) ? $member['mb_nick'] : ''));
-    $admin_profile_id = get_text($admin_profile_raw_id);
-    $admin_profile_mail = !empty($member['mb_email']) ? get_text((string) $member['mb_email']) : ($admin_profile_id . '@admin');
-    $admin_profile_seed = $admin_profile_name ?: $admin_profile_id;
-    $admin_profile_display_name = $admin_profile_seed;
-    $admin_profile_initial = 'A';
-    if ($admin_profile_seed !== '') {
-        $admin_profile_initial = function_exists('mb_substr')
-            ? mb_substr($admin_profile_seed, 0, 1, 'UTF-8')
-            : substr($admin_profile_seed, 0, 1);
-    }
-
     $admin_site_title = get_text((string) (isset($config['cf_title']) ? $config['cf_title'] : ''));
     if ($admin_site_title === '') {
         $admin_site_title = 'G5 AIF';
@@ -143,9 +131,6 @@ function admin_build_head_view(array $member, array $config, array $cookies, $ad
     return array(
         'admin_sidebar_class_attr' => admin_escape_attr($admin_sidebar_class),
         'admin_sidebar_toggle_class_attr' => admin_escape_attr($admin_sidebar_toggle_class),
-        'admin_profile_display_name_text' => $admin_profile_display_name,
-        'admin_profile_mail_text' => $admin_profile_mail,
-        'admin_profile_initial_text' => get_text($admin_profile_initial),
         'admin_profile_manage_url_attr' => admin_escape_attr(G5_ADMIN_URL . '/member_form.php?w=u&amp;mb_id=' . rawurlencode($admin_profile_raw_id)),
         'admin_logout_url_attr' => admin_escape_attr(G5_MEMBER_URL . '/logout.php'),
         'admin_dashboard_url_attr' => admin_escape_attr(correct_goto_url(G5_ADMIN_URL)),
