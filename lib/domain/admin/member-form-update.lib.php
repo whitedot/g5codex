@@ -32,6 +32,31 @@ function admin_build_member_form_update_redirect($qstr, $mb_id)
     return './member_form.php?' . $qstr . '&amp;w=u&amp;mb_id=' . $mb_id;
 }
 
+if (!function_exists('admin_member_form_old_input_session_key')) {
+    function admin_member_form_old_input_session_key()
+    {
+        return 'ss_admin_member_form_old_input';
+    }
+}
+
+function admin_store_member_form_old_input($w, array $request)
+{
+    $old_input = $request;
+    $old_input['mb_password'] = '';
+
+    set_session(admin_member_form_old_input_session_key(), array(
+        'w' => $w,
+        'mb_no' => isset($request['mb_no']) ? (int) $request['mb_no'] : 0,
+        'mb_id' => isset($request['mb_id']) ? (string) $request['mb_id'] : '',
+        'request' => $old_input,
+    ));
+}
+
+function admin_clear_member_form_old_input()
+{
+    set_session(admin_member_form_old_input_session_key(), '');
+}
+
 function admin_complete_member_form_update_request(array $update_request, array $member, $is_admin, $auth, $sub_menu)
 {
     $w = $update_request['form']['w'];
@@ -42,7 +67,9 @@ function admin_complete_member_form_update_request(array $update_request, array 
     auth_check_menu($auth, $sub_menu, 'w');
     check_admin_token();
 
+    admin_store_member_form_old_input($w, $request);
     $mb_id = admin_persist_member_form_request($w, $request, $member, $is_admin);
+    admin_clear_member_form_old_input();
 
     if (function_exists('get_admin_captcha_by')) {
         get_admin_captcha_by('remove');

@@ -52,6 +52,96 @@ function admin_build_member_form_certify_case_options($selected_value)
     );
 }
 
+if (!function_exists('admin_member_form_old_input_session_key')) {
+    function admin_member_form_old_input_session_key()
+    {
+        return 'ss_admin_member_form_old_input';
+    }
+}
+
+function admin_pull_member_form_old_input($w, array $mb)
+{
+    $old_input = get_session(admin_member_form_old_input_session_key());
+    set_session(admin_member_form_old_input_session_key(), '');
+
+    if (!is_array($old_input) || !isset($old_input['request']) || !is_array($old_input['request'])) {
+        return array();
+    }
+
+    $old_w = isset($old_input['w']) ? (string) $old_input['w'] : '';
+    if ($old_w !== (string) $w) {
+        return array();
+    }
+
+    if ($w === 'u') {
+        $old_mb_no = isset($old_input['mb_no']) ? (int) $old_input['mb_no'] : 0;
+        $current_mb_no = isset($mb['mb_no']) ? (int) $mb['mb_no'] : 0;
+        $old_mb_id = isset($old_input['mb_id']) ? (string) $old_input['mb_id'] : '';
+        $current_mb_id = isset($mb['mb_id']) ? (string) $mb['mb_id'] : '';
+
+        if ($old_mb_no > 0 && $current_mb_no > 0) {
+            return $old_mb_no === $current_mb_no ? $old_input['request'] : array();
+        }
+
+        if ($old_mb_id !== '' && $current_mb_id !== '') {
+            return $old_mb_id === $current_mb_id ? $old_input['request'] : array();
+        }
+
+        return array();
+    }
+
+    return $w === '' ? $old_input['request'] : array();
+}
+
+function admin_apply_member_form_old_input(array $mb, array $old_request, $is_update)
+{
+    if (!$old_request) {
+        return $mb;
+    }
+
+    $field_map = array(
+        'mb_nick' => 'mb_nick',
+        'mb_email' => 'mb_email',
+        'mb_hp' => 'mb_hp',
+        'mb_certify' => 'mb_certify',
+        'mb_adult' => 'mb_adult',
+        'mb_memo' => 'mb_memo',
+        'mb_marketing_agree' => 'mb_marketing_agree',
+    );
+
+    if (!$is_update) {
+        $field_map['mb_id'] = 'mb_id';
+    }
+
+    foreach ($field_map as $request_key => $member_key) {
+        if (array_key_exists($request_key, $old_request)) {
+            $mb[$member_key] = $old_request[$request_key];
+        }
+    }
+
+    $post_field_map = array(
+        'mb_name' => 'mb_name',
+        'mb_leave_date' => 'mb_leave_date',
+        'mb_intercept_date' => 'mb_intercept_date',
+        'mb_mailling' => 'mb_mailling',
+        'mb_open' => 'mb_open',
+        'mb_level' => 'mb_level',
+    );
+
+    for ($i = 1; $i <= 10; $i++) {
+        $post_field_map['mb_' . $i] = 'mb_' . $i;
+    }
+
+    $posts = isset($old_request['posts']) && is_array($old_request['posts']) ? $old_request['posts'] : array();
+    foreach ($post_field_map as $post_key => $member_key) {
+        if (array_key_exists($post_key, $posts)) {
+            $mb[$member_key] = $posts[$post_key];
+        }
+    }
+
+    return $mb;
+}
+
 function admin_build_member_form_view(array $request, array $member, $is_admin, array $config)
 {
     global $g5;
@@ -105,13 +195,30 @@ function admin_build_member_form_view(array $request, array $member, $is_admin, 
             'classes' => 'form-input',
         );
         $html_title = '수정';
-        $mb['mb_name'] = get_text($mb['mb_name']);
-        $mb['mb_nick'] = get_text($mb['mb_nick']);
-        $mb['mb_email'] = get_text($mb['mb_email']);
-        $mb['mb_birth'] = get_text($mb['mb_birth']);
-        $mb['mb_hp'] = get_text($mb['mb_hp']);
     } else {
         alert('제대로 된 값이 넘어오지 않았습니다.');
+    }
+
+    $mb = admin_apply_member_form_old_input($mb, admin_pull_member_form_old_input($w, $mb), $is_update);
+
+    if ($w == 'u') {
+        $mb['mb_id'] = $mb_id;
+    }
+
+    if (isset($mb['mb_name'])) {
+        $mb['mb_name'] = get_text($mb['mb_name']);
+    }
+    if (isset($mb['mb_nick'])) {
+        $mb['mb_nick'] = get_text($mb['mb_nick']);
+    }
+    if (isset($mb['mb_email'])) {
+        $mb['mb_email'] = get_text($mb['mb_email']);
+    }
+    if (isset($mb['mb_birth'])) {
+        $mb['mb_birth'] = get_text($mb['mb_birth']);
+    }
+    if (isset($mb['mb_hp'])) {
+        $mb['mb_hp'] = get_text($mb['mb_hp']);
     }
 
     $mb_cert_history = '';
