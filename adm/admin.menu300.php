@@ -7,4 +7,5 @@ admin_register_menu_group($menu, 'menu300', array(
     array('300300', '댓글 관리', G5_ADMIN_URL . '/community_comment_list.php', 'community_comment'),
     array('300400', '알림 로그', G5_ADMIN_URL . '/community_notification_log.php', 'community_notification'),
     array('300500', '포인트 관리', G5_ADMIN_URL . '/community_point_list.php', 'community_point'),
+    array('300600', '커뮤니티 점검', G5_ADMIN_URL . '/community_health.php', 'community_health'),
 ));

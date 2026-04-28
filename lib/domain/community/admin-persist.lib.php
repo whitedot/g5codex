@@ -699,6 +699,102 @@ function community_admin_point_ledger_table()
     return $g5['community_point_ledger_table'];
 }
 
+function community_admin_health_table_checks()
+{
+    global $g5;
+
+    $tables = array(
+        '게시판' => $g5['community_board_table'],
+        '카테고리' => $g5['community_board_category_table'],
+        '게시글' => $g5['community_post_table'],
+        '댓글' => $g5['community_comment_table'],
+        '최신글' => $g5['community_latest_table'],
+        '알림 로그' => $g5['community_notification_table'],
+        '포인트 지갑' => $g5['community_point_wallet_table'],
+        '포인트 원장' => $g5['community_point_ledger_table'],
+        '사용 가능 포인트' => $g5['community_point_available_table'],
+        '첨부파일' => $g5['community_attachment_table'],
+    );
+
+    $checks = array();
+    foreach ($tables as $label => $table) {
+        $exists = sql_table_exists($table);
+        $checks[] = array(
+            'label' => '테이블: ' . $label,
+            'status' => $exists ? 'ok' : 'error',
+            'message' => $exists ? $table . ' 확인됨' : $table . ' 없음',
+            'action' => $exists ? '' : '신규 설치 또는 sql/community_schema.sql 적용 필요',
+        );
+    }
+
+    return $checks;
+}
+
+function community_admin_health_runtime_checks()
+{
+    global $config;
+
+    $checks = array();
+    $checks[] = array(
+        'label' => '커뮤니티 경로',
+        'status' => is_dir(G5_COMMUNITY_PATH) && is_dir(G5_COMMUNITY_VIEW_PATH) ? 'ok' : 'error',
+        'message' => G5_COMMUNITY_PATH,
+        'action' => is_dir(G5_COMMUNITY_PATH) ? '' : 'community 디렉터리 배포 확인',
+    );
+
+    $attachment_base = community_attachment_base_path();
+    $attachment_ready = (is_dir($attachment_base) && is_writable($attachment_base)) || (!is_dir($attachment_base) && is_writable(G5_DATA_PATH));
+    $checks[] = array(
+        'label' => '첨부파일 저장소',
+        'status' => $attachment_ready ? 'ok' : 'warning',
+        'message' => $attachment_base,
+        'action' => $attachment_ready ? '' : 'data 디렉터리 권한 확인',
+    );
+
+    $mail_enabled = !empty($config['cf_email_use']);
+    $checks[] = array(
+        'label' => '메일 발송 설정',
+        'status' => $mail_enabled ? 'ok' : 'warning',
+        'message' => $mail_enabled ? '메일 발송 사용' : '메일 발송 미사용',
+        'action' => $mail_enabled ? '' : '알림 메일을 쓰려면 환경설정에서 메일 발송 활성화',
+    );
+
+    return $checks;
+}
+
+function community_admin_health_content_checks()
+{
+    global $g5;
+
+    $checks = array();
+    if (!sql_table_exists($g5['community_board_table'])) {
+        return $checks;
+    }
+
+    $row = sql_fetch_prepared(
+        " select count(*) as cnt from {$g5['community_board_table']} where status = 'active' ",
+        array()
+    );
+    $active_count = isset($row['cnt']) ? (int) $row['cnt'] : 0;
+    $checks[] = array(
+        'label' => '활성 게시판',
+        'status' => $active_count > 0 ? 'ok' : 'warning',
+        'message' => number_format($active_count) . '개',
+        'action' => $active_count > 0 ? '' : '게시판 관리에서 활성 게시판 생성',
+    );
+
+    return $checks;
+}
+
+function community_admin_fetch_health_checks()
+{
+    return array_merge(
+        community_admin_health_table_checks(),
+        community_admin_health_runtime_checks(),
+        community_admin_health_content_checks()
+    );
+}
+
 function community_admin_fetch_point_wallet_page(array $request)
 {
     $table = community_admin_point_wallet_table();
