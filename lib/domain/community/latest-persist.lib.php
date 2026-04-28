@@ -19,7 +19,7 @@ function community_upsert_latest_post(array $board, array $post)
     $table = community_latest_table();
     $title = !empty($post['is_secret']) ? '비밀글입니다.' : $post['title'];
 
-    return (bool) sql_query_prepared(
+    $result = (bool) sql_query_prepared(
         " insert into {$table}
             set scope = 'board',
                 board_id = :board_id,
@@ -48,13 +48,19 @@ function community_upsert_latest_post(array $board, array $post)
         ),
         false
     );
+
+    if ($result) {
+        community_cache_delete_group('community:latest:');
+    }
+
+    return $result;
 }
 
 function community_delete_latest_post($board_id, $post_id)
 {
     $table = community_latest_table();
 
-    return (bool) sql_query_prepared(
+    $result = (bool) sql_query_prepared(
         " delete from {$table}
           where scope = 'board' and board_id = :board_id and post_id = :post_id ",
         array(
@@ -63,18 +69,30 @@ function community_delete_latest_post($board_id, $post_id)
         ),
         false
     );
+
+    if ($result) {
+        community_cache_delete_group('community:latest:');
+    }
+
+    return $result;
 }
 
 function community_delete_latest_board($board_id)
 {
     $table = community_latest_table();
 
-    return (bool) sql_query_prepared(
+    $result = (bool) sql_query_prepared(
         " delete from {$table}
           where scope = 'board' and board_id = :board_id ",
         array('board_id' => $board_id),
         false
     );
+
+    if ($result) {
+        community_cache_delete_group('community:latest:');
+    }
+
+    return $result;
 }
 
 function community_rebuild_latest_board(array $board)
@@ -112,6 +130,13 @@ function community_fetch_latest_posts($board_id = '', $limit = 10)
 {
     $table = community_latest_table();
     $params = array('page_rows' => max(1, min(50, (int) $limit)));
+    $cache_key = 'community:latest:' . ($board_id !== '' ? 'board:' . $board_id : 'all') . ':' . $params['page_rows'];
+    $cached_rows = community_cache_get($cache_key);
+
+    if (is_array($cached_rows)) {
+        return $cached_rows;
+    }
+
     $where = " where scope = 'board' ";
 
     if ($board_id !== '') {
@@ -119,12 +144,16 @@ function community_fetch_latest_posts($board_id = '', $limit = 10)
         $params['board_id'] = $board_id;
     }
 
-    return sql_fetch_all_prepared(
+    $rows = sql_fetch_all_prepared(
         " select * from {$table} {$where}
           order by last_activity_at desc, post_id desc
           limit :page_rows ",
         $params
     );
+
+    community_cache_set($cache_key, $rows, 60);
+
+    return $rows;
 }
 
 function community_build_latest_items($board_id, $limit, array $member)

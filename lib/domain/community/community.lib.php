@@ -7,6 +7,7 @@ require_once __DIR__ . '/runtime.lib.php';
 require_once __DIR__ . '/post-persist.lib.php';
 require_once __DIR__ . '/comment-persist.lib.php';
 require_once __DIR__ . '/attachment-persist.lib.php';
+require_once __DIR__ . '/cache.lib.php';
 require_once __DIR__ . '/latest-persist.lib.php';
 require_once __DIR__ . '/notification.lib.php';
 require_once __DIR__ . '/point.lib.php';
