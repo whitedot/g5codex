@@ -11,11 +11,3 @@
         <?php } ?>
     </div>
 </div>
-
-<div class="member-notice">
-    <span class="member-notice-icon" aria-hidden="true">i</span>
-    <div class="member-notice-copy">
-        <strong><?php echo $member_list_view['notice_title']; ?></strong>
-        <p><?php echo $member_list_view['notice_body']; ?></p>
-    </div>
-</div>
