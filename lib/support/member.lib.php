@@ -24,7 +24,7 @@ function clean_relative_paths($path)
 
 function member_build_deleted_account_nick($mb_no)
 {
-    return substr('deleted_' . (int) $mb_no, 0, 255);
+    return '';
 }
 
 function member_build_deleted_account_memo($action_label)
@@ -33,6 +33,11 @@ function member_build_deleted_account_memo($action_label)
 }
 
 function member_should_mask_preserved_id(array $member_row)
+{
+    return member_is_left($member_row);
+}
+
+function member_is_left(array $member_row)
 {
     return !empty($member_row['mb_leave_date']);
 }

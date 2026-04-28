@@ -148,7 +148,7 @@ function admin_build_member_list_actions(array $row, array $member, $is_admin, $
 {
     $actions = array();
 
-    if ($is_admin != 'group') {
+    if ($is_admin != 'group' && !member_is_left($row)) {
         $actions[] = array(
             'type' => 'link',
             'href_attr' => './member_form.php?' . $qstr . '&amp;w=u&amp;mb_id=' . rawurlencode((string) $row['mb_id']),

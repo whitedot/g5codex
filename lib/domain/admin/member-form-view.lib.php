@@ -185,6 +185,10 @@ function admin_build_member_form_view(array $request, array $member, $is_admin, 
             alert('존재하지 않는 회원자료입니다.');
         }
 
+        if (member_is_left($mb)) {
+            alert('탈퇴 또는 삭제 처리된 회원은 수정할 수 없습니다.', './member_list.php');
+        }
+
         if ($is_admin != 'super' && $mb['mb_level'] >= $member['mb_level']) {
             alert('자신보다 권한이 높거나 같은 회원은 수정할 수 없습니다.');
         }

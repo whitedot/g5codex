@@ -21,6 +21,9 @@ function admin_member_list_update_error(array $mb, array $member, $is_admin)
     if (!(isset($mb['mb_id']) && $mb['mb_id'])) {
         return $display_mb_id . ' : 회원자료가 존재하지 않습니다.\\n';
     }
+    if (member_is_left($mb)) {
+        return $display_mb_id . ' : 탈퇴 또는 삭제 처리된 회원은 수정할 수 없습니다.\\n';
+    }
     if ($is_admin != 'super' && $mb['mb_level'] >= $member['mb_level']) {
         return $display_mb_id . ' : 자신보다 권한이 높거나 같은 회원은 수정할 수 없습니다.\\n';
     }

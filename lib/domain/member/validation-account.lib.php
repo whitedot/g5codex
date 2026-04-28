@@ -29,6 +29,9 @@ function member_validate_admin_member_request(array $request, array $member, $is
         if (!(isset($mb['mb_id']) && $mb['mb_id'])) {
             alert('존재하지 않는 회원자료입니다.');
         }
+        if (member_is_left($mb)) {
+            alert('탈퇴 또는 삭제 처리된 회원은 수정할 수 없습니다.');
+        }
     }
 
     if ($mb_hp) {

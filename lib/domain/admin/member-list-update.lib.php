@@ -71,6 +71,8 @@ function admin_complete_member_list_update_request(array $request, array $member
     run_event('admin_member_list_update', $request['act_button'], $result['mb_datas']);
     if ($request['act_button'] === '선택수정') {
         admin_set_flash_message('success', '저장완료');
+    } elseif ($request['act_button'] === '선택삭제') {
+        admin_set_flash_message('success', '삭제 완료');
     }
     goto_url('./member_list.php?' . $qstr);
 }

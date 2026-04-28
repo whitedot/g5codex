@@ -7,6 +7,7 @@ window.AdminMemberList = {
             return;
         }
 
+        const deleteConfirmDetail = '삭제하면 해당 회원은 즉시 로그인할 수 없고, 운영상 필요한 회원아이디와 상태 정보만 남습니다.\n이름, 닉네임, 이메일, 휴대폰번호, 생년월일, IP, 인증이력 등 식별 가능한 개인정보는 비식별 처리 또는 삭제됩니다.';
         const deleteForm = document.getElementById('member_delete_form');
         const checkAllInput = form.querySelector('#chkall');
         const placeSideview = dropdown => {
@@ -47,13 +48,20 @@ window.AdminMemberList = {
         };
 
         form.addEventListener('submit', event => {
+            const submitter = event.submitter || document.activeElement;
+            const action = submitter && submitter.name === 'act_button' ? submitter.value : document.pressed;
+
+            if (action !== '선택삭제') {
+                return;
+            }
+
             if (!window.AdminSelection.isChecked('chk[]')) {
                 alert('선택삭제 하실 항목을 하나 이상 선택하세요.');
                 event.preventDefault();
                 return;
             }
 
-            if (!confirm('선택한 자료를 정말 삭제하시겠습니까?')) {
+            if (!confirm('선택한 회원을 삭제하시겠습니까?\n\n' + deleteConfirmDetail)) {
                 event.preventDefault();
             }
         });
@@ -69,7 +77,7 @@ window.AdminMemberList = {
                 return;
             }
 
-            if (!confirm('이 회원을 삭제하시겠습니까?')) {
+            if (!confirm('이 회원을 삭제하시겠습니까?\n\n' + deleteConfirmDetail)) {
                 return;
             }
 

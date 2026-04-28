@@ -24,6 +24,7 @@ function admin_complete_member_delete_request(array $delete_action_request, arra
 
     member_delete($mb['mb_id']);
 
+    admin_set_flash_message('success', '삭제 완료');
     goto_url(admin_build_member_delete_redirect($delete_action_request['list_qstr']));
 }
 
