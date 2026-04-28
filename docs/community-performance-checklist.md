@@ -119,7 +119,10 @@ SELECT *
   FROM g5_community_point_available
  WHERE mb_id = 'member1'
    AND amount_remaining > 0
- ORDER BY expires_at ASC, available_id ASC;
+   AND (expires_at = '0000-00-00 00:00:00' OR expires_at >= NOW())
+ ORDER BY CASE WHEN expires_at = '0000-00-00 00:00:00' THEN 1 ELSE 0 END ASC,
+          expires_at ASC,
+          available_id ASC;
 ```
 
 기대 인덱스: `idx_member_available`

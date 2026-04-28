@@ -168,9 +168,16 @@ function community_point_consume_available($mb_id, $amount)
     $table = community_point_available_table();
     $rows = sql_fetch_all_prepared(
         " select * from {$table}
-          where mb_id = :mb_id and amount_remaining > 0
-          order by expires_at asc, available_id asc ",
-        array('mb_id' => $mb_id)
+          where mb_id = :mb_id
+            and amount_remaining > 0
+            and (expires_at = '0000-00-00 00:00:00' or expires_at >= :now)
+          order by case when expires_at = '0000-00-00 00:00:00' then 1 else 0 end asc,
+                   expires_at asc,
+                   available_id asc ",
+        array(
+            'mb_id' => $mb_id,
+            'now' => G5_TIME_YMDHIS,
+        )
     );
 
     foreach ($rows as $row) {
