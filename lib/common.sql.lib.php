@@ -554,6 +554,8 @@ function sql_execute_query($sql, $params=array(), $error=G5_DISPLAY_SQL_ERROR, $
 }
 
 // PDO 기반 쿼리 처리
+// 신규 업무 코드는 사용자 입력을 SQL 문자열에 직접 결합하지 말고 sql_query_prepared 계열을 사용한다.
+// sql_query/sql_fetch는 상수 SQL, 식별자 helper로 검증된 SQL, 레거시 호환 경로에만 남긴다.
 function sql_query($sql, $error=G5_DISPLAY_SQL_ERROR, $link=null)
 {
     return sql_execute_query($sql, array(), $error, $link);

@@ -60,6 +60,8 @@ include_once(G5_LIB_PATH.'/bootstrap/runtime.lib.php');
 include_once(G5_LIB_PATH.'/bootstrap/auth.lib.php');
 include_once(G5_LIB_PATH.'/bootstrap/session.lib.php');
 
+g5_capture_runtime_raw_input();
+
 // IIS 에서 SERVER_ADDR 서버변수가 없다면
 if (!isset($_SERVER['SERVER_ADDR'])) {
     $_SERVER['SERVER_ADDR'] = isset($_SERVER['LOCAL_ADDR']) ? $_SERVER['LOCAL_ADDR'] : '';

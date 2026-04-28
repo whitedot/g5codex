@@ -82,6 +82,20 @@ After deployment, verify these flows with a real database:
 7. Admin member list and member edit
 8. Member XLSX export
 
+## Security Development Policy
+
+Input handling, SQL helper usage, and token/key generation rules are documented in:
+
+```text
+docs/security-input-sql-policy.md
+```
+
+Run the lightweight policy check before changing request, SQL, or authentication code:
+
+```text
+scripts/check-security-policy.sh
+```
+
 ## License
 
 This project is licensed under the MIT License. See `LICENSE.txt`.

@@ -12,6 +12,14 @@
 - 새 난수 토큰은 `random_bytes()` 또는 `random_int()` 기반 helper를 사용한다.
 - 토큰, nonce, 링크 키, 자동로그인 키 비교는 `hash_equals()` 또는 프로젝트의 상수시간 비교 helper를 사용한다.
 - 비밀값이 필요한 검증 키는 단순 해시 대신 HMAC 기반 helper를 사용한다.
+- `md5()` 기반 인증/검증 코드는 레거시 호환 또는 외부 프로토콜 호환 목적일 때만 남긴다.
+
+## 입력 및 SQL 작업 규칙
+
+- 신규 도메인 코드는 `g5_get_runtime_raw_*_input()` 또는 도메인 request context의 raw 입력을 읽고, request 파일에서 정규화/검증한다.
+- SQL 안전성은 입력 전역 escape에 기대지 않는다. 값은 검증 후 `sql_query_prepared()`, `sql_fetch_prepared()`, `sql_fetch_value_prepared()` 같은 prepared helper로 바인딩한다.
+- `sql_query()`와 `sql_fetch()` 직접 호출은 상수 SQL, 식별자 helper로 검증된 SQL, 레거시 호환 경로에서만 허용한다.
+- HTML 출력은 저장 전 escape가 아니라 출력 직전 escape helper를 사용한다.
 
 예:
 

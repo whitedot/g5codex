@@ -161,6 +161,7 @@ function g5_build_auto_login_key($member_password)
 
 function g5_build_legacy_auto_login_key($member_password)
 {
+    // Legacy compatibility only. New verification keys must use g5_build_hmac_token().
     $server_addr = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
     $server_software = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
     $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';

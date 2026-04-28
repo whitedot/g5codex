@@ -9,12 +9,15 @@ if (!defined('_GNUBOARD_')) {
 function member_get_runtime_request_context()
 {
     $context = g5_get_runtime_request_context();
+    $raw_get = isset($context['raw_get']) && is_array($context['raw_get']) ? $context['raw_get'] : array();
+    $raw_post = isset($context['raw_post']) && is_array($context['raw_post']) ? $context['raw_post'] : array();
+    $raw_request = isset($context['raw_request']) && is_array($context['raw_request']) ? $context['raw_request'] : array();
 
     return array(
-        'get' => isset($_GET) && is_array($_GET) ? $_GET : array(),
-        'post' => isset($_POST) && is_array($_POST) ? $_POST : array(),
-        'request' => isset($context['request']) && is_array($context['request']) ? $context['request'] : array(),
-        'query_state' => isset($context['query_state']) && is_array($context['query_state']) ? $context['query_state'] : array(),
+        'get' => $raw_get ? $raw_get : (isset($_GET) && is_array($_GET) ? $_GET : array()),
+        'post' => $raw_post ? $raw_post : (isset($_POST) && is_array($_POST) ? $_POST : array()),
+        'request' => $raw_request ? $raw_request : (isset($context['request']) && is_array($context['request']) ? $context['request'] : array()),
+        'query_state' => isset($context['raw_query_state']) && is_array($context['raw_query_state']) ? $context['raw_query_state'] : (isset($context['query_state']) && is_array($context['query_state']) ? $context['query_state'] : array()),
         'session' => isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array(),
     );
 }

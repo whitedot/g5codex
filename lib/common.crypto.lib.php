@@ -30,6 +30,7 @@ function mysql_old_password_hash_323($value)
 
 function mysql_legacy_password_hash($value, $hash_length = G5_MYSQL_PASSWORD_LENGTH)
 {
+    // Legacy password migration only. New password hashes must use create_hash().
     if ((int) $hash_length === 16) {
         return mysql_old_password_hash_323($value);
     }

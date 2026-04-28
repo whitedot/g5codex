@@ -12,6 +12,30 @@ function g5_read_request_scalar(array $source, $key, $default = '')
     return $source[$key];
 }
 
+function g5_capture_runtime_raw_input()
+{
+    global $g5_raw_input;
+
+    $g5_raw_input = array(
+        'get' => isset($_GET) && is_array($_GET) ? $_GET : array(),
+        'post' => isset($_POST) && is_array($_POST) ? $_POST : array(),
+        'cookie' => isset($_COOKIE) && is_array($_COOKIE) ? $_COOKIE : array(),
+        'request' => isset($_REQUEST) && is_array($_REQUEST) ? $_REQUEST : array(),
+        'server' => isset($_SERVER) && is_array($_SERVER) ? $_SERVER : array(),
+    );
+}
+
+function g5_get_runtime_raw_input()
+{
+    global $g5_raw_input;
+
+    if (!isset($g5_raw_input) || !is_array($g5_raw_input)) {
+        g5_capture_runtime_raw_input();
+    }
+
+    return is_array($g5_raw_input) ? $g5_raw_input : array();
+}
+
 function g5_initialize_runtime_globals()
 {
     global $config, $member, $g5, $g5_debug;
@@ -138,6 +162,12 @@ function g5_build_query_state(array $source, $request_uri = '')
 function g5_build_runtime_request_context(array $source)
 {
     $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+    $raw_input = g5_get_runtime_raw_input();
+    $raw_request = isset($raw_input['request']) && is_array($raw_input['request']) ? $raw_input['request'] : array();
+    $raw_get = isset($raw_input['get']) && is_array($raw_input['get']) ? $raw_input['get'] : array();
+    $raw_post = isset($raw_input['post']) && is_array($raw_input['post']) ? $raw_input['post'] : array();
+    $raw_cookie = isset($raw_input['cookie']) && is_array($raw_input['cookie']) ? $raw_input['cookie'] : array();
+    $raw_server = isset($raw_input['server']) && is_array($raw_input['server']) ? $raw_input['server'] : array();
 
     return array(
         'request' => $source,
@@ -147,6 +177,13 @@ function g5_build_runtime_request_context(array $source)
         'server' => isset($_SERVER) && is_array($_SERVER) ? $_SERVER : array(),
         'query_state' => g5_build_query_state($source, $request_uri),
         'token' => g5_read_request_scalar($source, 'token', ''),
+        'raw_request' => $raw_request,
+        'raw_get' => $raw_get,
+        'raw_post' => $raw_post,
+        'raw_cookie' => $raw_cookie,
+        'raw_server' => $raw_server,
+        'raw_query_state' => g5_build_query_state($raw_request, $request_uri),
+        'raw_token' => g5_read_request_scalar($raw_request, 'token', ''),
     );
 }
 
@@ -179,12 +216,30 @@ function g5_get_runtime_get_input()
         : array();
 }
 
+function g5_get_runtime_raw_get_input()
+{
+    $request_context = g5_get_runtime_request_context();
+
+    return isset($request_context['raw_get']) && is_array($request_context['raw_get'])
+        ? $request_context['raw_get']
+        : array();
+}
+
 function g5_get_runtime_post_input()
 {
     $request_context = g5_get_runtime_request_context();
 
     return isset($request_context['post']) && is_array($request_context['post'])
         ? $request_context['post']
+        : array();
+}
+
+function g5_get_runtime_raw_post_input()
+{
+    $request_context = g5_get_runtime_request_context();
+
+    return isset($request_context['raw_post']) && is_array($request_context['raw_post'])
+        ? $request_context['raw_post']
         : array();
 }
 
@@ -197,12 +252,30 @@ function g5_get_runtime_cookie_input()
         : array();
 }
 
+function g5_get_runtime_raw_cookie_input()
+{
+    $request_context = g5_get_runtime_request_context();
+
+    return isset($request_context['raw_cookie']) && is_array($request_context['raw_cookie'])
+        ? $request_context['raw_cookie']
+        : array();
+}
+
 function g5_get_runtime_server_input()
 {
     $request_context = g5_get_runtime_request_context();
 
     return isset($request_context['server']) && is_array($request_context['server'])
         ? $request_context['server']
+        : array();
+}
+
+function g5_get_runtime_raw_request_input()
+{
+    $request_context = g5_get_runtime_request_context();
+
+    return isset($request_context['raw_request']) && is_array($request_context['raw_request'])
+        ? $request_context['raw_request']
         : array();
 }
 
