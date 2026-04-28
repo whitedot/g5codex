@@ -92,7 +92,7 @@ if ($g5_install || $is_install === false) {
     // 테이블 생성 ------------------------------------
     $schema_files = array(
         './gnuboard5.sql',
-        '../sql/community_schema.sql',
+        './community_schema.sql',
     );
 
     foreach ($schema_files as $schema_file) {
