@@ -72,6 +72,15 @@ function community_build_post_item(array $row, $can_read_secret, array $category
     );
 }
 
+function community_format_datetime_local($datetime)
+{
+    if (empty($datetime) || $datetime === '0000-00-00 00:00:00') {
+        return '';
+    }
+
+    return str_replace(' ', 'T', substr($datetime, 0, 16));
+}
+
 function community_build_adjacent_post_item(array $post, $label, array $member, $is_admin)
 {
     if (empty($post['post_id'])) {
@@ -220,6 +229,8 @@ function community_build_form_view(array $board, array $post, array $member, $is
         'is_secret_checked' => $is_update && !empty($post['is_secret']) ? ' checked' : '',
         'is_notice_checked' => $is_update && !empty($post['is_notice']) ? ' checked' : '',
         'notice_order_value' => $is_update ? (int) $post['notice_order'] : 0,
+        'notice_started_at_value' => $is_update ? community_escape_attr(community_format_datetime_local($post['notice_started_at'])) : '',
+        'notice_ended_at_value' => $is_update ? community_escape_attr(community_format_datetime_local($post['notice_ended_at'])) : '',
         'category_options' => community_category_options($categories, $is_update ? $post['category_id'] : 0),
         'use_category' => !empty($board['use_category']),
         'use_attachment' => (int) $board['upload_file_count'] > 0,

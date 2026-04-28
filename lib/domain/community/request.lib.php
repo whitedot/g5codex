@@ -52,6 +52,34 @@ function community_read_form_request(array $get)
     );
 }
 
+function community_normalize_notice_datetime($value)
+{
+    $value = trim((string) $value);
+    if ($value === '') {
+        return '0000-00-00 00:00:00';
+    }
+
+    $value = str_replace('T', ' ', $value);
+    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $value)) {
+        return $value . ':00';
+    }
+
+    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value)) {
+        return $value;
+    }
+
+    return '0000-00-00 00:00:00';
+}
+
+function community_notice_datetime_range_invalid($started_at, $ended_at)
+{
+    if ($started_at === '0000-00-00 00:00:00' || $ended_at === '0000-00-00 00:00:00') {
+        return false;
+    }
+
+    return strtotime($ended_at) < strtotime($started_at);
+}
+
 function community_read_save_request(array $post)
 {
     $delete_attachments = array();
@@ -73,6 +101,8 @@ function community_read_save_request(array $post)
         'is_secret' => isset($post['is_secret']) ? 1 : 0,
         'is_notice' => isset($post['is_notice']) ? 1 : 0,
         'notice_order' => (int) community_read_scalar($post, 'notice_order', 0),
+        'notice_started_at' => community_normalize_notice_datetime(community_read_scalar($post, 'notice_started_at', '')),
+        'notice_ended_at' => community_normalize_notice_datetime(community_read_scalar($post, 'notice_ended_at', '')),
         'delete_attachment' => $delete_attachments,
     );
 }

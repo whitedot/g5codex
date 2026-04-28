@@ -43,6 +43,10 @@ if (!defined('_GNUBOARD_')) {
                 <label><input type="checkbox" name="is_notice" value="1"<?php echo $community_form_view['is_notice_checked']; ?>> 공지글</label>
                 <label for="notice_order">공지 정렬</label>
                 <input type="number" name="notice_order" id="notice_order" value="<?php echo $community_form_view['notice_order_value']; ?>">
+                <label for="notice_started_at">공지 시작</label>
+                <input type="datetime-local" name="notice_started_at" id="notice_started_at" value="<?php echo $community_form_view['notice_started_at_value']; ?>">
+                <label for="notice_ended_at">공지 종료</label>
+                <input type="datetime-local" name="notice_ended_at" id="notice_ended_at" value="<?php echo $community_form_view['notice_ended_at_value']; ?>">
             </p>
         <?php } ?>
 

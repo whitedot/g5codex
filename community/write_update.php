@@ -24,6 +24,10 @@ if ($community_save_request['content'] === '') {
     alert('내용을 입력하세요.', G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']));
 }
 
+if ($is_admin && community_notice_datetime_range_invalid($community_save_request['notice_started_at'], $community_save_request['notice_ended_at'])) {
+    alert('공지 종료 시간은 시작 시간보다 빠를 수 없습니다.', G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']));
+}
+
 if (empty($community_board['use_category'])) {
     $community_save_request['category_id'] = 0;
 } elseif ($community_save_request['category_id'] > 0) {
@@ -48,6 +52,8 @@ $community_payload = array(
     'is_secret' => $community_save_request['is_secret'],
     'is_notice' => $is_admin ? $community_save_request['is_notice'] : 0,
     'notice_order' => $is_admin ? $community_save_request['notice_order'] : 0,
+    'notice_started_at' => $is_admin ? $community_save_request['notice_started_at'] : '0000-00-00 00:00:00',
+    'notice_ended_at' => $is_admin ? $community_save_request['notice_ended_at'] : '0000-00-00 00:00:00',
 );
 
 $community_is_new_post = false;
@@ -72,6 +78,8 @@ if ($community_save_request['post_id'] > 0) {
     if (!$is_admin) {
         $community_payload['is_notice'] = (int) $community_post['is_notice'];
         $community_payload['notice_order'] = (int) $community_post['notice_order'];
+        $community_payload['notice_started_at'] = $community_post['notice_started_at'];
+        $community_payload['notice_ended_at'] = $community_post['notice_ended_at'];
     }
     if (!community_update_post($community_save_request['post_id'], $community_payload)) {
         alert('게시글을 저장하지 못했습니다.', G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_save_request['post_id']);
