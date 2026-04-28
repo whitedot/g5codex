@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `g5_community_comment` (
   `deleted_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`comment_id`),
   KEY `idx_post_list` (`post_id`, `status`, `comment_id`),
+  KEY `idx_status_comment` (`status`, `comment_id`),
   KEY `idx_author` (`mb_id`, `created_at`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

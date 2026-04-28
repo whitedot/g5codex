@@ -58,6 +58,20 @@ SELECT *
 
 기대 인덱스: `idx_board_notice`
 
+## 관리자 댓글 목록
+
+```sql
+EXPLAIN
+SELECT c.*, p.board_id AS post_board_id, p.title AS post_title
+  FROM g5_community_comment c
+  LEFT JOIN g5_community_post p ON p.post_id = c.post_id
+ WHERE c.status = 'published'
+ ORDER BY c.comment_id DESC
+ LIMIT 0, 20;
+```
+
+기대 인덱스: `idx_status_comment`
+
 ## 최신글
 
 ```sql
