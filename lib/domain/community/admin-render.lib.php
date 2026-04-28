@@ -391,6 +391,7 @@ function community_admin_build_point_list_view(array $request, array $config)
         'empty_ledger_message' => '포인트 원장이 없습니다.',
         'search_action_attr' => admin_escape_attr('./community_point_list.php'),
         'adjust_action_attr' => admin_escape_attr('./community_point_adjust.php'),
+        'expire_action_attr' => admin_escape_attr('./community_point_expire.php'),
         'return_query_attr' => admin_escape_attr(community_admin_build_point_list_qstr($request)),
         'mb_id_value' => get_sanitize_input($request['mb_id']),
         'admin_token' => get_admin_token(),

@@ -684,3 +684,15 @@ function community_admin_adjust_point(array $request, array $member)
 
     return array('error' => $result['error']);
 }
+
+function community_admin_expire_points(array $request)
+{
+    $result = community_point_expire_available('', '', 1000);
+
+    return array(
+        'error' => '',
+        'expired_count' => (int) $result['expired_count'],
+        'expired_amount' => (int) $result['expired_amount'],
+        'has_more' => !empty($result['has_more']),
+    );
+}

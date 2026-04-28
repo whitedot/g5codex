@@ -182,7 +182,7 @@ function community_point_update_wallet_expired($mb_id, $amount)
     );
 }
 
-function community_point_expire_available($mb_id = '', $now = '')
+function community_point_expire_available($mb_id = '', $now = '', $limit = 0)
 {
     $now = $now !== '' ? $now : G5_TIME_YMDHIS;
     $where = " where amount_remaining > 0
@@ -195,14 +195,28 @@ function community_point_expire_available($mb_id = '', $now = '')
         $params['mb_id'] = $mb_id;
     }
 
+    $limit_sql = '';
+    $limit = (int) $limit;
+    if ($limit > 0) {
+        $limit_sql = ' limit :page_rows ';
+        $params['page_rows'] = $limit + 1;
+    }
+
     $available_table = community_point_available_table();
     $rows = sql_fetch_all_prepared(
         " select *
             from {$available_table}
             {$where}
-           order by expires_at asc, available_id asc ",
+           order by expires_at asc, available_id asc
+           {$limit_sql} ",
         $params
     );
+
+    $has_more = false;
+    if ($limit > 0 && count($rows) > $limit) {
+        $has_more = true;
+        array_pop($rows);
+    }
 
     $expired_count = 0;
     $expired_amount = 0;
@@ -244,6 +258,7 @@ function community_point_expire_available($mb_id = '', $now = '')
     return array(
         'expired_count' => $expired_count,
         'expired_amount' => $expired_amount,
+        'has_more' => $has_more,
     );
 }
 

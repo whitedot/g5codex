@@ -8,6 +8,11 @@ if (!defined('_GNUBOARD_')) {
     <div class="member-summary-stats">
         <span class="member-summary-meta">총 지갑 <strong><?php echo $community_point_view['total_count_text']; ?></strong></span>
     </div>
+    <form method="post" action="<?php echo $community_point_view['expire_action_attr']; ?>">
+        <input type="hidden" name="token" value="<?php echo $community_point_view['admin_token']; ?>">
+        <input type="hidden" name="return_query" value="<?php echo $community_point_view['return_query_attr']; ?>">
+        <button type="submit" class="btn btn-solid-secondary">만료 포인트 정산</button>
+    </form>
 </div>
 
 <form method="get" action="<?php echo $community_point_view['search_action_attr']; ?>" class="member-search">

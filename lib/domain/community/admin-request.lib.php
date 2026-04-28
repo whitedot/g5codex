@@ -309,3 +309,10 @@ function community_admin_read_point_adjust_request(array $post)
         'return_query' => community_admin_read_scalar($post, 'return_query', ''),
     );
 }
+
+function community_admin_read_point_expire_request(array $post)
+{
+    return array(
+        'return_query' => community_admin_read_scalar($post, 'return_query', ''),
+    );
+}
