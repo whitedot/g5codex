@@ -31,6 +31,7 @@ function community_read_list_request(array $get, array $config)
         'page' => max(1, (int) community_read_scalar($get, 'page', 1)),
         'page_rows' => $page_rows > 0 ? $page_rows : 15,
         'category_id' => max(0, (int) community_read_scalar($get, 'category_id', 0)),
+        'stx' => trim(strip_tags((string) community_read_scalar($get, 'stx', ''))),
         'status' => 'published',
     );
 }

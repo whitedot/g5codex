@@ -89,6 +89,7 @@ function community_normalize_post_list_request(array $request)
         'page' => $page,
         'page_rows' => min(100, $page_rows),
         'category_id' => max(0, (int) community_payload_value($request, 'category_id', 0)),
+        'stx' => trim(strip_tags((string) community_payload_value($request, 'stx', ''))),
         'status' => preg_replace('/[^a-z_]/i', '', (string) community_payload_value($request, 'status', 'published')),
     );
 }
@@ -106,6 +107,11 @@ function community_build_post_list_sql($board_id, array $request, array &$params
     if ($request['category_id'] > 0) {
         $where[] = 'category_id = :category_id';
         $params['category_id'] = $request['category_id'];
+    }
+
+    if ($request['stx'] !== '') {
+        $where[] = '(title like :stx_like or mb_id like :stx_like)';
+        $params['stx_like'] = '%' . $request['stx'] . '%';
     }
 
     return ' where ' . implode(' and ', $where);

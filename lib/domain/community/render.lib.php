@@ -109,6 +109,9 @@ function community_build_list_view(array $request, array $board, array $member, 
     if ($request['category_id'] > 0) {
         $base_url .= '&amp;category_id=' . (int) $request['category_id'];
     }
+    if ($request['stx'] !== '') {
+        $base_url .= '&amp;stx=' . rawurlencode($request['stx']);
+    }
     $base_url .= '&amp;page=';
 
     return array(
@@ -118,7 +121,10 @@ function community_build_list_view(array $request, array $board, array $member, 
         'description_text' => get_text($board['description']),
         'items' => $items,
         'category_options' => community_category_options($categories, $request['category_id']),
+        'category_id_attr' => (int) $request['category_id'],
         'category_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/board.php'),
+        'search_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/board.php'),
+        'stx_value' => community_sanitize_input($request['stx']),
         'write_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id'])),
         'can_write' => community_can_write_board($board, $member),
         'empty_message' => '등록된 게시글이 없습니다.',

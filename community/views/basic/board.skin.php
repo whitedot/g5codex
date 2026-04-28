@@ -15,6 +15,7 @@ if (!defined('_GNUBOARD_')) {
     <?php if (!empty($community_list_view['category_options'])) { ?>
         <form method="get" action="<?php echo $community_list_view['category_action_attr']; ?>" class="community-category-filter">
             <input type="hidden" name="board_id" value="<?php echo $community_list_view['board_id_attr']; ?>">
+            <?php if ($community_list_view['stx_value'] !== '') { ?><input type="hidden" name="stx" value="<?php echo $community_list_view['stx_value']; ?>"><?php } ?>
             <select name="category_id">
                 <option value="0">전체</option>
                 <?php foreach ($community_list_view['category_options'] as $option) { ?>
@@ -24,6 +25,14 @@ if (!defined('_GNUBOARD_')) {
             <button type="submit">보기</button>
         </form>
     <?php } ?>
+
+    <form method="get" action="<?php echo $community_list_view['search_action_attr']; ?>" class="community-board-search">
+        <input type="hidden" name="board_id" value="<?php echo $community_list_view['board_id_attr']; ?>">
+        <?php if (!empty($community_list_view['category_options']) && $community_list_view['category_id_attr'] > 0) { ?><input type="hidden" name="category_id" value="<?php echo $community_list_view['category_id_attr']; ?>"><?php } ?>
+        <label for="community_board_stx">검색</label>
+        <input type="text" name="stx" id="community_board_stx" value="<?php echo $community_list_view['stx_value']; ?>" placeholder="제목 또는 작성자">
+        <button type="submit">검색</button>
+    </form>
 
     <table class="community-post-table">
         <caption><?php echo $community_list_view['board_name_text']; ?> 게시글 목록</caption>
