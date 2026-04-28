@@ -457,7 +457,7 @@ function community_admin_fetch_post_list_page(array $request)
 
     $rows = sql_fetch_all_prepared(
         " select * from {$table} {$where}
-          order by post_id desc
+          order by created_at desc, post_id desc
           limit :from_record, :page_rows ",
         $list_params
     );

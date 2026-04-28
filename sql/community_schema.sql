@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS `g5_community_post` (
   KEY `idx_board_notice` (`board_id`, `status`, `is_notice`, `notice_order`, `notice_started_at`, `notice_ended_at`, `post_id`),
   KEY `idx_board_category` (`board_id`, `category_id`, `status`, `last_activity_at`, `post_id`),
   KEY `idx_board_created` (`board_id`, `status`, `created_at`, `post_id`),
+  KEY `idx_status_created` (`status`, `created_at`, `post_id`),
+  KEY `idx_admin_created` (`created_at`, `post_id`),
   KEY `idx_author` (`mb_id`, `created_at`),
   KEY `idx_updated` (`updated_at`, `post_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

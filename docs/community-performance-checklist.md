@@ -58,6 +58,48 @@ SELECT *
 
 기대 인덱스: `idx_board_notice`
 
+## 관리자 게시글 목록
+
+```sql
+EXPLAIN
+SELECT *
+  FROM g5_community_post
+ ORDER BY created_at DESC,
+          post_id DESC
+ LIMIT 0, 20;
+```
+
+기대 인덱스: `idx_admin_created`
+
+상태 필터 사용 시:
+
+```sql
+EXPLAIN
+SELECT *
+  FROM g5_community_post
+ WHERE status = 'published'
+ ORDER BY created_at DESC,
+          post_id DESC
+ LIMIT 0, 20;
+```
+
+기대 인덱스: `idx_status_created`
+
+게시판 필터 사용 시:
+
+```sql
+EXPLAIN
+SELECT *
+  FROM g5_community_post
+ WHERE board_id = 'notice'
+   AND status = 'published'
+ ORDER BY created_at DESC,
+          post_id DESC
+ LIMIT 0, 20;
+```
+
+기대 인덱스: `idx_board_created`
+
 ## 관리자 댓글 목록
 
 ```sql
