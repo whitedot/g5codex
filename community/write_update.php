@@ -33,6 +33,10 @@ if (empty($community_board['use_category'])) {
     }
 }
 
+$community_upload_files = isset($_FILES['attachments']) && is_array($_FILES['attachments'])
+    ? community_normalize_upload_files($_FILES['attachments'])
+    : array();
+
 $community_payload = array(
     'board_id' => $community_board['board_id'],
     'category_id' => $community_save_request['category_id'],
@@ -54,6 +58,16 @@ if ($community_save_request['post_id'] > 0) {
     if (!community_can_edit_post($community_post, $member, $is_admin)) {
         alert('게시글을 수정할 권한이 없습니다.', G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post['post_id']);
     }
+    foreach ($community_save_request['delete_attachment'] as $attachment_id) {
+        $delete_result = community_delete_attachment($community_post['post_id'], $attachment_id);
+        if ($delete_result['error'] !== '') {
+            alert($delete_result['error'], G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_save_request['post_id']);
+        }
+    }
+    $community_upload_validation_error = community_validate_upload_files($community_board, $community_upload_files, community_count_post_attachments($community_post['post_id']));
+    if ($community_upload_validation_error !== '') {
+        alert($community_upload_validation_error, G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_save_request['post_id']);
+    }
     if (!$is_admin) {
         $community_payload['is_notice'] = (int) $community_post['is_notice'];
         $community_payload['notice_order'] = (int) $community_post['notice_order'];
@@ -63,10 +77,19 @@ if ($community_save_request['post_id'] > 0) {
     }
     $community_post_id = $community_save_request['post_id'];
 } else {
+    $community_upload_validation_error = community_validate_upload_files($community_board, $community_upload_files, 0);
+    if ($community_upload_validation_error !== '') {
+        alert($community_upload_validation_error, G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']));
+    }
     $community_post_id = community_insert_post($community_payload);
     if (!$community_post_id) {
         alert('게시글을 저장하지 못했습니다.', G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']));
     }
+}
+
+$community_upload_result = community_store_uploaded_attachments($community_post_id, $community_board, $community_upload_files);
+if ($community_upload_result['error'] !== '') {
+    alert($community_upload_result['error'], G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post_id);
 }
 
 $community_saved_post = community_fetch_post_in_board($community_board['board_id'], $community_post_id);

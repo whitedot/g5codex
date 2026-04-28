@@ -87,6 +87,7 @@ function community_build_view_view(array $board, array $post, array $member, $is
     $can_view_content = community_can_view_secret_post($post, $member, $is_admin);
     $content = $can_view_content ? nl2br(get_text($post['content'])) : '비밀글은 작성자와 관리자만 열람할 수 있습니다.';
     $comments = array();
+    $attachments = array();
 
     if ($can_view_content && !empty($board['use_comment'])) {
         foreach (community_fetch_post_comments($post['post_id']) as $comment) {
@@ -96,6 +97,16 @@ function community_build_view_view(array $board, array $post, array $member, $is
                 'date_text' => get_text(substr($comment['created_at'], 0, 16)),
                 'content_html' => nl2br(get_text($comment['content'])),
                 'can_edit' => community_can_edit_comment($comment, $member, $is_admin),
+            );
+        }
+    }
+
+    if ($can_view_content) {
+        foreach (community_fetch_post_attachments($post['post_id']) as $attachment) {
+            $attachments[] = array(
+                'name_text' => get_text($attachment['original_name']),
+                'size_text' => get_filesize((int) $attachment['file_size']),
+                'download_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/download.php?board_id=' . rawurlencode($board['board_id']) . '&post_id=' . (int) $post['post_id'] . '&attachment_id=' . (int) $attachment['attachment_id']),
             );
         }
     }
@@ -118,6 +129,7 @@ function community_build_view_view(array $board, array $post, array $member, $is
         'can_edit' => community_can_edit_post($post, $member, $is_admin),
         'can_comment' => $can_view_content && community_can_comment_board($board, $member),
         'comments' => $comments,
+        'attachments' => $attachments,
         'comment_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_update.php'),
         'comment_delete_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_delete.php'),
     );
@@ -127,6 +139,17 @@ function community_build_form_view(array $board, array $post, array $member, $is
 {
     $is_update = isset($post['post_id']) && (int) $post['post_id'] > 0;
     $categories = !empty($board['use_category']) ? community_fetch_board_categories($board['board_id']) : array();
+    $attachments = array();
+
+    if ($is_update) {
+        foreach (community_fetch_post_attachments($post['post_id']) as $attachment) {
+            $attachments[] = array(
+                'id_attr' => (int) $attachment['attachment_id'],
+                'name_text' => get_text($attachment['original_name']),
+                'size_text' => get_filesize((int) $attachment['file_size']),
+            );
+        }
+    }
 
     return array(
         'title' => $is_update ? '게시글 수정' : '게시글 작성',
@@ -142,6 +165,11 @@ function community_build_form_view(array $board, array $post, array $member, $is
         'notice_order_value' => $is_update ? (int) $post['notice_order'] : 0,
         'category_options' => community_category_options($categories, $is_update ? $post['category_id'] : 0),
         'use_category' => !empty($board['use_category']),
+        'use_attachment' => (int) $board['upload_file_count'] > 0,
+        'upload_file_count' => (int) $board['upload_file_count'],
+        'upload_file_size' => (int) $board['upload_file_size'],
+        'upload_extensions_text' => get_text($board['upload_extensions']),
+        'attachments' => $attachments,
         'is_admin' => $is_admin,
         'token' => get_token(),
     );

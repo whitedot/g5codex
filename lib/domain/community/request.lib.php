@@ -53,6 +53,16 @@ function community_read_form_request(array $get)
 
 function community_read_save_request(array $post)
 {
+    $delete_attachments = array();
+    if (isset($post['delete_attachment']) && is_array($post['delete_attachment'])) {
+        foreach ($post['delete_attachment'] as $attachment_id) {
+            $attachment_id = (int) $attachment_id;
+            if ($attachment_id > 0) {
+                $delete_attachments[] = $attachment_id;
+            }
+        }
+    }
+
     return array(
         'board_id' => community_read_board_id($post),
         'post_id' => community_read_post_id($post),
@@ -62,6 +72,7 @@ function community_read_save_request(array $post)
         'is_secret' => isset($post['is_secret']) ? 1 : 0,
         'is_notice' => isset($post['is_notice']) ? 1 : 0,
         'notice_order' => (int) community_read_scalar($post, 'notice_order', 0),
+        'delete_attachment' => $delete_attachments,
     );
 }
 

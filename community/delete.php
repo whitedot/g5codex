@@ -21,6 +21,11 @@ if (!community_can_edit_post($community_post, $member, $is_admin)) {
     alert('게시글을 삭제할 권한이 없습니다.', G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post['post_id']);
 }
 
+$attachment_delete_result = community_delete_post_attachments($community_post['post_id']);
+if ($attachment_delete_result['error'] !== '') {
+    alert($attachment_delete_result['error'], G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post['post_id']);
+}
+
 if (!community_soft_delete_post($community_post['post_id'])) {
     alert('게시글을 삭제하지 못했습니다.', G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post['post_id']);
 }

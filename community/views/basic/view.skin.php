@@ -15,6 +15,17 @@ if (!defined('_GNUBOARD_')) {
         <?php echo $community_view['content_html']; ?>
     </div>
 
+    <?php if (!empty($community_view['attachments'])) { ?>
+        <section class="community-attachments">
+            <h3>첨부파일</h3>
+            <ul>
+                <?php foreach ($community_view['attachments'] as $attachment) { ?>
+                    <li><a href="<?php echo $attachment['download_url_attr']; ?>"><?php echo $attachment['name_text']; ?> (<?php echo $attachment['size_text']; ?>)</a></li>
+                <?php } ?>
+            </ul>
+        </section>
+    <?php } ?>
+
     <section class="community-comments">
         <h3>댓글</h3>
 
