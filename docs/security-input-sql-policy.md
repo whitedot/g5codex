@@ -6,8 +6,9 @@
 
 - 신규 도메인 코드는 raw input을 읽고 request 계층에서 정규화한다.
 - `common.php`는 기존 호환을 위해 `$_GET`, `$_POST`, `$_COOKIE`, `$_REQUEST`에 전역 escape를 유지한다.
-- 전역 escape 전 원본 값은 `g5_get_runtime_raw_get_input()`, `g5_get_runtime_raw_post_input()`, `g5_get_runtime_raw_request_input()`으로 접근한다.
+- 전역 escape 전 원본 값은 `g5_get_runtime_raw_get_input()`, `g5_get_runtime_raw_post_input()`, `g5_get_runtime_raw_cookie_input()`, `g5_get_runtime_raw_request_input()`으로 접근한다.
 - 회원 도메인의 `member_get_runtime_request_context()`는 raw GET/POST/request 값을 우선 사용한다.
+- 커뮤니티와 관리자 도메인은 아직 `g5_get_runtime_get_input()`, `g5_get_runtime_post_input()` 호출이 남아 있다. 기능 변경 시 raw input 기반 request context로 순차 이전한다.
 - request 파일은 raw 값을 업무 타입으로 변환하는 경계다. DB 조회, 저장, 출력 escape를 request 파일에서 처리하지 않는다.
 
 ## SQL 작성
@@ -16,6 +17,7 @@
 - 신규 코드에서는 `sql_query_prepared()`, `sql_fetch_prepared()`, `sql_fetch_all_prepared()`, `sql_fetch_value_prepared()`를 기본값으로 사용한다.
 - 테이블명, 컬럼명처럼 바인딩할 수 없는 식별자는 `sql_quote_identifier()` 또는 도메인별 allow-list helper를 통과한 값만 사용한다.
 - `sql_query()`와 `sql_fetch()`는 상수 SQL, 검증된 식별자 SQL, 레거시 호환 경로에서만 허용한다.
+- `scripts/check-security-policy.sh`는 신규 직접 호출을 1차로 잡기 위한 보조 장치다. allow-list에 있는 파일도 변경 시 수동 리뷰한다.
 
 ## 인증 토큰 및 검증 키
 

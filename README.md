@@ -1,6 +1,6 @@
 # G5 Member Runtime
 
-This repository contains only the runtime files needed to run the member-only G5 application.
+This repository contains the runtime, installer, documentation, and asset build files for a member-focused G5 application with restored community features.
 
 ## Runtime Requirements
 
@@ -8,6 +8,7 @@ This repository contains only the runtime files needed to run the member-only G5
 - MySQL or MariaDB
 - Web server document root pointed at this directory
 - Writable `data/` directory on the deployed server
+- Node.js and npm only when rebuilding Tailwind assets
 
 ## Required Local Files
 
@@ -24,6 +25,8 @@ The runtime also needs these writable paths under `data/` when the related featu
 ```text
 data/session/
 data/cache/
+data/file/
+data/tmp/
 ```
 
 ## Runtime Configuration
@@ -42,6 +45,7 @@ Important keys:
 - `https_domain`: HTTPS URL used for secure member flows
 - `cookie_domain`: shared cookie domain, such as `.example.com`
 - `dbconfig_file`: DB config filename under `data/`
+- `db_engine`, `db_charset`: schema engine/charset defaults used by installation paths
 - `smtp_host`, `smtp_port`: mail transport settings
 
 ## Frontend Asset Build
@@ -64,10 +68,14 @@ The build writes generated assets to `css/common.css`, `css/theme.css`, and `adm
 ## Remaining Runtime Directories
 
 - `adm/`: admin pages and admin assets
+- `community/`: community board, latest, comment, attachment, scrap, and download controllers
 - `member/`: member authentication, registration, account pages, and member templates
 - `lib/`: shared runtime libraries and domain helpers
 - `plugin/`: mailer, captcha, purifier, and identity verification plugins
 - `css/`, `js/`: prebuilt frontend assets
+- `install/`: installer and schema SQL; remove or block this directory after production installation
+- `docs/`: current architecture, security, and performance notes
+- `scripts/`: local policy checks
 
 ## Deployment Check
 
@@ -81,6 +89,19 @@ After deployment, verify these flows with a real database:
 6. Admin login
 7. Admin member list and member edit
 8. Member XLSX export
+9. Community board, post, comment, attachment, latest, scrap flows
+10. Community admin board/post/comment/notification/point screens
+
+After installation, remove the `install/` directory from production or block direct web access to it.
+
+## Community Documentation
+
+Current community structure and performance checks are documented in:
+
+```text
+docs/community-restoration-plan.md
+docs/community-performance-checklist.md
+```
 
 ## Security Development Policy
 
