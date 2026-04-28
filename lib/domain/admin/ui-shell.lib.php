@@ -184,7 +184,6 @@ function admin_build_tail_view($is_admin)
 
     return array(
         'copyright_host_text' => $host,
-        'print_version_text' => '',
         'script_tag_views' => $admin_script_tag_views,
     );
 }

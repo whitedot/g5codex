@@ -18,7 +18,7 @@ $admin_tail_view = admin_build_tail_view($is_admin);
 
     <footer id="ft" class="admin-footer">
         <p class="admin-footer-inner">
-            <span class="admin-footer-copy">Copyright &copy; <?php echo $admin_tail_view['copyright_host_text']; ?>. All rights reserved. <?php echo $admin_tail_view['print_version_text']; ?></span>
+            <span class="admin-footer-copy">Copyright &copy; <?php echo $admin_tail_view['copyright_host_text']; ?>. All rights reserved.</span>
             <button type="button" class="admin-footer-scroll-top"><span>TOP</span></button>
         </p>
     </footer>
