@@ -17,8 +17,15 @@ if (empty($community_post['post_id'])) {
     alert('존재하지 않는 게시글입니다.', G5_COMMUNITY_URL . '/board.php?board_id=' . rawurlencode($community_board['board_id']));
 }
 
-if (community_can_view_secret_post($community_post, $member, $is_admin) && community_mark_post_viewed($community_post)) {
-    $community_post = community_fetch_post_in_board($community_board['board_id'], $community_view_request['post_id']);
+if (community_can_view_secret_post($community_post, $member, $is_admin)) {
+    $community_read_point_result = community_point_apply_for_read($community_board, $community_post, $member);
+    if ($community_read_point_result['error'] !== '') {
+        alert($community_read_point_result['error'], G5_COMMUNITY_URL . '/board.php?board_id=' . rawurlencode($community_board['board_id']));
+    }
+
+    if (community_mark_post_viewed($community_post)) {
+        $community_post = community_fetch_post_in_board($community_board['board_id'], $community_view_request['post_id']);
+    }
 }
 
 $community_view = community_build_view_view($community_board, $community_post, $member, $is_admin);

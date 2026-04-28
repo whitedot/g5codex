@@ -270,3 +270,38 @@ function community_point_grant_for_comment(array $board, array $comment)
         'target_id' => (int) $comment['comment_id'],
     ));
 }
+
+function community_point_apply_for_read(array $board, array $post, array $member)
+{
+    if (empty($board['use_point']) || (int) $board['point_read'] === 0) {
+        return array('error' => '', 'skipped' => true);
+    }
+
+    $mb_id = isset($member['mb_id']) ? (string) $member['mb_id'] : '';
+    if ($mb_id === '' || $mb_id === (string) $post['mb_id']) {
+        return array('error' => '', 'skipped' => true);
+    }
+
+    $amount = (int) $board['point_read'];
+    $meta = array(
+        'reason' => 'read',
+        'target_type' => 'post',
+        'target_id' => (int) $post['post_id'],
+        'created_by' => $mb_id,
+    );
+
+    if (community_point_has_ledger($mb_id, $meta['reason'], $meta['target_type'], $meta['target_id'])) {
+        return array('error' => '', 'skipped' => true);
+    }
+
+    if ($amount > 0) {
+        return community_point_grant($mb_id, $amount, $meta);
+    }
+
+    $result = community_point_adjust($mb_id, $amount, $meta);
+    if ($result['error'] !== '') {
+        return array('error' => $result['error'], 'skipped' => false);
+    }
+
+    return array('error' => '', 'ledger_id' => $result['ledger_id'], 'skipped' => false);
+}
