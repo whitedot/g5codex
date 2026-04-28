@@ -142,10 +142,7 @@ function community_build_post_list_sql($board_id, array $request, array &$params
         $params['category_id'] = $request['category_id'];
     }
 
-    if ($request['stx'] !== '') {
-        $where[] = '(title like :stx_like or mb_id like :stx_like)';
-        $params['stx_like'] = '%' . $request['stx'] . '%';
-    }
+    community_search_apply_post_list_condition($request, $where, $params);
 
     return ' where ' . implode(' and ', $where);
 }

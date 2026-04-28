@@ -13,5 +13,6 @@ require_once __DIR__ . '/notification.lib.php';
 require_once __DIR__ . '/point.lib.php';
 require_once __DIR__ . '/request.lib.php';
 require_once __DIR__ . '/permission.lib.php';
+require_once __DIR__ . '/search.lib.php';
 require_once __DIR__ . '/render.lib.php';
 require_once __DIR__ . '/admin.lib.php';
