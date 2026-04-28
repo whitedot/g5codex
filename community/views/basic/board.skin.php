@@ -32,6 +32,7 @@ if (!defined('_GNUBOARD_')) {
             <th scope="col">번호</th>
             <th scope="col">제목</th>
             <th scope="col">작성자</th>
+            <th scope="col">조회</th>
             <th scope="col">작성일</th>
         </tr>
         </thead>
@@ -46,11 +47,12 @@ if (!defined('_GNUBOARD_')) {
                     <?php if ($item['comment_count_text'] > 0) { ?><span><?php echo $item['comment_count_text']; ?></span><?php } ?>
                 </td>
                 <td><?php echo $item['author_text']; ?></td>
+                <td><?php echo $item['view_count_text']; ?></td>
                 <td><?php echo $item['date_text']; ?></td>
             </tr>
         <?php } ?>
         <?php if (empty($community_list_view['items'])) { ?>
-            <tr><td colspan="4"><?php echo $community_list_view['empty_message']; ?></td></tr>
+            <tr><td colspan="5"><?php echo $community_list_view['empty_message']; ?></td></tr>
         <?php } ?>
         </tbody>
     </table>

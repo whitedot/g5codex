@@ -8,7 +8,7 @@ if (!defined('_GNUBOARD_')) {
     <header>
         <p><?php echo $community_view['board_name_text']; ?></p>
         <h2><?php echo $community_view['title_text']; ?></h2>
-        <p><?php echo $community_view['author_text']; ?> · <?php echo $community_view['date_text']; ?><?php if ($community_view['is_new']) { ?> · 새글<?php } ?></p>
+        <p><?php echo $community_view['author_text']; ?> · <?php echo $community_view['date_text']; ?> · 조회 <?php echo $community_view['view_count_text']; ?><?php if ($community_view['is_new']) { ?> · 새글<?php } ?></p>
     </header>
 
     <div class="community-post-content">

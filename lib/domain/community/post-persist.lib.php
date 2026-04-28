@@ -135,6 +135,41 @@ function community_fetch_post_in_board($board_id, $post_id, $include_deleted = f
     );
 }
 
+function community_increment_post_view_count($post_id)
+{
+    $table = community_post_table();
+
+    return (bool) sql_query_prepared(
+        " update {$table}
+             set view_count = view_count + 1
+           where post_id = :post_id
+             and status = 'published' ",
+        array('post_id' => (int) $post_id),
+        false
+    );
+}
+
+function community_mark_post_viewed(array $post)
+{
+    if (empty($post['post_id'])) {
+        return false;
+    }
+
+    $post_id = (int) $post['post_id'];
+    $cookie_name = 'community_view_' . $post_id;
+
+    if (get_cookie($cookie_name) === '1') {
+        return false;
+    }
+
+    if (!community_increment_post_view_count($post_id)) {
+        return false;
+    }
+
+    set_cookie($cookie_name, '1', 86400);
+    return true;
+}
+
 function community_fetch_adjacent_post($board_id, array $post, $direction = 'prev')
 {
     $table = community_post_table();
