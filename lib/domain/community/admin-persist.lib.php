@@ -319,3 +319,272 @@ function community_admin_fetch_notification_log_page(array $request)
         'from_record' => $from_record,
     );
 }
+
+function community_admin_post_table()
+{
+    global $g5;
+
+    return $g5['community_post_table'];
+}
+
+function community_admin_comment_table()
+{
+    global $g5;
+
+    return $g5['community_comment_table'];
+}
+
+function community_admin_build_post_search_sql(array $request, array &$params)
+{
+    $where = array('1=1');
+
+    if ($request['board_id'] !== '') {
+        $where[] = 'board_id = :board_id';
+        $params['board_id'] = $request['board_id'];
+    }
+
+    if ($request['status'] !== '') {
+        $where[] = 'status = :status';
+        $params['status'] = $request['status'];
+    }
+
+    if ($request['stx'] !== '') {
+        $where[] = '(title like :stx_like or mb_id like :stx_like)';
+        $params['stx_like'] = '%' . $request['stx'] . '%';
+    }
+
+    return ' where ' . implode(' and ', $where);
+}
+
+function community_admin_fetch_post_list_page(array $request)
+{
+    $table = community_admin_post_table();
+    $params = array();
+    $where = community_admin_build_post_search_sql($request, $params);
+    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
+    $from_record = ($request['page'] - 1) * $request['page_rows'];
+
+    $list_params = $params;
+    $list_params['from_record'] = $from_record;
+    $list_params['page_rows'] = $request['page_rows'];
+
+    $rows = sql_fetch_all_prepared(
+        " select * from {$table} {$where}
+          order by post_id desc
+          limit :from_record, :page_rows ",
+        $list_params
+    );
+
+    return array(
+        'total_count' => $total_count,
+        'rows' => $rows,
+        'from_record' => $from_record,
+    );
+}
+
+function community_admin_update_post_status($post_id, $status)
+{
+    $table = community_admin_post_table();
+    $deleted_at = $status === 'deleted' ? G5_TIME_YMDHIS : '0000-00-00 00:00:00';
+
+    return (bool) sql_query_prepared(
+        " update {$table}
+             set status = :status,
+                 updated_at = :updated_at,
+                 deleted_at = :deleted_at
+           where post_id = :post_id ",
+        array(
+            'post_id' => (int) $post_id,
+            'status' => $status,
+            'updated_at' => G5_TIME_YMDHIS,
+            'deleted_at' => $deleted_at,
+        ),
+        false
+    );
+}
+
+function community_admin_update_post_notice($post_id, $is_notice)
+{
+    $table = community_admin_post_table();
+
+    return (bool) sql_query_prepared(
+        " update {$table}
+             set is_notice = :is_notice,
+                 notice_started_at = :notice_started_at,
+                 updated_at = :updated_at
+           where post_id = :post_id and status <> 'deleted' ",
+        array(
+            'post_id' => (int) $post_id,
+            'is_notice' => $is_notice ? 1 : 0,
+            'notice_started_at' => $is_notice ? G5_TIME_YMDHIS : '0000-00-00 00:00:00',
+            'updated_at' => G5_TIME_YMDHIS,
+        ),
+        false
+    );
+}
+
+function community_admin_apply_post_action(array $request)
+{
+    if ($request['action'] === '' || empty($request['post_ids'])) {
+        return array('error' => '처리할 게시글과 작업을 선택하세요.', 'count' => 0);
+    }
+
+    $count = 0;
+    foreach ($request['post_ids'] as $post_id) {
+        $post = community_fetch_post($post_id, true);
+        if (empty($post['post_id'])) {
+            continue;
+        }
+
+        $board = community_fetch_board($post['board_id'], true);
+
+        if ($request['action'] === 'delete') {
+            $delete_result = community_delete_post_attachments($post['post_id']);
+            if ($delete_result['error'] !== '') {
+                return array('error' => $delete_result['error'], 'count' => $count);
+            }
+            community_admin_update_post_status($post['post_id'], 'deleted');
+            community_delete_latest_post($post['board_id'], $post['post_id']);
+        } elseif ($request['action'] === 'hide') {
+            community_admin_update_post_status($post['post_id'], 'hidden');
+            community_delete_latest_post($post['board_id'], $post['post_id']);
+        } elseif ($request['action'] === 'publish') {
+            community_admin_update_post_status($post['post_id'], 'published');
+            $post = community_fetch_post($post['post_id'], true);
+            community_upsert_latest_post($board, $post);
+        } elseif ($request['action'] === 'notice_on') {
+            community_admin_update_post_notice($post['post_id'], 1);
+            $post = community_fetch_post($post['post_id'], true);
+            community_upsert_latest_post($board, $post);
+        } elseif ($request['action'] === 'notice_off') {
+            community_admin_update_post_notice($post['post_id'], 0);
+            $post = community_fetch_post($post['post_id'], true);
+            community_upsert_latest_post($board, $post);
+        }
+
+        $count++;
+    }
+
+    return array('error' => '', 'count' => $count);
+}
+
+function community_admin_build_comment_search_sql(array $request, array &$params)
+{
+    $where = array('1=1');
+
+    if ($request['post_id'] > 0) {
+        $where[] = 'post_id = :post_id';
+        $params['post_id'] = $request['post_id'];
+    }
+
+    if ($request['status'] !== '') {
+        $where[] = 'status = :status';
+        $params['status'] = $request['status'];
+    }
+
+    if ($request['stx'] !== '') {
+        $where[] = '(content like :stx_like or mb_id like :stx_like)';
+        $params['stx_like'] = '%' . $request['stx'] . '%';
+    }
+
+    return ' where ' . implode(' and ', $where);
+}
+
+function community_admin_fetch_comment_list_page(array $request)
+{
+    $table = community_admin_comment_table();
+    $params = array();
+    $where = community_admin_build_comment_search_sql($request, $params);
+    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
+    $from_record = ($request['page'] - 1) * $request['page_rows'];
+
+    $list_params = $params;
+    $list_params['from_record'] = $from_record;
+    $list_params['page_rows'] = $request['page_rows'];
+
+    $rows = sql_fetch_all_prepared(
+        " select * from {$table} {$where}
+          order by comment_id desc
+          limit :from_record, :page_rows ",
+        $list_params
+    );
+
+    return array(
+        'total_count' => $total_count,
+        'rows' => $rows,
+        'from_record' => $from_record,
+    );
+}
+
+function community_admin_update_comment_status($comment_id, $status)
+{
+    $table = community_admin_comment_table();
+    $deleted_at = $status === 'deleted' ? G5_TIME_YMDHIS : '0000-00-00 00:00:00';
+
+    return (bool) sql_query_prepared(
+        " update {$table}
+             set status = :status,
+                 updated_at = :updated_at,
+                 deleted_at = :deleted_at
+           where comment_id = :comment_id ",
+        array(
+            'comment_id' => (int) $comment_id,
+            'status' => $status,
+            'updated_at' => G5_TIME_YMDHIS,
+            'deleted_at' => $deleted_at,
+        ),
+        false
+    );
+}
+
+function community_admin_apply_comment_action(array $request)
+{
+    if ($request['action'] === '' || empty($request['comment_ids'])) {
+        return array('error' => '처리할 댓글과 작업을 선택하세요.', 'count' => 0);
+    }
+
+    $count = 0;
+    foreach ($request['comment_ids'] as $comment_id) {
+        $comment = community_fetch_comment($comment_id);
+        if (empty($comment['comment_id']) && $request['action'] !== 'publish') {
+            continue;
+        }
+
+        if ($request['action'] === 'publish') {
+            $table = community_admin_comment_table();
+            $comment = sql_fetch_prepared(" select * from {$table} where comment_id = :comment_id ", array('comment_id' => (int) $comment_id));
+            if (empty($comment['comment_id'])) {
+                continue;
+            }
+            if ($comment['status'] !== 'published') {
+                community_admin_update_comment_status($comment['comment_id'], 'published');
+                community_increment_post_comment_count($comment['post_id']);
+            }
+        } elseif ($request['action'] === 'hide') {
+            if ($comment['status'] === 'published') {
+                community_admin_update_comment_status($comment['comment_id'], 'hidden');
+                community_decrement_post_comment_count($comment['post_id']);
+            }
+        } elseif ($request['action'] === 'delete') {
+            if ($comment['status'] === 'published') {
+                community_admin_update_comment_status($comment['comment_id'], 'deleted');
+                community_decrement_post_comment_count($comment['post_id']);
+            } else {
+                community_admin_update_comment_status($comment['comment_id'], 'deleted');
+            }
+        }
+
+        $post = community_fetch_post($comment['post_id'], true);
+        $board = !empty($post['board_id']) ? community_fetch_board($post['board_id'], true) : array();
+        if (!empty($board['board_id']) && !empty($post['post_id'])) {
+            $post = community_fetch_post($post['post_id'], true);
+            community_upsert_latest_post($board, $post);
+        }
+
+        $count++;
+    }
+
+    return array('error' => '', 'count' => $count);
+}

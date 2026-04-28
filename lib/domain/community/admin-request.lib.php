@@ -129,3 +129,139 @@ function community_admin_build_notification_log_qstr(array $request, array $over
 
     return http_build_query($query);
 }
+
+function community_admin_post_status_values()
+{
+    return array('published', 'hidden', 'deleted');
+}
+
+function community_admin_read_post_list_request(array $get, array $config)
+{
+    $status = community_admin_read_scalar($get, 'status', '');
+    if ($status !== '' && !in_array($status, community_admin_post_status_values(), true)) {
+        $status = '';
+    }
+
+    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
+    if ($page_rows < 1) {
+        $page_rows = 15;
+    }
+
+    return array(
+        'page' => max(1, (int) community_admin_read_scalar($get, 'page', 1)),
+        'board_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($get, 'board_id', '')),
+        'status' => $status,
+        'stx' => community_admin_read_scalar($get, 'stx', ''),
+        'page_rows' => $page_rows,
+    );
+}
+
+function community_admin_build_post_list_qstr(array $request, array $overrides = array())
+{
+    $query = array(
+        'board_id' => $request['board_id'],
+        'status' => $request['status'],
+        'stx' => $request['stx'],
+        'page' => $request['page'],
+    );
+
+    foreach ($overrides as $key => $value) {
+        $query[$key] = $value;
+    }
+
+    foreach ($query as $key => $value) {
+        if ($value === '' || $value === null) {
+            unset($query[$key]);
+        }
+    }
+
+    return http_build_query($query);
+}
+
+function community_admin_read_selected_ids(array $post, $key)
+{
+    $ids = array();
+    if (!isset($post[$key]) || !is_array($post[$key])) {
+        return $ids;
+    }
+
+    foreach ($post[$key] as $id) {
+        $id = (int) $id;
+        if ($id > 0) {
+            $ids[] = $id;
+        }
+    }
+
+    return array_values(array_unique($ids));
+}
+
+function community_admin_read_post_list_update_request(array $post)
+{
+    $action = community_admin_read_scalar($post, 'action', '');
+    if (!in_array($action, array('publish', 'hide', 'delete', 'notice_on', 'notice_off'), true)) {
+        $action = '';
+    }
+
+    return array(
+        'action' => $action,
+        'post_ids' => community_admin_read_selected_ids($post, 'post_id'),
+        'return_query' => community_admin_read_scalar($post, 'return_query', ''),
+    );
+}
+
+function community_admin_read_comment_list_request(array $get, array $config)
+{
+    $status = community_admin_read_scalar($get, 'status', '');
+    if ($status !== '' && !in_array($status, community_admin_post_status_values(), true)) {
+        $status = '';
+    }
+
+    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
+    if ($page_rows < 1) {
+        $page_rows = 15;
+    }
+
+    return array(
+        'page' => max(1, (int) community_admin_read_scalar($get, 'page', 1)),
+        'post_id' => max(0, (int) community_admin_read_scalar($get, 'post_id', 0)),
+        'status' => $status,
+        'stx' => community_admin_read_scalar($get, 'stx', ''),
+        'page_rows' => $page_rows,
+    );
+}
+
+function community_admin_build_comment_list_qstr(array $request, array $overrides = array())
+{
+    $query = array(
+        'post_id' => $request['post_id'],
+        'status' => $request['status'],
+        'stx' => $request['stx'],
+        'page' => $request['page'],
+    );
+
+    foreach ($overrides as $key => $value) {
+        $query[$key] = $value;
+    }
+
+    foreach ($query as $key => $value) {
+        if ($value === '' || $value === null || $value === 0) {
+            unset($query[$key]);
+        }
+    }
+
+    return http_build_query($query);
+}
+
+function community_admin_read_comment_list_update_request(array $post)
+{
+    $action = community_admin_read_scalar($post, 'action', '');
+    if (!in_array($action, array('publish', 'hide', 'delete'), true)) {
+        $action = '';
+    }
+
+    return array(
+        'action' => $action,
+        'comment_ids' => community_admin_read_selected_ids($post, 'comment_id'),
+        'return_query' => community_admin_read_scalar($post, 'return_query', ''),
+    );
+}

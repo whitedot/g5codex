@@ -218,3 +218,120 @@ function community_admin_build_notification_log_view(array $request, array $conf
         'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
     );
 }
+
+function community_admin_post_status_label($status)
+{
+    $labels = array(
+        'published' => '공개',
+        'hidden' => '숨김',
+        'deleted' => '삭제',
+    );
+
+    return isset($labels[$status]) ? $labels[$status] : $status;
+}
+
+function community_admin_build_post_status_options($selected)
+{
+    $options = array(admin_build_select_option_view('', '전체', $selected === ''));
+    foreach (community_admin_post_status_values() as $status) {
+        $options[] = admin_build_select_option_view($status, community_admin_post_status_label($status), $selected === $status);
+    }
+
+    return $options;
+}
+
+function community_admin_build_post_item(array $row)
+{
+    return array(
+        'post_id_attr' => (int) $row['post_id'],
+        'post_id_text' => (int) $row['post_id'],
+        'board_id_text' => get_text($row['board_id']),
+        'title_text' => get_text($row['title']),
+        'author_text' => get_text($row['mb_id']),
+        'status_text' => get_text(community_admin_post_status_label($row['status'])),
+        'notice_text' => !empty($row['is_notice']) ? '공지' : '',
+        'comment_count_text' => (int) $row['comment_count'],
+        'attachment_count_text' => (int) $row['attachment_count'],
+        'created_at_text' => get_text($row['created_at']),
+        'view_url_attr' => admin_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($row['board_id']) . '&post_id=' . (int) $row['post_id']),
+        'comment_url_attr' => admin_escape_attr('./community_comment_list.php?post_id=' . (int) $row['post_id']),
+    );
+}
+
+function community_admin_build_post_list_view(array $request, array $config)
+{
+    $page_data = community_admin_fetch_post_list_page($request);
+    $items = array();
+
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_admin_build_post_item($row);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $qstr = community_admin_build_post_list_qstr($request, array('page' => ''));
+    $paging_url = './community_post_list.php';
+    $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
+
+    return array(
+        'title' => '커뮤니티 게시글 관리',
+        'admin_container_class' => 'admin-page-community-post-list',
+        'admin_page_subtitle' => '커뮤니티 게시글을 검색하고 공개, 숨김, 삭제, 공지 상태를 관리합니다.',
+        'total_count_text' => admin_format_count_text($page_data['total_count'], '건'),
+        'items' => $items,
+        'empty_message' => '게시글이 없습니다.',
+        'search_action_attr' => admin_escape_attr('./community_post_list.php'),
+        'update_action_attr' => admin_escape_attr('./community_post_list_update.php'),
+        'return_query_attr' => admin_escape_attr(community_admin_build_post_list_qstr($request)),
+        'board_id_value' => get_sanitize_input($request['board_id']),
+        'stx_value' => get_sanitize_input($request['stx']),
+        'status_options' => community_admin_build_post_status_options($request['status']),
+        'admin_token' => get_admin_token(),
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
+    );
+}
+
+function community_admin_build_comment_item(array $row)
+{
+    return array(
+        'comment_id_attr' => (int) $row['comment_id'],
+        'comment_id_text' => (int) $row['comment_id'],
+        'post_id_text' => (int) $row['post_id'],
+        'author_text' => get_text($row['mb_id']),
+        'content_text' => get_text(cut_str($row['content'], 120)),
+        'status_text' => get_text(community_admin_post_status_label($row['status'])),
+        'created_at_text' => get_text($row['created_at']),
+        'post_url_attr' => admin_escape_attr('./community_post_list.php?stx=' . rawurlencode((string) $row['post_id'])),
+    );
+}
+
+function community_admin_build_comment_list_view(array $request, array $config)
+{
+    $page_data = community_admin_fetch_comment_list_page($request);
+    $items = array();
+
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_admin_build_comment_item($row);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $qstr = community_admin_build_comment_list_qstr($request, array('page' => ''));
+    $paging_url = './community_comment_list.php';
+    $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
+
+    return array(
+        'title' => '커뮤니티 댓글 관리',
+        'admin_container_class' => 'admin-page-community-comment-list',
+        'admin_page_subtitle' => '커뮤니티 댓글을 검색하고 공개/삭제 상태를 관리합니다.',
+        'total_count_text' => admin_format_count_text($page_data['total_count'], '건'),
+        'items' => $items,
+        'empty_message' => '댓글이 없습니다.',
+        'search_action_attr' => admin_escape_attr('./community_comment_list.php'),
+        'update_action_attr' => admin_escape_attr('./community_comment_list_update.php'),
+        'return_query_attr' => admin_escape_attr(community_admin_build_comment_list_qstr($request)),
+        'post_id_value' => $request['post_id'] > 0 ? (int) $request['post_id'] : '',
+        'stx_value' => get_sanitize_input($request['stx']),
+        'status_options' => community_admin_build_post_status_options($request['status']),
+        'admin_token' => get_admin_token(),
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
+    );
+}
