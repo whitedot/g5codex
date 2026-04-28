@@ -111,6 +111,15 @@ function community_build_post_list_sql($board_id, array $request, array &$params
     return ' where ' . implode(' and ', $where);
 }
 
+function community_build_active_notice_sql(array &$params)
+{
+    $params['notice_now'] = G5_TIME_YMDHIS;
+
+    return " and is_notice = 1
+             and (notice_started_at = '0000-00-00 00:00:00' or notice_started_at <= :notice_now)
+             and (notice_ended_at = '0000-00-00 00:00:00' or notice_ended_at >= :notice_now) ";
+}
+
 function community_fetch_post($post_id, $include_deleted = false)
 {
     $table = community_post_table();
@@ -204,9 +213,21 @@ function community_fetch_post_list_page($board_id, array $request = array())
     $request = community_normalize_post_list_request($request);
     $params = array();
     $where = community_build_post_list_sql($board_id, $request, $params);
-    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} and is_notice = 0 ", $params);
     $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
     $from_record = ($request['page'] - 1) * $request['page_rows'];
+    $notice_rows = array();
+
+    if ($request['page'] === 1) {
+        $notice_params = $params;
+        $notice_sql = community_build_active_notice_sql($notice_params);
+        $notice_rows = sql_fetch_all_prepared(
+            " select * from {$table} {$where}
+              {$notice_sql}
+              order by notice_order asc, notice_started_at desc, post_id desc ",
+            $notice_params
+        );
+    }
 
     $list_params = $params;
     $list_params['from_record'] = $from_record;
@@ -214,14 +235,16 @@ function community_fetch_post_list_page($board_id, array $request = array())
 
     $rows = sql_fetch_all_prepared(
         " select * from {$table} {$where}
-          order by is_notice desc, notice_order asc, last_activity_at desc, post_id desc
+          and is_notice = 0
+          order by last_activity_at desc, post_id desc
           limit :from_record, :page_rows ",
         $list_params
     );
 
     return array(
         'total_count' => $total_count,
-        'rows' => $rows,
+        'rows' => array_merge($notice_rows, $rows),
+        'notice_count' => count($notice_rows),
         'from_record' => $from_record,
         'request' => $request,
     );
