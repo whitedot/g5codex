@@ -33,7 +33,7 @@ if (!defined('_GNUBOARD_')) {
             <caption>커뮤니티 알림 로그</caption>
             <thead>
             <tr>
-                <th scope="col"><input type="checkbox" onclick="var checked=this.checked; document.querySelectorAll('input[name=&quot;notification_id[]&quot;]').forEach(function(el){el.checked = checked;});"></th>
+                <th scope="col"><input type="checkbox" onclick="var checked=this.checked; document.querySelectorAll('input[name=&quot;notification_id[]&quot;]:not(:disabled)').forEach(function(el){el.checked = checked;});"></th>
                 <th scope="col">번호</th>
                 <th scope="col">이벤트</th>
                 <th scope="col">대상</th>
@@ -47,7 +47,7 @@ if (!defined('_GNUBOARD_')) {
             <tbody>
             <?php foreach ($community_notification_view['items'] as $item) { ?>
                 <tr>
-                    <td><input type="checkbox" name="notification_id[]" value="<?php echo $item['notification_id_attr']; ?>"></td>
+                    <td><input type="checkbox" name="notification_id[]" value="<?php echo $item['notification_id_attr']; ?>"<?php echo $item['retryable_disabled_attr']; ?>></td>
                     <td><?php echo $item['id_text']; ?></td>
                     <td><?php echo $item['event_type_text']; ?></td>
                     <td><?php echo $item['target_text']; ?></td>

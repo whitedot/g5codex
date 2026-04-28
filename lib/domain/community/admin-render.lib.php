@@ -176,16 +176,41 @@ function community_admin_build_notification_status_options($selected)
     return $options;
 }
 
+function community_admin_notification_status_label($status)
+{
+    $labels = array(
+        'pending' => '대기',
+        'sent' => '발송',
+        'failed' => '실패',
+        'skipped' => '건너뜀',
+    );
+
+    return isset($labels[$status]) ? $labels[$status] : $status;
+}
+
+function community_admin_notification_event_label($event_type)
+{
+    $labels = array(
+        'post_created' => '게시글 등록',
+        'comment_created' => '댓글 등록',
+    );
+
+    return isset($labels[$event_type]) ? $labels[$event_type] : $event_type;
+}
+
 function community_admin_build_notification_item(array $row)
 {
+    $retryable = in_array($row['status'], array('pending', 'failed', 'skipped'), true);
+
     return array(
         'notification_id_attr' => (int) $row['notification_id'],
+        'retryable_disabled_attr' => $retryable ? '' : ' disabled',
         'id_text' => (int) $row['notification_id'],
-        'event_type_text' => get_text($row['event_type']),
+        'event_type_text' => get_text(community_admin_notification_event_label($row['event_type'])),
         'target_text' => '글 ' . (int) $row['post_id'] . ' / 댓글 ' . (int) $row['comment_id'],
         'recipient_text' => get_text($row['recipient_mb_id'] . ' <' . $row['recipient_email'] . '>'),
         'subject_text' => get_text($row['subject']),
-        'status_text' => get_text($row['status']),
+        'status_text' => get_text(community_admin_notification_status_label($row['status'])),
         'error_text' => get_text($row['error_message']),
         'sent_at_text' => get_text($row['sent_at']),
         'created_at_text' => get_text($row['created_at']),
