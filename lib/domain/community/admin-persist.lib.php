@@ -588,3 +588,89 @@ function community_admin_apply_comment_action(array $request)
 
     return array('error' => '', 'count' => $count);
 }
+
+function community_admin_point_wallet_table()
+{
+    global $g5;
+
+    return $g5['community_point_wallet_table'];
+}
+
+function community_admin_point_ledger_table()
+{
+    global $g5;
+
+    return $g5['community_point_ledger_table'];
+}
+
+function community_admin_fetch_point_wallet_page(array $request)
+{
+    $table = community_admin_point_wallet_table();
+    $where = ' where 1=1 ';
+    $params = array();
+
+    if ($request['mb_id'] !== '') {
+        $where .= ' and mb_id like :mb_id_like ';
+        $params['mb_id_like'] = '%' . $request['mb_id'] . '%';
+    }
+
+    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
+    $from_record = ($request['page'] - 1) * $request['page_rows'];
+
+    $list_params = $params;
+    $list_params['from_record'] = $from_record;
+    $list_params['page_rows'] = $request['page_rows'];
+
+    $rows = sql_fetch_all_prepared(
+        " select * from {$table} {$where}
+          order by balance desc, mb_id asc
+          limit :from_record, :page_rows ",
+        $list_params
+    );
+
+    return array(
+        'total_count' => $total_count,
+        'rows' => $rows,
+        'from_record' => $from_record,
+    );
+}
+
+function community_admin_fetch_point_ledger_rows($mb_id, $limit = 20)
+{
+    $table = community_admin_point_ledger_table();
+    $params = array('page_rows' => max(1, min(50, (int) $limit)));
+    $where = ' where 1=1 ';
+
+    if ($mb_id !== '') {
+        $where .= ' and mb_id = :mb_id ';
+        $params['mb_id'] = $mb_id;
+    }
+
+    return sql_fetch_all_prepared(
+        " select * from {$table} {$where}
+          order by ledger_id desc
+          limit :page_rows ",
+        $params
+    );
+}
+
+function community_admin_adjust_point(array $request, array $member)
+{
+    if ($request['mb_id'] === '') {
+        return array('error' => '회원 ID를 입력하세요.');
+    }
+
+    if ($request['amount'] === 0) {
+        return array('error' => '조정 포인트를 입력하세요.');
+    }
+
+    $result = community_point_adjust($request['mb_id'], $request['amount'], array(
+        'reason' => 'admin_adjust',
+        'target_type' => 'admin',
+        'target_id' => 0,
+        'created_by' => isset($member['mb_id']) ? $member['mb_id'] : '',
+    ));
+
+    return array('error' => $result['error']);
+}

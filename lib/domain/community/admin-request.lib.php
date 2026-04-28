@@ -265,3 +265,47 @@ function community_admin_read_comment_list_update_request(array $post)
         'return_query' => community_admin_read_scalar($post, 'return_query', ''),
     );
 }
+
+function community_admin_read_point_list_request(array $get, array $config)
+{
+    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
+    if ($page_rows < 1) {
+        $page_rows = 15;
+    }
+
+    return array(
+        'page' => max(1, (int) community_admin_read_scalar($get, 'page', 1)),
+        'mb_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($get, 'mb_id', '')),
+        'page_rows' => $page_rows,
+    );
+}
+
+function community_admin_build_point_list_qstr(array $request, array $overrides = array())
+{
+    $query = array(
+        'mb_id' => $request['mb_id'],
+        'page' => $request['page'],
+    );
+
+    foreach ($overrides as $key => $value) {
+        $query[$key] = $value;
+    }
+
+    foreach ($query as $key => $value) {
+        if ($value === '' || $value === null) {
+            unset($query[$key]);
+        }
+    }
+
+    return http_build_query($query);
+}
+
+function community_admin_read_point_adjust_request(array $post)
+{
+    return array(
+        'mb_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'mb_id', '')),
+        'amount' => (int) community_admin_read_scalar($post, 'amount', 0),
+        'memo' => strip_tags(community_admin_read_scalar($post, 'memo', '')),
+        'return_query' => community_admin_read_scalar($post, 'return_query', ''),
+    );
+}

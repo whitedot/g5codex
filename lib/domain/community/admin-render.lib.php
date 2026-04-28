@@ -335,3 +335,65 @@ function community_admin_build_comment_list_view(array $request, array $config)
         'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
     );
 }
+
+function community_admin_build_point_wallet_item(array $row)
+{
+    return array(
+        'mb_id_text' => get_text($row['mb_id']),
+        'balance_text' => number_format((int) $row['balance']),
+        'earned_text' => number_format((int) $row['earned_total']),
+        'spent_text' => number_format((int) $row['spent_total']),
+        'expired_text' => number_format((int) $row['expired_total']),
+        'updated_at_text' => get_text($row['updated_at']),
+    );
+}
+
+function community_admin_build_point_ledger_item(array $row)
+{
+    return array(
+        'ledger_id_text' => (int) $row['ledger_id'],
+        'mb_id_text' => get_text($row['mb_id']),
+        'amount_text' => number_format((int) $row['amount']),
+        'balance_after_text' => number_format((int) $row['balance_after']),
+        'reason_text' => get_text($row['reason']),
+        'target_text' => get_text($row['target_type'] . ' #' . (int) $row['target_id']),
+        'created_by_text' => get_text($row['created_by']),
+        'created_at_text' => get_text($row['created_at']),
+    );
+}
+
+function community_admin_build_point_list_view(array $request, array $config)
+{
+    $page_data = community_admin_fetch_point_wallet_page($request);
+    $wallet_items = array();
+    foreach ($page_data['rows'] as $row) {
+        $wallet_items[] = community_admin_build_point_wallet_item($row);
+    }
+
+    $ledger_items = array();
+    foreach (community_admin_fetch_point_ledger_rows($request['mb_id'], 20) as $row) {
+        $ledger_items[] = community_admin_build_point_ledger_item($row);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $qstr = community_admin_build_point_list_qstr($request, array('page' => ''));
+    $paging_url = './community_point_list.php';
+    $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
+
+    return array(
+        'title' => '커뮤니티 포인트 관리',
+        'admin_container_class' => 'admin-page-community-point-list',
+        'admin_page_subtitle' => '커뮤니티 전용 포인트 지갑과 원장을 조회하고 수동 조정합니다.',
+        'total_count_text' => admin_format_count_text($page_data['total_count'], '명'),
+        'wallet_items' => $wallet_items,
+        'ledger_items' => $ledger_items,
+        'empty_wallet_message' => '포인트 지갑이 없습니다.',
+        'empty_ledger_message' => '포인트 원장이 없습니다.',
+        'search_action_attr' => admin_escape_attr('./community_point_list.php'),
+        'adjust_action_attr' => admin_escape_attr('./community_point_adjust.php'),
+        'return_query_attr' => admin_escape_attr(community_admin_build_point_list_qstr($request)),
+        'mb_id_value' => get_sanitize_input($request['mb_id']),
+        'admin_token' => get_admin_token(),
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
+    );
+}

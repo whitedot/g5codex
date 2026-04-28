@@ -50,6 +50,7 @@ $community_payload = array(
     'notice_order' => $is_admin ? $community_save_request['notice_order'] : 0,
 );
 
+$community_is_new_post = false;
 if ($community_save_request['post_id'] > 0) {
     $community_post = community_fetch_post_in_board($community_board['board_id'], $community_save_request['post_id']);
     if (empty($community_post['post_id'])) {
@@ -77,6 +78,7 @@ if ($community_save_request['post_id'] > 0) {
     }
     $community_post_id = $community_save_request['post_id'];
 } else {
+    $community_is_new_post = true;
     $community_upload_validation_error = community_validate_upload_files($community_board, $community_upload_files, 0);
     if ($community_upload_validation_error !== '') {
         alert($community_upload_validation_error, G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($community_board['board_id']));
@@ -94,5 +96,8 @@ if ($community_upload_result['error'] !== '') {
 
 $community_saved_post = community_fetch_post_in_board($community_board['board_id'], $community_post_id);
 community_upsert_latest_post($community_board, $community_saved_post);
+if ($community_is_new_post) {
+    community_point_grant_for_post($community_board, $community_saved_post);
+}
 
 goto_url(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post_id);

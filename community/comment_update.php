@@ -45,6 +45,7 @@ $community_post = community_fetch_post_in_board($community_board['board_id'], $c
 community_upsert_latest_post($community_board, $community_post);
 
 $community_comment = community_fetch_comment($community_comment_id);
+community_point_grant_for_comment($community_board, $community_comment);
 community_notify_comment_created($community_board, $community_post, $community_comment, $member['mb_id']);
 
 goto_url(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post['post_id']);
