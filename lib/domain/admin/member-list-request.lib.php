@@ -16,12 +16,18 @@ function admin_member_list_allowed_sort_fields()
     return array('mb_id', 'mb_name', 'mb_nick', 'mb_email', 'mb_level', 'mb_datetime', 'mb_intercept_date', 'mb_leave_date');
 }
 
+function admin_member_list_allowed_quick_views()
+{
+    return array('all', 'blocked', 'left');
+}
+
 function admin_read_member_list_request(array $request, array $config)
 {
     $sfl = isset($request['sfl']) && !is_array($request['sfl']) ? trim((string) $request['sfl']) : '';
     $stx = isset($request['stx']) && !is_array($request['stx']) ? trim((string) $request['stx']) : '';
     $sst = isset($request['sst']) && !is_array($request['sst']) ? trim((string) $request['sst']) : '';
     $sod = isset($request['sod']) && !is_array($request['sod']) ? trim((string) $request['sod']) : '';
+    $quick_view = isset($request['quick_view']) && !is_array($request['quick_view']) ? trim((string) $request['quick_view']) : 'all';
     $page = isset($request['page']) ? (int) $request['page'] : 1;
     $rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 30;
 
@@ -30,6 +36,7 @@ function admin_read_member_list_request(array $request, array $config)
         'stx' => $stx,
         'sst' => in_array($sst, admin_member_list_allowed_sort_fields(), true) ? $sst : 'mb_datetime',
         'sod' => strtolower($sod) === 'asc' ? 'asc' : 'desc',
+        'quick_view' => in_array($quick_view, admin_member_list_allowed_quick_views(), true) ? $quick_view : 'all',
         'page' => $page > 0 ? $page : 1,
         'rows' => $rows > 0 ? $rows : 30,
     );
@@ -37,7 +44,20 @@ function admin_read_member_list_request(array $request, array $config)
 
 function admin_build_member_list_qstr(array $request, array $config)
 {
-    return admin_bootstrap_build_qstr(admin_read_member_list_request($request, $config));
+    $member_list_request = admin_read_member_list_request($request, $config);
+    $query = array(
+        'sst' => $member_list_request['sst'],
+        'sod' => $member_list_request['sod'],
+        'sfl' => $member_list_request['sfl'],
+        'stx' => $member_list_request['stx'],
+        'page' => $member_list_request['page'],
+    );
+
+    if ($member_list_request['quick_view'] !== 'all') {
+        $query['quick_view'] = $member_list_request['quick_view'];
+    }
+
+    return http_build_query($query, '', '&amp;');
 }
 
 function admin_read_member_list_update_request(array $post)

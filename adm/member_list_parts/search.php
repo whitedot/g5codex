@@ -1,6 +1,9 @@
 <?php // 회원 목록 검색 form partial이다. option/value escape는 member-list-view.lib.php에서 준비된 값을 출력만 한다. ?>
 <div class="member-search-card">
     <form id="fsearch" name="fsearch" method="get">
+        <?php if ($member_list_view['search_view']['quick_view'] !== 'all') { ?>
+            <input type="hidden" name="quick_view" value="<?php echo $member_list_view['search_view']['quick_view_attr']; ?>">
+        <?php } ?>
         <div class="member-search-fields">
             <div class="member-field">
                 <label for="sfl" class="member-field-label">검색대상</label>

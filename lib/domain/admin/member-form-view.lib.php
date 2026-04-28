@@ -251,6 +251,7 @@ function admin_build_member_form_page_view(array $member_form_view, array $confi
         'stx' => isset($member_list_request['stx']) ? $member_list_request['stx'] : '',
         'sst' => isset($member_list_request['sst']) ? $member_list_request['sst'] : '',
         'sod' => isset($member_list_request['sod']) ? $member_list_request['sod'] : '',
+        'quick_view' => isset($member_list_request['quick_view']) ? $member_list_request['quick_view'] : 'all',
         'page' => isset($member_list_request['page']) ? $member_list_request['page'] : '',
     );
 
@@ -258,7 +259,7 @@ function admin_build_member_form_page_view(array $member_form_view, array $confi
         'title' => $member_form_view['title'],
         'admin_container_class' => 'admin-page-member-form',
         'admin_page_subtitle' => '기본정보, 인증 연락처, 동의 상태, 활동 이력을 탭에서 빠르게 관리하세요.',
-        'list_url' => './member_list.php?' . admin_bootstrap_build_qstr($member_list_request),
+        'list_url' => './member_list.php?' . admin_build_member_list_qstr($member_list_request, $config),
         'hidden_fields' => admin_build_hidden_field_views($hidden_fields),
         'admin_token' => get_admin_token(),
         'event_member' => $member_form_view['mb'],

@@ -81,7 +81,16 @@ function admin_build_member_list_table_columns(array $request)
 
 function admin_build_member_list_filter_query(array $request, array $overrides = array())
 {
-    return http_build_query(array_merge(array('sfl' => $request['sfl'], 'stx' => $request['stx']), $overrides), '', '&');
+    $query = array(
+        'sfl' => $request['sfl'],
+        'stx' => $request['stx'],
+    );
+
+    if ($request['quick_view'] !== 'all') {
+        $query['quick_view'] = $request['quick_view'];
+    }
+
+    return http_build_query(array_merge($query, $overrides), '', '&');
 }
 
 function admin_build_member_list_sort_query(array $request, $column, $flag = 'asc')
@@ -97,13 +106,19 @@ function admin_build_member_list_sort_query(array $request, $column, $flag = 'as
         $direction = $default_direction === 'asc' ? 'desc' : 'asc';
     }
 
-    return http_build_query(array(
+    $query = array(
         'sfl' => $request['sfl'],
         'stx' => $request['stx'],
         'sst' => $column,
         'sod' => $direction,
         'page' => $request['page'],
-    ), '', '&');
+    );
+
+    if ($request['quick_view'] !== 'all') {
+        $query['quick_view'] = $request['quick_view'];
+    }
+
+    return http_build_query($query, '', '&');
 }
 
 function admin_build_member_list_sort_url(array $request, $column, $flag = 'asc')
@@ -115,13 +130,13 @@ function admin_build_member_list_summary_links(array $request, $quick_view, $int
 {
     return array(
         array(
-            'href_attr' => admin_escape_attr('?' . admin_build_member_list_filter_query($request, array('sst' => 'mb_intercept_date', 'sod' => 'desc'))),
+            'href_attr' => admin_escape_attr('?' . admin_build_member_list_filter_query($request, array('quick_view' => 'blocked', 'sst' => 'mb_intercept_date', 'sod' => 'desc', 'page' => 1))),
             'label_text' => '차단',
             'count_text' => $intercept_count_text,
             'aria_current_attr' => $quick_view === 'blocked' ? ' aria-current="page"' : '',
         ),
         array(
-            'href_attr' => admin_escape_attr('?' . admin_build_member_list_filter_query($request, array('sst' => 'mb_leave_date', 'sod' => 'desc'))),
+            'href_attr' => admin_escape_attr('?' . admin_build_member_list_filter_query($request, array('quick_view' => 'left', 'sst' => 'mb_leave_date', 'sod' => 'desc', 'page' => 1))),
             'label_text' => '탈퇴',
             'count_text' => $leave_count_text,
             'aria_current_attr' => $quick_view === 'left' ? ' aria-current="page"' : '',
@@ -193,18 +208,14 @@ function admin_build_member_list_view(array $request, array $member, $is_admin, 
         $items[] = admin_build_member_list_item($row, $member, $is_admin, $qstr);
     }
 
-    $quick_view = 'all';
-    if ($request['sst'] === 'mb_intercept_date' && $request['sod'] === 'desc') {
-        $quick_view = 'blocked';
-    } elseif ($request['sst'] === 'mb_leave_date' && $request['sod'] === 'desc') {
-        $quick_view = 'left';
-    }
+    $quick_view = $request['quick_view'];
 
     $hidden_fields = array(
         'sst' => $request['sst'],
         'sod' => $request['sod'],
         'sfl' => $request['sfl'],
         'stx' => $request['stx'],
+        'quick_view' => $request['quick_view'],
         'page' => $request['page'],
     );
     $paging_url = '?' . $qstr . '&amp;page=';
@@ -224,6 +235,8 @@ function admin_build_member_list_view(array $request, array $member, $is_admin, 
         'search_view' => array(
             'field_options' => admin_build_member_list_search_field_options($request),
             'stx_value' => get_sanitize_input($request['stx']),
+            'quick_view' => $request['quick_view'],
+            'quick_view_attr' => admin_escape_attr($request['quick_view']),
         ),
         'table_columns' => admin_build_member_list_table_columns($request),
         'hidden_fields' => admin_build_hidden_field_views($hidden_fields),
