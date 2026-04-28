@@ -86,15 +86,41 @@ function community_increment_post_comment_count($post_id)
 
 function community_decrement_post_comment_count($post_id)
 {
+    return community_recalculate_post_comment_summary($post_id);
+}
+
+function community_recalculate_post_comment_summary($post_id)
+{
     $table = community_post_table();
+    $comment_table = community_comment_table();
+    $summary = sql_fetch_prepared(
+        " select p.created_at as post_created_at,
+                 count(c.comment_id) as comment_count,
+                 max(c.created_at) as last_comment_at
+            from {$table} p
+            left join {$comment_table} c on c.post_id = p.post_id and c.status = 'published'
+           where p.post_id = :post_id
+             and p.status <> 'deleted'
+           group by p.post_id ",
+        array('post_id' => (int) $post_id)
+    );
+
+    if (empty($summary['post_created_at'])) {
+        return false;
+    }
+
+    $last_activity_at = !empty($summary['last_comment_at']) ? $summary['last_comment_at'] : $summary['post_created_at'];
 
     return (bool) sql_query_prepared(
         " update {$table}
-             set comment_count = if(comment_count > 0, comment_count - 1, 0),
+             set comment_count = :comment_count,
+                 last_activity_at = :last_activity_at,
                  updated_at = :updated_at
            where post_id = :post_id and status <> 'deleted' ",
         array(
             'post_id' => (int) $post_id,
+            'comment_count' => (int) $summary['comment_count'],
+            'last_activity_at' => $last_activity_at,
             'updated_at' => G5_TIME_YMDHIS,
         ),
         false

@@ -560,7 +560,7 @@ function community_admin_apply_comment_action(array $request)
             }
             if ($comment['status'] !== 'published') {
                 community_admin_update_comment_status($comment['comment_id'], 'published');
-                community_increment_post_comment_count($comment['post_id']);
+                community_recalculate_post_comment_summary($comment['post_id']);
             }
         } elseif ($request['action'] === 'hide') {
             if ($comment['status'] === 'published') {
