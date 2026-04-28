@@ -26,6 +26,7 @@ if (!defined('_GNUBOARD_')) {
 
     <section class="community-latest">
         <h3>최신글</h3>
+        <p><a href="<?php echo G5_COMMUNITY_URL; ?>/latest.php">전체 최신글 보기</a></p>
         <?php if (empty($community_latest_items)) { ?>
             <p>최신글이 없습니다.</p>
         <?php } else { ?>
