@@ -14,6 +14,10 @@ function admin_persist_member_form_request($w, array $request, array $member, $i
     $mb_nick = $request['mb_nick'];
 
     $existing_member = member_validate_admin_member_request($request, $member, $is_admin, $w);
+    if ($w === 'u' && isset($existing_member['mb_id']) && $existing_member['mb_id']) {
+        $mb_id = $existing_member['mb_id'];
+    }
+
     member_validate_admin_uniqueness($mb_id, $mb_nick, $mb_email, $w, $existing_member);
 
     if ($w == '') {

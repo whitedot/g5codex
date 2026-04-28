@@ -255,6 +255,10 @@ function admin_build_member_form_page_view(array $member_form_view, array $confi
         'page' => isset($member_list_request['page']) ? $member_list_request['page'] : '',
     );
 
+    if (!empty($member_form_view['is_update']) && !empty($member_form_view['mb']['mb_no'])) {
+        $hidden_fields['mb_no'] = (int) $member_form_view['mb']['mb_no'];
+    }
+
     return array(
         'title' => $member_form_view['title'],
         'admin_container_class' => 'admin-page-member-form',

@@ -25,7 +25,7 @@ function member_validate_admin_member_request(array $request, array $member, $is
     }
 
     if ($w === 'u') {
-        $mb = get_member($mb_id);
+        $mb = member_find_admin_update_member($request);
         if (!(isset($mb['mb_id']) && $mb['mb_id'])) {
             alert('존재하지 않는 회원자료입니다.');
         }
@@ -63,6 +63,21 @@ function member_validate_admin_member_request(array $request, array $member, $is
     }
 
     return $mb;
+}
+
+function member_find_admin_update_member(array $request)
+{
+    $member_table = member_get_member_table_name();
+    $mb_no = isset($request['mb_no']) ? (int) $request['mb_no'] : 0;
+
+    if ($mb_no > 0) {
+        return sql_fetch_prepared(
+            " select * from {$member_table} where mb_no = :mb_no ",
+            array('mb_no' => $mb_no)
+        );
+    }
+
+    return get_member(isset($request['mb_id']) ? $request['mb_id'] : '');
 }
 
 function member_find_admin_duplicate_member($field, $value, array $exclude_member = array())
