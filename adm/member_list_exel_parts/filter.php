@@ -2,7 +2,7 @@
 <form id="fsearch" name="fsearch" method="get" class="card ui-form-theme ui-form-showcase" data-admin-member-export-form>
     <input type="hidden" name="token" value="<?php echo $member_export_filter_view['form_token_attr']; ?>">
     <div class="card-header">
-        <h2 class="card-title">회원 검색 필터링</h2>
+        <h2 class="card-title">회원 검색 필터링<?php echo $member_export_filter_view['filter_title_count_text']; ?></h2>
     </div>
     <fieldset class="card-body">
         <legend class="caption-sr-only">회원 검색 필터링</legend>
@@ -159,9 +159,9 @@
                 </div>
             </div>
 
-            <div class="admin-export-filter-actions">
-                <button type="button" class="btn btn-solid-primary" data-admin-member-export-download <?php echo $member_export_filter_view['download_disabled_attr']; ?>>엑셀파일 다운로드</button>
+            <div class="admin-export-filter-actions admin-form-sticky-actions admin-form-actions admin-form-actions-split">
                 <a href="<?php echo $member_export_filter_view['reset_url_attr']; ?>" class="btn btn-surface-default-soft">초기화</a>
+                <button type="button" class="btn btn-solid-primary" data-admin-member-export-download <?php echo $member_export_filter_view['download_disabled_attr']; ?>><?php echo $member_export_filter_view['download_button_text']; ?></button>
             </div>
         </div>
     </fieldset>

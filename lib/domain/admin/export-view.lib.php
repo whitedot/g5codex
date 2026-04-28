@@ -60,7 +60,25 @@ function admin_build_member_export_intro_items(array $links)
     );
 }
 
-function admin_build_member_export_filter_view(array $filter_state, array $option_items, array $links, $form_token, $environment_ready)
+function admin_build_member_export_download_button_text($total_count, $total_error)
+{
+    if ((string) $total_error !== '' || (int) $total_count <= 0) {
+        return '엑셀다운로드';
+    }
+
+    return '엑셀다운로드(' . admin_format_count_text($total_count, '건') . ')';
+}
+
+function admin_build_member_export_filter_title_count_text($total_count, $total_error)
+{
+    if ((string) $total_error !== '') {
+        return '';
+    }
+
+    return ' (총회원수 ' . admin_format_count_text($total_count, '명') . ')';
+}
+
+function admin_build_member_export_filter_view(array $filter_state, array $option_items, array $links, $form_token, $environment_ready, $total_count, $total_error)
 {
     $params = $filter_state['params'];
     $ad_range_only = !empty($params['ad_range_only']);
@@ -92,6 +110,8 @@ function admin_build_member_export_filter_view(array $filter_state, array $optio
         'intercept_option_items' => $option_items['intercept'],
         'ad_range_option_items' => $option_items['ad_range'],
         'download_disabled_attr' => $environment_ready ? '' : 'disabled aria-disabled="true"',
+        'download_button_text' => get_text(admin_build_member_export_download_button_text($total_count, $total_error)),
+        'filter_title_count_text' => get_text(admin_build_member_export_filter_title_count_text($total_count, $total_error)),
         'reset_url_attr' => admin_escape_attr($links['reset_url']),
     );
 }
@@ -208,7 +228,7 @@ function admin_build_member_export_page_view(array $query, array $config, array 
         'total_count' => $total_count,
         'total_error' => $total_error,
         'total_view' => admin_build_member_export_total_view($total_count, $total_error),
-        'filter_view' => admin_build_member_export_filter_view($filter_state, $option_items, $links, $form_token, $environment_ready),
+        'filter_view' => admin_build_member_export_filter_view($filter_state, $option_items, $links, $form_token, $environment_ready, $total_count, $total_error),
         'client_config_attrs' => admin_build_member_export_client_config_attrs($client_config),
         'environment_ready' => $environment_ready,
         'environment_ready_attr' => $environment_ready ? '1' : '0',
