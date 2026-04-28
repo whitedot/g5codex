@@ -714,6 +714,7 @@ function community_admin_health_table_checks()
         '포인트 원장' => $g5['community_point_ledger_table'],
         '사용 가능 포인트' => $g5['community_point_available_table'],
         '첨부파일' => $g5['community_attachment_table'],
+        '스크랩' => $g5['community_scrap_table'],
     );
 
     $checks = array();

@@ -69,6 +69,14 @@ if (!defined('_GNUBOARD_')) {
         <?php if ($community_view['can_write']) { ?>
             <a href="<?php echo $community_view['write_url_attr']; ?>">글쓰기</a>
         <?php } ?>
+        <?php if ($community_view['can_scrap']) { ?>
+            <form method="post" action="<?php echo $community_view['scrap_action_attr']; ?>">
+                <input type="hidden" name="token" value="<?php echo $community_view['token']; ?>">
+                <input type="hidden" name="board_id" value="<?php echo $community_view['board_id_attr']; ?>">
+                <input type="hidden" name="post_id" value="<?php echo $community_view['post_id_attr']; ?>">
+                <button type="submit"><?php echo $community_view['scrap_button_text']; ?></button>
+            </form>
+        <?php } ?>
         <?php if ($community_view['can_edit']) { ?>
             <a href="<?php echo $community_view['edit_url_attr']; ?>">수정</a>
             <form method="post" action="<?php echo $community_view['delete_action_attr']; ?>" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">

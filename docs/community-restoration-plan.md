@@ -467,7 +467,28 @@ erDiagram
 
 댓글은 게시글 테이블과 분리한다. 댓글 작성 시 `community_post.comment_count`, `last_activity_at`만 갱신한다.
 
-### 5.6 최신글 인덱스
+### 5.6 스크랩
+
+`community_scrap`
+
+| 컬럼 | 설명 |
+| --- | --- |
+| `scrap_id` | 스크랩 PK |
+| `mb_id` | 회원 ID |
+| `board_id` | 게시판 ID |
+| `post_id` | 게시글 ID |
+| `created_at` | 스크랩 일시 |
+
+주요 인덱스:
+
+- `PRIMARY KEY (scrap_id)`
+- `UNIQUE KEY uq_member_post (mb_id, post_id)`
+- `KEY idx_member_created (mb_id, created_at, scrap_id)`
+- `KEY idx_post (post_id)`
+
+회원은 같은 게시글을 한 번만 스크랩할 수 있다. 스크랩 목록은 게시글과 게시판 상태, 게시판 읽기 권한을 다시 확인한 뒤 노출한다.
+
+### 5.7 최신글 인덱스
 
 `community_latest_index`
 
@@ -491,7 +512,7 @@ erDiagram
 
 최신글은 조회 시 UNION하지 않는다. 게시글 생성, 수정, 삭제, 댓글 작성, 댓글 삭제 이벤트에서 인덱스를 갱신한다.
 
-### 5.7 메일 알림 발송 이력
+### 5.8 메일 알림 발송 이력
 
 `community_notification_log`
 
@@ -524,7 +545,7 @@ erDiagram
 
 중복 발송을 피하기 위해 한 이벤트 안에서는 수신자를 회원 ID 기준으로 dedupe한다. 작성자 본인에게는 발송하지 않는다.
 
-### 5.8 커뮤니티 포인트 원장
+### 5.9 커뮤니티 포인트 원장
 
 `community_point_ledger`
 
@@ -558,7 +579,7 @@ UNIQUE KEY uq_once_reward (mb_id, reason, target_type, target_id)
 
 단, 관리자 수동 조정처럼 반복 가능한 사유에는 적용하지 않는다.
 
-### 5.9 사용 가능 포인트
+### 5.10 사용 가능 포인트
 
 `community_point_available`
 
@@ -579,7 +600,7 @@ UNIQUE KEY uq_once_reward (mb_id, reason, target_type, target_id)
 
 포인트 차감 시 만료가 빠른 단위부터 차감한다.
 
-### 5.10 포인트 잔액
+### 5.11 포인트 잔액
 
 `community_point_wallet`
 
@@ -598,7 +619,7 @@ UNIQUE KEY uq_once_reward (mb_id, reason, target_type, target_id)
 
 회원 테이블의 `mb_point`와 분리한다.
 
-### 5.11 첨부파일
+### 5.12 첨부파일
 
 `community_attachment`
 
@@ -692,13 +713,13 @@ $members = community_fetch_member_map(array_column($posts, 'mb_id'));
 - 첨부파일 제한: 파일 개수, 파일 크기, 허용 확장자
 - 이전글/다음글: 같은 게시판과 같은 카테고리 범위에서 제공
 - 새글 표시: `created_at` 기준 최근 글 표시
+- 스크랩/북마크: 회원별 게시글 저장과 내 스크랩 목록
 - 관리자 일괄 처리: 선택 숨김, 삭제, 공지 지정/해제
 
 참조하되 후속 단계로 분리할 기능:
 
 - 추천/비추천: 중복 방지 테이블을 별도로 설계한 뒤 추가
 - 신고: `community_report` 같은 별도 테이블로 운영 정책과 함께 추가
-- 스크랩/북마크: 회원별 저장 기능으로 후속 확장
 - RSS: 공개 게시판에 한정해 권한 정책을 정한 뒤 추가
 
 제외할 기능:

@@ -144,6 +144,8 @@ function community_build_list_view(array $request, array $board, array $member, 
 function community_build_view_view(array $board, array $post, array $member, $is_admin)
 {
     $can_view_content = community_can_view_secret_post($post, $member, $is_admin);
+    $member_id = isset($member['mb_id']) ? (string) $member['mb_id'] : '';
+    $is_scrapped = $member_id !== '' && community_has_scrap($member_id, $post['post_id']);
     $display_title = $can_view_content ? $post['title'] : '비밀글입니다.';
     $content = $can_view_content ? nl2br(get_text($post['content'])) : '비밀글은 작성자와 관리자만 열람할 수 있습니다.';
     $comments = array();
@@ -186,11 +188,15 @@ function community_build_view_view(array $board, array $post, array $member, $is
         'write_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id'])),
         'edit_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id']) . '&post_id=' . (int) $post['post_id']),
         'delete_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/delete.php'),
+        'scrap_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/scrap_update.php'),
+        'scrap_button_text' => $is_scrapped ? '스크랩 해제' : '스크랩',
         'board_id_attr' => community_escape_attr($board['board_id']),
         'post_id_attr' => (int) $post['post_id'],
         'token' => get_token(),
         'can_write' => community_can_write_board($board, $member),
         'can_edit' => community_can_edit_post($post, $member, $is_admin),
+        'can_scrap' => $can_view_content && $member_id !== '',
+        'is_scrapped' => $is_scrapped,
         'can_comment' => $can_view_content && community_can_comment_board($board, $member),
         'comments' => $comments,
         'attachments' => $attachments,
@@ -198,6 +204,41 @@ function community_build_view_view(array $board, array $post, array $member, $is
         'next_post' => community_build_adjacent_post_item($next_post, '다음글', $member, $is_admin),
         'comment_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_update.php'),
         'comment_delete_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_delete.php'),
+    );
+}
+
+function community_build_scrap_item(array $row, array $member, $is_admin)
+{
+    $can_read_secret = community_can_view_secret_post($row, $member, $is_admin);
+    $title = !empty($row['is_secret']) && !$can_read_secret ? '비밀글입니다.' : $row['title'];
+
+    return array(
+        'board_name_text' => get_text($row['board_name']),
+        'title_text' => get_text($title),
+        'author_text' => get_text($row['mb_id']),
+        'date_text' => get_text(substr($row['scrapped_at'], 0, 16)),
+        'comment_count_text' => (int) $row['comment_count'],
+        'view_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($row['board_id']) . '&post_id=' . (int) $row['post_id']),
+    );
+}
+
+function community_build_scrap_list_view(array $request, array $member, $is_admin)
+{
+    $page_data = community_fetch_scrap_page($member['mb_id'], $request, community_member_level($member));
+    $items = array();
+
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_build_scrap_item($row, $member, $is_admin);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $base_url = G5_COMMUNITY_URL . '/scrap.php?page=';
+
+    return array(
+        'title' => '내 스크랩',
+        'items' => $items,
+        'empty_message' => '스크랩한 게시글이 없습니다.',
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $base_url),
     );
 }
 

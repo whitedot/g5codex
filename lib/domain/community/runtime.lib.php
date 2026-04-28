@@ -22,6 +22,7 @@ function community_register_runtime_tables()
         'community_point_available_table' => 'community_point_available',
         'community_point_wallet_table' => 'community_point_wallet',
         'community_attachment_table' => 'community_attachment',
+        'community_scrap_table' => 'community_scrap',
     );
 
     foreach ($tables as $key => $suffix) {

@@ -247,6 +247,7 @@ fwrite($f, "\$g5['community_point_ledger_table'] = G5_TABLE_PREFIX.'community_po
 fwrite($f, "\$g5['community_point_available_table'] = G5_TABLE_PREFIX.'community_point_available'; // 커뮤니티 사용 가능 포인트 테이블\n");
 fwrite($f, "\$g5['community_point_wallet_table'] = G5_TABLE_PREFIX.'community_point_wallet'; // 커뮤니티 포인트 지갑 테이블\n");
 fwrite($f, "\$g5['community_attachment_table'] = G5_TABLE_PREFIX.'community_attachment'; // 커뮤니티 첨부파일 테이블\n");
+fwrite($f, "\$g5['community_scrap_table'] = G5_TABLE_PREFIX.'community_scrap'; // 커뮤니티 스크랩 테이블\n");
 
 fwrite($f, "?>");
 

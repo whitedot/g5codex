@@ -182,3 +182,15 @@ CREATE TABLE IF NOT EXISTS `g5_community_attachment` (
   PRIMARY KEY (`attachment_id`),
   KEY `idx_post_status` (`post_id`, `status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `g5_community_scrap` (
+  `scrap_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `mb_id` varchar(20) NOT NULL DEFAULT '',
+  `board_id` varchar(50) NOT NULL DEFAULT '',
+  `post_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`scrap_id`),
+  UNIQUE KEY `uq_member_post` (`mb_id`, `post_id`),
+  KEY `idx_member_created` (`mb_id`, `created_at`, `scrap_id`),
+  KEY `idx_post` (`post_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

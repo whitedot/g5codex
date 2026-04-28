@@ -115,6 +115,24 @@ function community_read_delete_request(array $post)
     );
 }
 
+function community_read_scrap_update_request(array $post)
+{
+    return array(
+        'board_id' => community_read_board_id($post),
+        'post_id' => community_read_post_id($post),
+    );
+}
+
+function community_read_scrap_list_request(array $get, array $config)
+{
+    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
+
+    return array(
+        'page' => max(1, (int) community_read_scalar($get, 'page', 1)),
+        'page_rows' => $page_rows > 0 ? $page_rows : 15,
+    );
+}
+
 function community_read_comment_save_request(array $post)
 {
     return array(

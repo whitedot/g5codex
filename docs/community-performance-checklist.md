@@ -141,6 +141,23 @@ SELECT *
 
 기대 인덱스: `idx_scope_latest`
 
+## 스크랩 목록
+
+```sql
+EXPLAIN
+SELECT s.scrap_id, s.created_at AS scrapped_at, p.*, b.name AS board_name
+  FROM g5_community_scrap s
+  JOIN g5_community_post p ON p.post_id = s.post_id AND p.status = 'published'
+  JOIN g5_community_board b ON b.board_id = p.board_id AND b.status = 'active'
+ WHERE s.mb_id = 'member1'
+   AND b.read_level <= 2
+ ORDER BY s.created_at DESC,
+          s.scrap_id DESC
+ LIMIT 0, 20;
+```
+
+기대 인덱스: `idx_member_created`
+
 ## 알림 로그
 
 ```sql
