@@ -14,6 +14,7 @@ include_once(G5_PATH.'/head.sub.php');
         <div>
             <ul id="hd_define">
                 <li class="active"><a href="<?php echo G5_URL ?>/">회원 서비스</a></li>
+                <li><a href="<?php echo G5_COMMUNITY_URL ?>/">커뮤니티</a></li>
             </ul>
         </div>
     </div>
@@ -49,6 +50,7 @@ include_once(G5_PATH.'/head.sub.php');
         <div>
             <ul id="gnb_1dul">
                 <li><a href="<?php echo G5_URL ?>/">홈</a></li>
+                <li><a href="<?php echo G5_COMMUNITY_URL ?>/">커뮤니티</a></li>
                 <?php if ($is_member) { ?>
                 <li><a href="<?php echo G5_MEMBER_URL ?>/member_confirm.php?url=<?php echo G5_MEMBER_URL ?>/register_form.php">내 정보</a></li>
                 <?php } ?>

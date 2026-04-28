@@ -64,6 +64,7 @@ define('G5_COOKIE_DOMAIN',  g5_runtime_config_value('cookie_domain', ''));
 define('G5_DBCONFIG_FILE',  g5_runtime_config_value('dbconfig_file', 'dbconfig.php'));
 
 define('G5_ADMIN_DIR',      'adm');
+define('G5_COMMUNITY_DIR',  'community');
 define('G5_MEMBER_DIR',     'member');
 define('G5_CSS_DIR',        'css');
 define('G5_DATA_DIR',       'data');
@@ -96,6 +97,7 @@ if (isset($g5_path['path'])) {
 }
 
 define('G5_ADMIN_URL',      G5_URL.'/'.G5_ADMIN_DIR);
+define('G5_COMMUNITY_URL',  G5_URL.'/'.G5_COMMUNITY_DIR);
 define('G5_MEMBER_URL',     G5_URL.'/'.G5_MEMBER_DIR);
 define('G5_CSS_URL',        G5_URL.'/'.G5_CSS_DIR);
 define('G5_DATA_URL',       G5_URL.'/'.G5_DATA_DIR);
@@ -107,6 +109,7 @@ define('G5_INICERT_URL',     G5_PLUGIN_URL.'/'.G5_INICERT_DIR);
 
 // PATH 는 서버상에서의 절대경로
 define('G5_ADMIN_PATH',     G5_PATH.'/'.G5_ADMIN_DIR);
+define('G5_COMMUNITY_PATH', G5_PATH.'/'.G5_COMMUNITY_DIR);
 define('G5_MEMBER_PATH',    G5_PATH.'/'.G5_MEMBER_DIR);
 define('G5_CSS_PATH',       G5_PATH.'/'.G5_CSS_DIR);
 define('G5_DATA_PATH',      G5_PATH.'/'.G5_DATA_DIR);
@@ -120,6 +123,7 @@ define('G5_KCPCERT_PATH',   G5_PLUGIN_PATH.'/'.G5_KCPCERT_DIR);
 define('G5_INICERT_PATH',   G5_PLUGIN_PATH.'/'.G5_INICERT_DIR);
 
 define('G5_PHPMAILER_PATH', G5_PLUGIN_PATH.'/'.G5_PHPMAILER_DIR);
+define('G5_COMMUNITY_VIEW_PATH', G5_COMMUNITY_PATH.'/views');
 //==============================================================================
 
 // 자바스크립트와 CSS 파일을 새로 다운로드 하도록 파일의 끝에 년월일 지정

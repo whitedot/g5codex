@@ -1,0 +1,78 @@
+<?php
+if (!defined('_GNUBOARD_')) {
+    exit;
+}
+?>
+
+<section class="community-board">
+    <div class="community-board-head">
+        <h2><?php echo $community_list_view['board_name_text']; ?></h2>
+        <?php if ($community_list_view['description_text'] !== '') { ?>
+            <p><?php echo $community_list_view['description_text']; ?></p>
+        <?php } ?>
+    </div>
+
+    <?php if (!empty($community_list_view['category_options'])) { ?>
+        <form method="get" action="<?php echo $community_list_view['category_action_attr']; ?>" class="community-category-filter">
+            <input type="hidden" name="board_id" value="<?php echo $community_list_view['board_id_attr']; ?>">
+            <?php if ($community_list_view['stx_value'] !== '') { ?><input type="hidden" name="stx" value="<?php echo $community_list_view['stx_value']; ?>"><?php } ?>
+            <select name="category_id">
+                <option value="0">전체</option>
+                <?php foreach ($community_list_view['category_options'] as $option) { ?>
+                    <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
+                <?php } ?>
+            </select>
+            <button type="submit">보기</button>
+        </form>
+    <?php } ?>
+
+    <form method="get" action="<?php echo $community_list_view['search_action_attr']; ?>" class="community-board-search">
+        <input type="hidden" name="board_id" value="<?php echo $community_list_view['board_id_attr']; ?>">
+        <?php if (!empty($community_list_view['category_options']) && $community_list_view['category_id_attr'] > 0) { ?><input type="hidden" name="category_id" value="<?php echo $community_list_view['category_id_attr']; ?>"><?php } ?>
+        <label for="community_board_stx">검색</label>
+        <input type="text" name="stx" id="community_board_stx" value="<?php echo $community_list_view['stx_value']; ?>" placeholder="제목 또는 작성자">
+        <button type="submit">검색</button>
+    </form>
+
+    <table class="community-post-table">
+        <caption><?php echo $community_list_view['board_name_text']; ?> 게시글 목록</caption>
+        <thead>
+        <tr>
+            <th scope="col">번호</th>
+            <?php if (!empty($community_list_view['category_options'])) { ?><th scope="col">분류</th><?php } ?>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
+            <th scope="col">조회</th>
+            <th scope="col">작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($community_list_view['items'] as $item) { ?>
+            <tr<?php echo $item['is_notice'] ? ' class="is-notice"' : ''; ?>>
+                <td><?php echo $item['is_notice'] ? '공지' : $item['post_id_text']; ?></td>
+                <?php if (!empty($community_list_view['category_options'])) { ?><td><?php echo $item['category_name_text']; ?></td><?php } ?>
+                <td>
+                    <a href="<?php echo $item['view_url_attr']; ?>"><?php echo $item['title_text']; ?></a>
+                    <?php if ($item['is_new']) { ?><span>새글</span><?php } ?>
+                    <?php if ($item['is_secret']) { ?><span>비밀</span><?php } ?>
+                    <?php if ($item['comment_count_text'] > 0) { ?><span><?php echo $item['comment_count_text']; ?></span><?php } ?>
+                </td>
+                <td><?php echo $item['author_text']; ?></td>
+                <td><?php echo $item['view_count_text']; ?></td>
+                <td><?php echo $item['date_text']; ?></td>
+            </tr>
+        <?php } ?>
+        <?php if (empty($community_list_view['items'])) { ?>
+            <tr><td colspan="<?php echo !empty($community_list_view['category_options']) ? 6 : 5; ?>"><?php echo $community_list_view['empty_message']; ?></td></tr>
+        <?php } ?>
+        </tbody>
+    </table>
+
+    <div class="community-actions">
+        <?php if ($community_list_view['can_write']) { ?>
+            <a href="<?php echo $community_list_view['write_url_attr']; ?>">글쓰기</a>
+        <?php } ?>
+    </div>
+
+    <?php echo $community_list_view['paging_html']; ?>
+</section>

@@ -1,0 +1,285 @@
+<?php
+if (!defined('_GNUBOARD_')) {
+    exit;
+}
+
+function community_escape_attr($value)
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+function community_sanitize_input($value)
+{
+    return htmlspecialchars(strip_tags((string) $value), ENT_QUOTES, 'UTF-8');
+}
+
+function community_escape_textarea($value)
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+function community_is_new_datetime($datetime, $seconds = 86400)
+{
+    $timestamp = strtotime((string) $datetime);
+
+    return $timestamp !== false && $timestamp >= (G5_SERVER_TIME - $seconds);
+}
+
+function community_category_options(array $categories, $selected_id)
+{
+    $options = array();
+    foreach ($categories as $category) {
+        $category_id = (int) $category['category_id'];
+        $options[] = array(
+            'value_attr' => (string) $category_id,
+            'label_text' => get_text($category['name']),
+            'selected_attr' => $category_id === (int) $selected_id ? ' selected' : '',
+        );
+    }
+
+    return $options;
+}
+
+function community_category_name_map(array $categories)
+{
+    $map = array();
+    foreach ($categories as $category) {
+        $map[(int) $category['category_id']] = $category['name'];
+    }
+
+    return $map;
+}
+
+function community_build_post_item(array $row, $can_read_secret, array $category_map = array())
+{
+    $is_secret = !empty($row['is_secret']);
+    $title = $is_secret && !$can_read_secret ? '비밀글입니다.' : $row['title'];
+    $category_id = (int) $row['category_id'];
+    $category_name = $category_id > 0 && isset($category_map[$category_id]) ? $category_map[$category_id] : '';
+
+    return array(
+        'post_id_text' => (int) $row['post_id'],
+        'category_name_text' => get_text($category_name),
+        'title_text' => get_text($title),
+        'author_text' => get_text($row['mb_id']),
+        'date_text' => get_text(substr($row['created_at'], 0, 16)),
+        'comment_count_text' => (int) $row['comment_count'],
+        'view_count_text' => (int) $row['view_count'],
+        'is_notice' => !empty($row['is_notice']),
+        'is_secret' => $is_secret,
+        'is_new' => community_is_new_datetime($row['created_at']),
+        'view_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($row['board_id']) . '&post_id=' . (int) $row['post_id']),
+    );
+}
+
+function community_format_datetime_local($datetime)
+{
+    if (empty($datetime) || $datetime === '0000-00-00 00:00:00') {
+        return '';
+    }
+
+    return str_replace(' ', 'T', substr($datetime, 0, 16));
+}
+
+function community_build_adjacent_post_item(array $post, $label, array $member, $is_admin)
+{
+    if (empty($post['post_id'])) {
+        return array(
+            'exists' => false,
+            'label_text' => get_text($label),
+            'title_text' => '',
+            'url_attr' => '',
+        );
+    }
+
+    $title = community_can_view_secret_post($post, $member, $is_admin) ? $post['title'] : '비밀글입니다.';
+
+    return array(
+        'exists' => true,
+        'label_text' => get_text($label),
+        'title_text' => get_text($title),
+        'url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($post['board_id']) . '&post_id=' . (int) $post['post_id']),
+    );
+}
+
+function community_build_list_view(array $request, array $board, array $member, $is_admin)
+{
+    $categories = !empty($board['use_category']) ? community_fetch_board_categories($board['board_id']) : array();
+    $category_map = community_category_name_map($categories);
+    $page_data = community_fetch_post_list_page($board['board_id'], $request);
+    $items = array();
+
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_build_post_item($row, community_can_view_secret_post($row, $member, $is_admin), $category_map);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $base_url = G5_COMMUNITY_URL . '/board.php?board_id=' . rawurlencode($board['board_id']);
+    if ($request['category_id'] > 0) {
+        $base_url .= '&amp;category_id=' . (int) $request['category_id'];
+    }
+    if ($request['stx'] !== '') {
+        $base_url .= '&amp;stx=' . rawurlencode($request['stx']);
+    }
+    $base_url .= '&amp;page=';
+
+    return array(
+        'title' => get_text($board['name']),
+        'board_id_attr' => community_escape_attr($board['board_id']),
+        'board_name_text' => get_text($board['name']),
+        'description_text' => get_text($board['description']),
+        'items' => $items,
+        'category_options' => community_category_options($categories, $request['category_id']),
+        'category_id_attr' => (int) $request['category_id'],
+        'category_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/board.php'),
+        'search_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/board.php'),
+        'stx_value' => community_sanitize_input($request['stx']),
+        'write_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id'])),
+        'can_write' => community_can_write_board($board, $member),
+        'empty_message' => '등록된 게시글이 없습니다.',
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $base_url),
+    );
+}
+
+function community_build_view_view(array $board, array $post, array $member, $is_admin)
+{
+    $can_view_content = community_can_view_secret_post($post, $member, $is_admin);
+    $member_id = isset($member['mb_id']) ? (string) $member['mb_id'] : '';
+    $is_scrapped = $member_id !== '' && community_has_scrap($member_id, $post['post_id']);
+    $display_title = $can_view_content ? $post['title'] : '비밀글입니다.';
+    $content = $can_view_content ? nl2br(get_text($post['content'])) : '비밀글은 작성자와 관리자만 열람할 수 있습니다.';
+    $comments = array();
+    $attachments = array();
+    $prev_post = community_fetch_adjacent_post($board['board_id'], $post, 'prev');
+    $next_post = community_fetch_adjacent_post($board['board_id'], $post, 'next');
+
+    if ($can_view_content && !empty($board['use_comment'])) {
+        foreach (community_fetch_post_comments($post['post_id']) as $comment) {
+            $comments[] = array(
+                'comment_id_attr' => (int) $comment['comment_id'],
+                'author_text' => get_text($comment['mb_id']),
+                'date_text' => get_text(substr($comment['created_at'], 0, 16)),
+                'content_html' => nl2br(get_text($comment['content'])),
+                'can_edit' => community_can_edit_comment($comment, $member, $is_admin),
+            );
+        }
+    }
+
+    if ($can_view_content) {
+        foreach (community_fetch_post_attachments($post['post_id']) as $attachment) {
+            $attachments[] = array(
+                'name_text' => get_text($attachment['original_name']),
+                'size_text' => get_filesize((int) $attachment['file_size']),
+                'download_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/download.php?board_id=' . rawurlencode($board['board_id']) . '&post_id=' . (int) $post['post_id'] . '&attachment_id=' . (int) $attachment['attachment_id']),
+            );
+        }
+    }
+
+    return array(
+        'title' => get_text($display_title),
+        'board_name_text' => get_text($board['name']),
+        'title_text' => get_text($display_title),
+        'author_text' => get_text($post['mb_id']),
+        'date_text' => get_text(substr($post['created_at'], 0, 16)),
+        'view_count_text' => (int) $post['view_count'],
+        'content_html' => $content,
+        'is_new' => community_is_new_datetime($post['created_at']),
+        'list_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/board.php?board_id=' . rawurlencode($board['board_id'])),
+        'write_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id'])),
+        'edit_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write.php?board_id=' . rawurlencode($board['board_id']) . '&post_id=' . (int) $post['post_id']),
+        'delete_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/delete.php'),
+        'scrap_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/scrap_update.php'),
+        'scrap_button_text' => $is_scrapped ? '스크랩 해제' : '스크랩',
+        'board_id_attr' => community_escape_attr($board['board_id']),
+        'post_id_attr' => (int) $post['post_id'],
+        'token' => get_token(),
+        'can_write' => community_can_write_board($board, $member),
+        'can_edit' => community_can_edit_post($post, $member, $is_admin),
+        'can_scrap' => $can_view_content && $member_id !== '',
+        'is_scrapped' => $is_scrapped,
+        'can_comment' => $can_view_content && community_can_comment_board($board, $member),
+        'comments' => $comments,
+        'attachments' => $attachments,
+        'prev_post' => community_build_adjacent_post_item($prev_post, '이전글', $member, $is_admin),
+        'next_post' => community_build_adjacent_post_item($next_post, '다음글', $member, $is_admin),
+        'comment_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_update.php'),
+        'comment_delete_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/comment_delete.php'),
+    );
+}
+
+function community_build_scrap_item(array $row, array $member, $is_admin)
+{
+    $can_read_secret = community_can_view_secret_post($row, $member, $is_admin);
+    $title = !empty($row['is_secret']) && !$can_read_secret ? '비밀글입니다.' : $row['title'];
+
+    return array(
+        'board_name_text' => get_text($row['board_name']),
+        'title_text' => get_text($title),
+        'author_text' => get_text($row['mb_id']),
+        'date_text' => get_text(substr($row['scrapped_at'], 0, 16)),
+        'comment_count_text' => (int) $row['comment_count'],
+        'view_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($row['board_id']) . '&post_id=' . (int) $row['post_id']),
+    );
+}
+
+function community_build_scrap_list_view(array $request, array $member, $is_admin)
+{
+    $page_data = community_fetch_scrap_page($member['mb_id'], $request, community_member_level($member));
+    $items = array();
+
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_build_scrap_item($row, $member, $is_admin);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $base_url = G5_COMMUNITY_URL . '/scrap.php?page=';
+
+    return array(
+        'title' => '내 스크랩',
+        'items' => $items,
+        'empty_message' => '스크랩한 게시글이 없습니다.',
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $base_url),
+    );
+}
+
+function community_build_form_view(array $board, array $post, array $member, $is_admin)
+{
+    $is_update = isset($post['post_id']) && (int) $post['post_id'] > 0;
+    $categories = !empty($board['use_category']) ? community_fetch_board_categories($board['board_id']) : array();
+    $attachments = array();
+
+    if ($is_update) {
+        foreach (community_fetch_post_attachments($post['post_id']) as $attachment) {
+            $attachments[] = array(
+                'id_attr' => (int) $attachment['attachment_id'],
+                'name_text' => get_text($attachment['original_name']),
+                'size_text' => get_filesize((int) $attachment['file_size']),
+            );
+        }
+    }
+
+    return array(
+        'title' => $is_update ? '게시글 수정' : '게시글 작성',
+        'board_name_text' => get_text($board['name']),
+        'form_action_attr' => community_escape_attr(G5_COMMUNITY_URL . '/write_update.php'),
+        'list_url_attr' => community_escape_attr(G5_COMMUNITY_URL . '/board.php?board_id=' . rawurlencode($board['board_id'])),
+        'board_id_attr' => community_escape_attr($board['board_id']),
+        'post_id_attr' => $is_update ? (int) $post['post_id'] : 0,
+        'title_value' => community_sanitize_input($is_update ? $post['title'] : ''),
+        'content_value' => community_escape_textarea($is_update ? $post['content'] : ''),
+        'is_secret_checked' => $is_update && !empty($post['is_secret']) ? ' checked' : '',
+        'is_notice_checked' => $is_update && !empty($post['is_notice']) ? ' checked' : '',
+        'notice_order_value' => $is_update ? (int) $post['notice_order'] : 0,
+        'notice_started_at_value' => $is_update ? community_escape_attr(community_format_datetime_local($post['notice_started_at'])) : '',
+        'notice_ended_at_value' => $is_update ? community_escape_attr(community_format_datetime_local($post['notice_ended_at'])) : '',
+        'category_options' => community_category_options($categories, $is_update ? $post['category_id'] : 0),
+        'use_category' => !empty($board['use_category']),
+        'use_attachment' => (int) $board['upload_file_count'] > 0,
+        'upload_file_count' => (int) $board['upload_file_count'],
+        'upload_file_size' => (int) $board['upload_file_size'],
+        'upload_extensions_text' => get_text($board['upload_extensions']),
+        'attachments' => $attachments,
+        'is_admin' => $is_admin,
+        'token' => get_token(),
+    );
+}
