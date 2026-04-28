@@ -65,6 +65,49 @@ function community_delete_latest_post($board_id, $post_id)
     );
 }
 
+function community_delete_latest_board($board_id)
+{
+    $table = community_latest_table();
+
+    return (bool) sql_query_prepared(
+        " delete from {$table}
+          where scope = 'board' and board_id = :board_id ",
+        array('board_id' => $board_id),
+        false
+    );
+}
+
+function community_rebuild_latest_board(array $board)
+{
+    if (empty($board['board_id'])) {
+        return false;
+    }
+
+    if (!community_delete_latest_board($board['board_id'])) {
+        return false;
+    }
+
+    if (empty($board['use_latest']) || $board['status'] !== 'active') {
+        return true;
+    }
+
+    $post_table = community_post_table();
+    $posts = sql_fetch_all_prepared(
+        " select * from {$post_table}
+          where board_id = :board_id and status = 'published'
+          order by last_activity_at desc, post_id desc ",
+        array('board_id' => $board['board_id'])
+    );
+
+    foreach ($posts as $post) {
+        if (!community_upsert_latest_post($board, $post)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function community_fetch_latest_posts($board_id = '', $limit = 10)
 {
     $table = community_latest_table();

@@ -260,6 +260,14 @@ function community_admin_save_board(array $request)
     }
 
     community_admin_save_board_categories($request['board_id'], $request['categories']);
+    if (!community_rebuild_latest_board(array(
+        'board_id' => $request['board_id'],
+        'use_latest' => $request['use_latest'],
+        'status' => $request['status'],
+    ))) {
+        sql_rollback();
+        return array('error' => '최신글 인덱스를 갱신하지 못했습니다.', 'board_id' => $request['board_id']);
+    }
 
     if (!sql_commit()) {
         sql_rollback();
