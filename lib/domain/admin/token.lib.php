@@ -24,7 +24,7 @@ function admin_read_session_value($key, $default = '')
 
 function get_admin_token()
 {
-    $token = md5(uniqid(rand(), true));
+    $token = function_exists('_token') ? _token() : bin2hex(random_bytes(16));
     set_session('ss_admin_token', $token);
 
     return $token;
@@ -61,7 +61,7 @@ function check_admin_token()
         $request_token = (string) $request_context['token'];
     }
 
-    if (!$token || $request_token === '' || $token != $request_token) {
+    if (!$token || $request_token === '' || !g5_hash_equals($token, $request_token)) {
         alert('올바른 방법으로 이용해 주십시오.', G5_URL);
     }
 
@@ -79,7 +79,7 @@ function admin_csrf_token_key($is_must = 0)
     if ($is_must || !$is_ajax) {
         $server_software = isset($server_input['SERVER_SOFTWARE']) ? $server_input['SERVER_SOFTWARE'] : '';
         $document_root = isset($server_input['DOCUMENT_ROOT']) ? $server_input['DOCUMENT_ROOT'] : '';
-        $key = md5($server_software . (defined('G5_TOKEN_ENCRYPTION_KEY') ? G5_TOKEN_ENCRYPTION_KEY : '') . $member['mb_id'] . $document_root);
+        $key = g5_build_hmac_token('admin-csrf', $server_software . '|' . $member['mb_id'] . '|' . $document_root);
     }
 
     return run_replace('admin_csrf_token_key', $key, $is_must);
@@ -94,7 +94,7 @@ function admin_read_ajax_token_request(array $post)
 
 function admin_validate_ajax_token_request(array $request)
 {
-    if (function_exists('admin_csrf_token_key') && $request['admin_csrf_token_key'] !== admin_csrf_token_key(1)) {
+    if (function_exists('admin_csrf_token_key') && !g5_hash_equals(admin_csrf_token_key(1), $request['admin_csrf_token_key'])) {
         return array('error' => '토큰키 에러!', 'url' => G5_URL);
     }
 

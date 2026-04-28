@@ -15,8 +15,7 @@ function member_prepare_register_form_entry()
 {
     run_event('register_form_before');
 
-    $token = md5(uniqid(rand(), true));
-    set_session('ss_token', $token);
+    set_session('ss_token', _token());
     set_session('ss_cert_no', '');
     set_session('ss_cert_hash', '');
     set_session('ss_cert_type', '');

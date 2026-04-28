@@ -8,9 +8,9 @@ if (!defined('_GNUBOARD_')) {
 
 function member_issue_password_lost_mail($email, array $mb)
 {
-    $change_password = rand(100000, 999999);
+    $change_password = random_int(100000, 999999);
     $mb_lost_certify = get_encrypt_string($change_password);
-    $mb_nonce = md5(pack('V*', rand(), rand(), rand(), rand()));
+    $mb_nonce = g5_generate_hex_token(16);
 
     member_store_password_lost_certify($mb['mb_id'], $mb_nonce . ' ' . $mb_lost_certify);
     MemberNotificationService::sendPasswordLostMail($email, $mb, $change_password, $mb_nonce, $mb_lost_certify);

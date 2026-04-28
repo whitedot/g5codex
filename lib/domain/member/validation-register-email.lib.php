@@ -23,7 +23,7 @@ function member_validate_email_certify_hash($mb_md5, $stored_hash, $mb_id)
         alert('제대로 된 값이 넘어오지 않았습니다.', G5_URL);
     }
 
-    if ($mb_md5 !== $stored_hash) {
+    if (!g5_hash_equals($stored_hash, $mb_md5)) {
         alert('메일인증 요청 정보가 올바르지 않습니다.', G5_URL);
     }
 
@@ -43,7 +43,7 @@ function member_validate_register_email_member(array $mb)
 
 function member_validate_register_email_key($ckey, $key)
 {
-    if (!$ckey || $ckey != $key) {
+    if (!$ckey || !g5_hash_equals($key, $ckey)) {
         alert('올바른 방법으로 이용해 주십시오.', G5_URL);
     }
 }

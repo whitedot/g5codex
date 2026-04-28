@@ -64,9 +64,10 @@ function g5_try_restore_auto_login()
         return false;
     }
 
-    $key = md5($_SERVER['SERVER_ADDR'] . $_SERVER['SERVER_SOFTWARE'] . $_SERVER['HTTP_USER_AGENT'] . $row['mb_password']);
+    $key = g5_build_auto_login_key($row['mb_password']);
+    $legacy_key = g5_build_legacy_auto_login_key($row['mb_password']);
     $tmp_key = get_cookie('ck_auto');
-    if ($tmp_key !== $key || !$tmp_key) {
+    if (!$tmp_key || (!g5_hash_equals($key, $tmp_key) && !g5_hash_equals($legacy_key, $tmp_key))) {
         return false;
     }
 
@@ -81,6 +82,9 @@ function g5_try_restore_auto_login()
     set_session('ss_mb_id', $tmp_mb_id);
     if (function_exists('update_auth_session_token')) {
         update_auth_session_token($row['mb_datetime']);
+    }
+    if (!g5_hash_equals($key, $tmp_key)) {
+        set_cookie('ck_auto', $key, 86400 * 31);
     }
 
     echo "<script type='text/javascript'> window.location.reload(); </script>";

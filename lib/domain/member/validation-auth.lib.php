@@ -101,7 +101,7 @@ function member_validate_login_status(array $mb)
 function member_validate_login_email_certify(array $mb, $mb_id)
 {
     if (is_use_email_certify() && !preg_match("/[1-9]/", $mb['mb_email_certify'])) {
-        $ckey = md5($mb['mb_ip'] . $mb['mb_datetime']);
+        $ckey = g5_build_register_email_key($mb['mb_ip'], $mb['mb_datetime']);
         confirm(
             "{$mb['mb_email']} 메일로 메일인증을 받으셔야 로그인 가능합니다. 다른 메일주소로 변경하여 인증하시려면 취소를 클릭하시기 바랍니다.",
             G5_URL,
@@ -164,7 +164,7 @@ function member_validate_password_lost_certify_row(array $mb)
 
 function member_validate_password_lost_certify_nonce(array $request, array $mb)
 {
-    if ($request['mb_nonce'] !== substr($mb['mb_lost_certify'], 0, 32)) {
+    if (!g5_hash_equals(substr($mb['mb_lost_certify'], 0, 32), $request['mb_nonce'])) {
         member_fail_password_lost_certify();
     }
 }

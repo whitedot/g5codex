@@ -32,7 +32,7 @@ function member_prepare_register_email_page(array $request)
     $mb = member_find_register_email_member($request['mb_id']);
     member_validate_register_email_member($mb);
 
-    $key = md5($mb['mb_ip'] . $mb['mb_datetime']);
+    $key = g5_build_register_email_key($mb['mb_ip'], $mb['mb_datetime']);
     member_validate_register_email_key($request['ckey'], $key);
 
     return $mb;

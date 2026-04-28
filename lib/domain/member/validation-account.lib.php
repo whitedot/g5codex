@@ -166,7 +166,7 @@ function member_validate_email_stop_hash(array $request, array $member_row)
 {
     if ($request['mb_md5']) {
         $tmp_md5 = md5($member_row['mb_id'] . $member_row['mb_email'] . $member_row['mb_datetime']);
-        if ($request['mb_md5'] == $tmp_md5) {
+        if (g5_hash_equals($tmp_md5, $request['mb_md5'])) {
             return;
         }
     }

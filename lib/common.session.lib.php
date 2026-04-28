@@ -56,13 +56,13 @@ function get_cookie($cookie_name)
 // 토큰 생성
 function _token()
 {
-    return md5(uniqid(rand(), true));
+    return g5_generate_hex_token(16);
 }
 
 // 불법접근을 막도록 토큰을 생성하면서 토큰값을 리턴
 function get_token()
 {
-    $token = md5(uniqid(rand(), true));
+    $token = _token();
     set_session('ss_token', $token);
 
     return $token;
@@ -71,8 +71,18 @@ function get_token()
 // POST로 넘어온 토큰과 세션에 저장된 토큰 비교
 function check_token()
 {
+    $token = get_session('ss_token');
+    $request_token = '';
+
+    if (isset($_POST['token']) && !is_array($_POST['token'])) {
+        $request_token = (string) $_POST['token'];
+    } elseif (isset($_REQUEST['token']) && !is_array($_REQUEST['token'])) {
+        $request_token = (string) $_REQUEST['token'];
+    }
+
     set_session('ss_token', '');
-    return true;
+
+    return $token !== '' && $request_token !== '' && g5_hash_equals($token, $request_token);
 }
 
 /**
@@ -90,7 +100,9 @@ function ss_mb_key($member, $regenerate = false)
         set_cookie('mb_client_key', $client_key, G5_SERVER_TIME * -1);
     }
 
-    $mb_key = md5($member['mb_datetime'] . $client_key) . run_replace('ss_mb_key_user_agent', md5($_SERVER['HTTP_USER_AGENT']));
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    $user_agent_key = run_replace('ss_mb_key_user_agent', $user_agent);
+    $mb_key = g5_build_hmac_token('member-session', $member['mb_datetime'] . '|' . $client_key . '|' . $user_agent_key);
 
     return $mb_key;
 }
@@ -103,7 +115,7 @@ function ss_mb_key($member, $regenerate = false)
 function verify_mb_key($member)
 {
     $mb_key = ss_mb_key($member);
-    $verified = get_session('ss_mb_key') === $mb_key;
+    $verified = g5_hash_equals($mb_key, get_session('ss_mb_key'));
 
     if (!$verified) {
         ss_mb_key($member, true);
@@ -124,7 +136,7 @@ function generate_mb_key($member)
 }
 
 function check_auth_session_token($str=''){
-    if (get_session('ss_mb_token_key') === get_token_encryption_key($str)) {
+    if (g5_hash_equals(get_token_encryption_key($str), get_session('ss_mb_token_key'))) {
         return true;
     }
     return false;
@@ -135,19 +147,86 @@ function update_auth_session_token($str=''){
 }
 
 function get_token_encryption_key($str=''){
-    $token = G5_TABLE_PREFIX.(defined('G5_TOKEN_ENCRYPTION_KEY') ? G5_TOKEN_ENCRYPTION_KEY : '').$str;
+    return g5_build_hmac_token('auth-session', G5_TABLE_PREFIX . '|' . $str);
+}
 
-    return md5($token);
+function g5_build_auto_login_key($member_password)
+{
+    $server_addr = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+    $server_software = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+
+    return g5_build_hmac_token('auto-login', $server_addr . '|' . $server_software . '|' . $user_agent . '|' . $member_password);
+}
+
+function g5_build_legacy_auto_login_key($member_password)
+{
+    $server_addr = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+    $server_software = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+
+    return md5($server_addr . $server_software . $user_agent . $member_password);
+}
+
+function g5_build_register_email_key($member_ip, $member_datetime)
+{
+    return g5_build_hmac_token('register-email', $member_ip . '|' . $member_datetime);
+}
+
+function g5_get_token_secret()
+{
+    if (defined('G5_TOKEN_ENCRYPTION_KEY') && G5_TOKEN_ENCRYPTION_KEY !== '') {
+        return G5_TOKEN_ENCRYPTION_KEY;
+    }
+
+    $parts = array(
+        defined('G5_MYSQL_PASSWORD') ? G5_MYSQL_PASSWORD : '',
+        defined('G5_MYSQL_DB') ? G5_MYSQL_DB : '',
+        defined('G5_TABLE_PREFIX') ? G5_TABLE_PREFIX : '',
+        defined('G5_PATH') ? G5_PATH : '',
+    );
+
+    return implode('|', $parts);
+}
+
+function g5_build_hmac_token($purpose, $value)
+{
+    return hash_hmac('sha256', (string) $purpose . '|' . (string) $value, g5_get_token_secret());
 }
 
 function get_random_token_string($length=6)
 {
-    if(function_exists('random_bytes')){
-        return bin2hex(random_bytes($length));
+    return g5_generate_hex_token($length);
+}
+
+function g5_generate_hex_token($bytes = 16)
+{
+    $bytes = (int) $bytes;
+    if ($bytes < 1) {
+        $bytes = 16;
     }
 
-    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    $output = substr(str_shuffle($characters), 0, $length);
+    return bin2hex(random_bytes($bytes));
+}
 
-    return bin2hex($output);
+function g5_hash_equals($known_string, $user_string)
+{
+    $known_string = (string) $known_string;
+    $user_string = (string) $user_string;
+
+    if (function_exists('hash_equals')) {
+        return hash_equals($known_string, $user_string);
+    }
+
+    if (strlen($known_string) !== strlen($user_string)) {
+        return false;
+    }
+
+    $result = 0;
+    $length = strlen($known_string);
+    for ($i = 0; $i < $length; $i++) {
+        $result |= ord($known_string[$i]) ^ ord($user_string[$i]);
+    }
+
+    return $result === 0;
 }

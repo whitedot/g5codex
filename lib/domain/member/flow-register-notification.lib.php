@@ -14,7 +14,7 @@ class MemberRegisterNotificationService
         $member_table = member_get_member_table_name();
 
         $subject = '[' . $config['cf_title'] . '] 인증확인 메일입니다.';
-        $mb_md5 = md5(pack('V*', rand(), rand(), rand(), rand()));
+        $mb_md5 = g5_generate_hex_token(16);
         sql_query_prepared(" update {$member_table} set mb_email_certify2 = :mb_email_certify2 where mb_id = :mb_id ", array(
             'mb_email_certify2' => $mb_md5,
             'mb_id' => $mb_id,
@@ -37,7 +37,7 @@ class MemberRegisterNotificationService
         $member_table = member_get_member_table_name();
 
         $subject = '[' . $config['cf_title'] . '] 인증확인 메일입니다.';
-        $mb_md5 = md5(pack('V*', rand(), rand(), rand(), rand()));
+        $mb_md5 = g5_generate_hex_token(16);
         sql_query_prepared(" update {$member_table} set mb_email_certify2 = :mb_email_certify2 where mb_id = :mb_id ", array(
             'mb_email_certify2' => $mb_md5,
             'mb_id' => $mb_id,

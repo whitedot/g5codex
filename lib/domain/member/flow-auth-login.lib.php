@@ -30,7 +30,7 @@ function member_begin_login_session(array $mb, $member_view_path)
 function member_apply_login_auto_cookie(array $mb, $use_auto_login)
 {
     if ($use_auto_login) {
-        $key = md5($_SERVER['SERVER_ADDR'] . $_SERVER['SERVER_SOFTWARE'] . $_SERVER['HTTP_USER_AGENT'] . $mb['mb_password']);
+        $key = g5_build_auto_login_key($mb['mb_password']);
         set_cookie('ck_mb_id', $mb['mb_id'], 86400 * 31);
         set_cookie('ck_auto', $key, 86400 * 31);
         return;
