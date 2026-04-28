@@ -25,6 +25,7 @@ $admin_head_view = admin_build_head_view(
     isset($sub_menu) ? $sub_menu : '',
     isset($page_title_text) ? $page_title_text : ''
 );
+$admin_flash_message_view = admin_pull_flash_message_view();
 ?>
 
 <script>
@@ -225,3 +226,8 @@ $admin_head_view = admin_build_head_view(
     <div id="container" class="admin-content <?php echo $admin_head_view['admin_container_class_attr']; ?>">
         <h1 id="container_title" class="admin-content-title"><?php echo $admin_head_view['admin_page_title_text']; ?></h1>
         <p id="container_subtitle" class="admin-content-subtitle"><?php echo $admin_head_view['admin_page_subtitle_text']; ?></p>
+        <?php if ($admin_flash_message_view['has_message']) { ?>
+            <div class="<?php echo $admin_flash_message_view['class_attr']; ?>" role="status">
+                <?php echo $admin_flash_message_view['message_text']; ?>
+            </div>
+        <?php } ?>

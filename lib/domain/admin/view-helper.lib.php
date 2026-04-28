@@ -34,6 +34,41 @@ function admin_build_hidden_field_views(array $fields)
     return $views;
 }
 
+function admin_set_flash_message($type, $message)
+{
+    $type = in_array($type, array('success', 'error'), true) ? $type : 'success';
+
+    set_session('ss_admin_flash_message', array(
+        'type' => $type,
+        'message' => (string) $message,
+    ));
+}
+
+function admin_pull_flash_message_view()
+{
+    $flash_message = get_session('ss_admin_flash_message');
+    set_session('ss_admin_flash_message', '');
+
+    if (!is_array($flash_message) || empty($flash_message['message'])) {
+        return array(
+            'has_message' => false,
+            'class_attr' => '',
+            'message_text' => '',
+        );
+    }
+
+    $type = isset($flash_message['type']) ? (string) $flash_message['type'] : 'success';
+    if (!in_array($type, array('success', 'error'), true)) {
+        $type = 'success';
+    }
+
+    return array(
+        'has_message' => true,
+        'class_attr' => admin_escape_attr('admin-flash-message admin-flash-message-' . $type),
+        'message_text' => get_text((string) $flash_message['message']),
+    );
+}
+
 function admin_apply_page_view(array $page_view)
 {
     global $g5, $admin_container_class, $admin_page_subtitle;

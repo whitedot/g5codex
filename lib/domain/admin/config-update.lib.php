@@ -262,5 +262,6 @@ function admin_complete_config_form_update_request(array $request, array $ori_co
     run_event('admin_config_form_update');
     update_rewrite_rules();
 
+    admin_set_flash_message('success', '저장완료');
     goto_url('./config_form.php', false);
 }

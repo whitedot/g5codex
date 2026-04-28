@@ -321,6 +321,20 @@
         @apply mb-5 mt-2 text-sm text-default-500;
     }
 
+    .admin-flash-message {
+        @apply mb-5 rounded-[var(--radius)] border px-4 py-3 text-sm font-medium shadow-sm;
+    }
+
+    .admin-flash-message-success {
+        @apply border-success/30 text-success-hover;
+        background: color-mix(in oklab, var(--color-success) 14%, white);
+    }
+
+    .admin-flash-message-error {
+        @apply border-danger/30 text-danger-hover;
+        background: color-mix(in oklab, var(--color-danger) 10%, white);
+    }
+
     #container.admin-page-config-form {
         @apply pt-4;
     }

@@ -49,5 +49,6 @@ function admin_complete_member_form_update_request(array $update_request, array 
     }
 
     run_event('admin_member_form_update', $w, $mb_id);
+    admin_set_flash_message('success', '저장완료');
     goto_url(admin_build_member_form_update_redirect($update_request['list_qstr'], $mb_id), false);
 }
