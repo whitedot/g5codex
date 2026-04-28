@@ -98,6 +98,7 @@ $community_saved_post = community_fetch_post_in_board($community_board['board_id
 community_upsert_latest_post($community_board, $community_saved_post);
 if ($community_is_new_post) {
     community_point_grant_for_post($community_board, $community_saved_post);
+    community_notify_post_created($community_board, $community_saved_post);
 }
 
 goto_url(G5_COMMUNITY_URL . '/view.php?board_id=' . rawurlencode($community_board['board_id']) . '&post_id=' . (int) $community_post_id);
