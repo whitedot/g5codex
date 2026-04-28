@@ -98,18 +98,15 @@ function community_fetch_board_categories($board_id)
 
 function community_fetch_board_category($board_id, $category_id)
 {
-    global $g5;
+    $category_id = (int) $category_id;
 
-    $table = $g5['community_board_category_table'];
+    foreach (community_fetch_board_categories($board_id) as $category) {
+        if ((int) $category['category_id'] === $category_id) {
+            return $category;
+        }
+    }
 
-    return sql_fetch_prepared(
-        " select * from {$table}
-          where board_id = :board_id and category_id = :category_id and status = 'active' ",
-        array(
-            'board_id' => $board_id,
-            'category_id' => (int) $category_id,
-        )
-    );
+    return array();
 }
 
 function community_normalize_post_list_request(array $request)
