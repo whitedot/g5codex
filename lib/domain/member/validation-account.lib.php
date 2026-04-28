@@ -15,6 +15,7 @@ function member_validate_admin_member_request(array $request, array $member, $is
     $mb_hp = $request['mb_hp'];
     $mb_nick = $request['mb_nick'];
     $posts = $request['posts'];
+    $mb = array();
 
     if ($mb_password) {
         include_once(G5_CAPTCHA_PATH . '/captcha.lib.php');
@@ -23,8 +24,15 @@ function member_validate_admin_member_request(array $request, array $member, $is
         }
     }
 
+    if ($w === 'u') {
+        $mb = get_member($mb_id);
+        if (!(isset($mb['mb_id']) && $mb['mb_id'])) {
+            alert('존재하지 않는 회원자료입니다.');
+        }
+    }
+
     if ($mb_hp) {
-        $result = exist_mb_hp($mb_hp, $mb_id);
+        $result = member_validate_admin_hp_uniqueness($mb_hp, $mb_id, $w, $mb);
         if ($result) {
             alert($result);
         }
@@ -36,11 +44,6 @@ function member_validate_admin_member_request(array $request, array $member, $is
 
     if ($w !== 'u') {
         return array();
-    }
-
-    $mb = get_member($mb_id);
-    if (!(isset($mb['mb_id']) && $mb['mb_id'])) {
-        alert('존재하지 않는 회원자료입니다.');
     }
 
     if ($is_admin != 'super' && $mb['mb_level'] >= $member['mb_level']) {
@@ -62,7 +65,45 @@ function member_validate_admin_member_request(array $request, array $member, $is
     return $mb;
 }
 
-function member_validate_admin_uniqueness($mb_id, $mb_nick, $mb_email, $w)
+function member_find_admin_duplicate_member($field, $value, array $exclude_member = array())
+{
+    $member_table = member_get_member_table_name();
+    $allowed_fields = array('mb_nick', 'mb_email', 'mb_hp');
+
+    if (!in_array($field, $allowed_fields, true) || (string) $value === '') {
+        return array();
+    }
+
+    $params = array($field => $value);
+    $sql = " select mb_id, mb_name, mb_nick, mb_email from {$member_table} where {$field} = :{$field} ";
+
+    if (!empty($exclude_member['mb_no'])) {
+        $sql .= " and mb_no <> :exclude_mb_no ";
+        $params['exclude_mb_no'] = (int) $exclude_member['mb_no'];
+    } elseif (!empty($exclude_member['mb_id'])) {
+        $sql .= " and mb_id <> :exclude_mb_id ";
+        $params['exclude_mb_id'] = $exclude_member['mb_id'];
+    }
+
+    return sql_fetch_prepared($sql, $params);
+}
+
+function member_validate_admin_hp_uniqueness($mb_hp, $mb_id, $w, array $existing_member = array())
+{
+    if (!trim($mb_hp)) {
+        return '';
+    }
+
+    if ($w !== 'u') {
+        return exist_mb_hp($mb_hp, $mb_id);
+    }
+
+    $row = member_find_admin_duplicate_member('mb_hp', hyphen_hp_number($mb_hp), $existing_member);
+
+    return isset($row['mb_id']) && $row['mb_id'] ? ' 이미 사용 중인 휴대폰번호입니다. ' . hyphen_hp_number($mb_hp) : '';
+}
+
+function member_validate_admin_uniqueness($mb_id, $mb_nick, $mb_email, $w, array $existing_member = array())
 {
     $member_table = member_get_member_table_name();
 
@@ -85,12 +126,12 @@ function member_validate_admin_uniqueness($mb_id, $mb_nick, $mb_email, $w)
         return;
     }
 
-    $row = sql_fetch_prepared(" select mb_id, mb_name, mb_nick, mb_email from {$member_table} where mb_nick = :mb_nick and mb_id <> :mb_id ", array('mb_nick' => $mb_nick, 'mb_id' => $mb_id));
+    $row = member_find_admin_duplicate_member('mb_nick', $mb_nick, $existing_member);
     if (isset($row['mb_id']) && $row['mb_id']) {
         alert('이미 존재하는 닉네임입니다.\\nＩＤ : ' . $row['mb_id'] . '\\n이름 : ' . $row['mb_name'] . '\\n닉네임 : ' . $row['mb_nick'] . '\\n메일 : ' . $row['mb_email']);
     }
 
-    $row = sql_fetch_prepared(" select mb_id, mb_name, mb_nick, mb_email from {$member_table} where mb_email = :mb_email and mb_id <> :mb_id ", array('mb_email' => $mb_email, 'mb_id' => $mb_id));
+    $row = member_find_admin_duplicate_member('mb_email', $mb_email, $existing_member);
     if (isset($row['mb_id']) && $row['mb_id']) {
         alert('이미 존재하는 이메일입니다.\\nＩＤ : ' . $row['mb_id'] . '\\n이름 : ' . $row['mb_name'] . '\\n닉네임 : ' . $row['mb_nick'] . '\\n메일 : ' . $row['mb_email']);
     }

@@ -14,7 +14,7 @@ function admin_persist_member_form_request($w, array $request, array $member, $i
     $mb_nick = $request['mb_nick'];
 
     $existing_member = member_validate_admin_member_request($request, $member, $is_admin, $w);
-    member_validate_admin_uniqueness($mb_id, $mb_nick, $mb_email, $w);
+    member_validate_admin_uniqueness($mb_id, $mb_nick, $mb_email, $w, $existing_member);
 
     if ($w == '') {
         $insert_params = member_build_admin_insert_fields($request);
