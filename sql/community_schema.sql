@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `g5_community_notification_log` (
   PRIMARY KEY (`notification_id`),
   KEY `idx_recipient_created` (`recipient_mb_id`, `created_at`),
   KEY `idx_target` (`post_id`, `comment_id`),
-  KEY `idx_status_created` (`status`, `created_at`)
+  KEY `idx_status_created` (`status`, `created_at`, `notification_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `g5_community_point_wallet` (

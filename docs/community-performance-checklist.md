@@ -106,7 +106,8 @@ EXPLAIN
 SELECT *
   FROM g5_community_notification_log
  WHERE status = 'failed'
- ORDER BY created_at DESC
+ ORDER BY created_at DESC,
+          notification_id DESC
  LIMIT 0, 20;
 ```
 

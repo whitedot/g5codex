@@ -318,7 +318,7 @@ function community_admin_fetch_notification_log_page(array $request)
 
     $rows = sql_fetch_all_prepared(
         " select * from {$table} {$where}
-          order by notification_id desc
+          order by created_at desc, notification_id desc
           limit :from_record, :page_rows ",
         $list_params
     );
