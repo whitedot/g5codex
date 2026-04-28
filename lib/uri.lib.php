@@ -72,9 +72,10 @@ function get_nginx_conf_rules($return_string = false)
 {
     $get_path_url = parse_url(G5_URL);
     $base_path = isset($get_path_url['path']) ? $get_path_url['path'] . '/' : '/';
+    $product_name = 'G5 Member Runtime';
 
     $rules = array();
-    $rules[] = '#### ' . G5_VERSION . ' nginx rules BEGIN #####';
+    $rules[] = '#### ' . $product_name . ' nginx rules BEGIN #####';
 
     if ($add_rules = run_replace('add_nginx_conf_pre_rules', '', $get_path_url, $base_path, $return_string)) {
         $rules[] = $add_rules;
@@ -87,7 +88,7 @@ function get_nginx_conf_rules($return_string = false)
     }
 
     $rules[] = '}';
-    $rules[] = '#### ' . G5_VERSION . ' nginx rules END #####';
+    $rules[] = '#### ' . $product_name . ' nginx rules END #####';
 
     return $return_string ? implode("\n", $rules) : $rules;
 }
@@ -96,9 +97,10 @@ function get_mod_rewrite_rules($return_string = false)
 {
     $get_path_url = parse_url(G5_URL);
     $base_path = isset($get_path_url['path']) ? $get_path_url['path'] . '/' : '/';
+    $product_name = 'G5 Member Runtime';
 
     $rules = array();
-    $rules[] = '#### ' . G5_VERSION . ' rewrite BEGIN #####';
+    $rules[] = '#### ' . $product_name . ' rewrite BEGIN #####';
     $rules[] = '<IfModule mod_rewrite.c>';
     $rules[] = 'RewriteEngine On';
     $rules[] = 'RewriteBase ' . $base_path;
@@ -116,7 +118,7 @@ function get_mod_rewrite_rules($return_string = false)
     }
 
     $rules[] = '</IfModule>';
-    $rules[] = '#### ' . G5_VERSION . ' rewrite END #####';
+    $rules[] = '#### ' . $product_name . ' rewrite END #####';
 
     return $return_string ? implode("\n", $rules) : $rules;
 }

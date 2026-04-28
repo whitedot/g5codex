@@ -7,8 +7,6 @@
 // 이 상수가 정의되지 않으면 각각의 개별 페이지는 별도로 실행될 수 없음
 define('_GNUBOARD_', true);
 
-include_once($g5_path['path'].'/version.php');   // 설정 파일
-
 $g5_runtime_config_file = $g5_path['path'].'/config.runtime.php';
 $g5_runtime_config = is_file($g5_runtime_config_file) ? include $g5_runtime_config_file : array();
 if (!is_array($g5_runtime_config)) {
