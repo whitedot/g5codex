@@ -133,7 +133,8 @@ CREATE TABLE IF NOT EXISTS `g5_community_point_wallet` (
   `spent_total` int(11) NOT NULL DEFAULT '0',
   `expired_total` int(11) NOT NULL DEFAULT '0',
   `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`mb_id`)
+  PRIMARY KEY (`mb_id`),
+  KEY `idx_balance` (`balance`, `mb_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `g5_community_point_ledger` (

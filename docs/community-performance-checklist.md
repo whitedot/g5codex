@@ -155,6 +155,33 @@ SELECT *
 
 기대 인덱스: `idx_status_created`
 
+## 포인트 지갑
+
+```sql
+EXPLAIN
+SELECT *
+  FROM g5_community_point_wallet
+ ORDER BY balance DESC,
+          mb_id ASC
+ LIMIT 0, 20;
+```
+
+기대 인덱스: `idx_balance`
+
+회원 검색 시:
+
+```sql
+EXPLAIN
+SELECT *
+  FROM g5_community_point_wallet
+ WHERE mb_id = 'member1'
+ ORDER BY balance DESC,
+          mb_id ASC
+ LIMIT 0, 20;
+```
+
+기대 인덱스: `PRIMARY`
+
 ## 포인트 원장
 
 ```sql

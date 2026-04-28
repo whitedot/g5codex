@@ -706,8 +706,8 @@ function community_admin_fetch_point_wallet_page(array $request)
     $params = array();
 
     if ($request['mb_id'] !== '') {
-        $where .= ' and mb_id like :mb_id_like ';
-        $params['mb_id_like'] = '%' . $request['mb_id'] . '%';
+        $where .= ' and mb_id = :mb_id ';
+        $params['mb_id'] = $request['mb_id'];
     }
 
     $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
