@@ -266,10 +266,17 @@ function community_admin_build_point_list_qstr(array $request, array $overrides 
 
 function community_admin_read_point_adjust_request(array $post)
 {
+    $memo = strip_tags(community_admin_read_scalar($post, 'memo', ''));
+    if (function_exists('mb_substr')) {
+        $memo = mb_substr($memo, 0, 50, 'UTF-8');
+    } else {
+        $memo = substr($memo, 0, 50);
+    }
+
     return array(
         'mb_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'mb_id', '')),
         'amount' => (int) community_admin_read_scalar($post, 'amount', 0),
-        'memo' => strip_tags(community_admin_read_scalar($post, 'memo', '')),
+        'memo' => $memo,
         'return_query' => community_admin_read_scalar($post, 'return_query', ''),
     );
 }

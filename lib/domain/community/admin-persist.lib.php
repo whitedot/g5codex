@@ -694,6 +694,13 @@ function community_admin_fetch_point_wallet_page(array $request)
         $list_params
     );
 
+    foreach ($rows as $index => $row) {
+        $recalculated = community_point_recalculate_wallet($row['mb_id']);
+        if (!empty($recalculated['mb_id'])) {
+            $rows[$index] = $recalculated;
+        }
+    }
+
     return array(
         'total_count' => $total_count,
         'rows' => $rows,
@@ -730,8 +737,9 @@ function community_admin_adjust_point(array $request, array $member)
         return array('error' => '조정 포인트를 입력하세요.');
     }
 
+    $reason = $request['memo'] !== '' ? $request['memo'] : 'admin_adjust';
     $result = community_point_adjust($request['mb_id'], $request['amount'], array(
-        'reason' => 'admin_adjust',
+        'reason' => $reason,
         'target_type' => 'admin',
         'target_id' => 0,
         'created_by' => isset($member['mb_id']) ? $member['mb_id'] : '',

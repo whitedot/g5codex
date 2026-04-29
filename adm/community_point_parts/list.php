@@ -60,7 +60,7 @@ if (!defined('_GNUBOARD_')) {
                         <label for="adjust_memo" class="form-label">메모</label>
                     </div>
                     <div class="af-field">
-                        <input type="text" name="memo" id="adjust_memo" class="form-input" maxlength="255" placeholder="조정 사유">
+                        <input type="text" name="memo" id="adjust_memo" class="form-input" maxlength="50" placeholder="조정 사유">
                     </div>
                 </div>
             </div>

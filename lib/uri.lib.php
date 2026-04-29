@@ -72,7 +72,7 @@ function get_nginx_conf_rules($return_string = false)
 {
     $get_path_url = parse_url(G5_URL);
     $base_path = isset($get_path_url['path']) ? $get_path_url['path'] . '/' : '/';
-    $product_name = 'G5 Member Runtime';
+    $product_name = 'G5 Codex';
 
     $rules = array();
     $rules[] = '#### ' . $product_name . ' nginx rules BEGIN #####';
@@ -97,7 +97,7 @@ function get_mod_rewrite_rules($return_string = false)
 {
     $get_path_url = parse_url(G5_URL);
     $base_path = isset($get_path_url['path']) ? $get_path_url['path'] . '/' : '/';
-    $product_name = 'G5 Member Runtime';
+    $product_name = 'G5 Codex';
 
     $rules = array();
     $rules[] = '#### ' . $product_name . ' rewrite BEGIN #####';

@@ -89,8 +89,9 @@ if (!defined('_GNUBOARD_')) {
             </table>
         </div>
 
-        <div class="member-list-actions">
-            <select name="action" class="form-select">
+        <div class="member-list-actions community-bulk-actions">
+            <label for="community_post_bulk_action" class="sr-only">게시글 선택 작업</label>
+            <select name="action" id="community_post_bulk_action" class="form-select community-action-select">
                 <option value="">선택 작업</option>
                 <option value="publish">공개</option>
                 <option value="hide">숨김</option>
@@ -98,7 +99,7 @@ if (!defined('_GNUBOARD_')) {
                 <option value="notice_on">공지 지정</option>
                 <option value="notice_off">공지 해제</option>
             </select>
-            <button type="submit" class="btn btn-solid-primary">적용</button>
+            <button type="submit" class="btn btn-solid-primary community-action-submit">적용</button>
         </div>
     </div>
 </form>

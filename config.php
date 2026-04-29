@@ -20,7 +20,7 @@ function g5_runtime_config_value($key, $default)
     return array_key_exists($key, $g5_runtime_config) ? $g5_runtime_config[$key] : $default;
 }
 
-define('G5_VERSION', g5_runtime_config_value('app_name', 'G5 Member Runtime'));
+define('G5_VERSION', g5_runtime_config_value('app_name', 'G5 Codex'));
 
 // 기본 시간대 설정
 date_default_timezone_set("Asia/Seoul");

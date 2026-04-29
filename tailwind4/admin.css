@@ -1060,6 +1060,23 @@
         @apply mb-5 justify-end;
     }
 
+    .community-bulk-actions {
+        @apply justify-start gap-2;
+    }
+
+    .community-action-select {
+        width: 14rem;
+        min-width: 12rem;
+        max-width: 100%;
+        min-height: 2.5rem;
+        flex: 0 0 14rem;
+    }
+
+    .community-action-submit {
+        min-height: 2.5rem;
+        flex: 0 0 auto;
+    }
+
     #fmemberlist .member-manage form {
         @apply m-0;
     }
