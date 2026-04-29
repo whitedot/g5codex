@@ -87,6 +87,10 @@ function site_admin_build_page_list_view(array $request, array $config)
         'list_all_url_attr' => admin_escape_attr('./site_page_list.php'),
         'search_action_attr' => admin_escape_attr('./site_page_list.php'),
         'stx_value' => get_sanitize_input($request['stx']),
+        'content_format_options' => array_merge(
+            array(admin_build_select_option_view('', '전체', $request['content_format'] === '')),
+            site_admin_build_page_format_options($request['content_format'])
+        ),
         'status_options' => array(
             admin_build_select_option_view('', '전체', $request['status'] === ''),
             admin_build_select_option_view('active', '사용', $request['status'] === 'active'),

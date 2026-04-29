@@ -22,6 +22,10 @@ function site_admin_fetch_page_by_slug($slug)
 function site_admin_build_page_search_sql(array $request, array &$params)
 {
     $where = array('1=1');
+    if ($request['content_format'] !== '') {
+        $where[] = 'content_format = :content_format';
+        $params['content_format'] = $request['content_format'];
+    }
     if ($request['status'] !== '') {
         $where[] = 'status = :status';
         $params['status'] = $request['status'];

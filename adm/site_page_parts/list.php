@@ -16,7 +16,15 @@ if (!defined('_GNUBOARD_')) {
 
 <div class="member-search-card">
     <form method="get" action="<?php echo $site_page_list_view['search_action_attr']; ?>">
-        <div class="member-search-fields community-search-fields community-search-fields-compact">
+        <div class="member-search-fields community-search-fields community-search-fields-wide">
+            <div class="member-field">
+                <label for="page_content_format" class="member-field-label">형식</label>
+                <select name="content_format" id="page_content_format" class="form-select member-field-input">
+                    <?php foreach ($site_page_list_view['content_format_options'] as $option) { ?>
+                        <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
             <div class="member-field">
                 <label for="page_status" class="member-field-label">상태</label>
                 <select name="status" id="page_status" class="form-select member-field-input">

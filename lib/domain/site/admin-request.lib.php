@@ -24,6 +24,11 @@ function site_admin_page_format_values()
 
 function site_admin_read_page_list_request(array $get, array $config)
 {
+    $content_format = site_admin_read_scalar($get, 'content_format', '');
+    if ($content_format !== '' && !in_array($content_format, site_admin_page_format_values(), true)) {
+        $content_format = '';
+    }
+
     $status = site_admin_read_scalar($get, 'status', '');
     if ($status !== '' && !in_array($status, site_admin_page_status_values(), true)) {
         $status = '';
@@ -36,6 +41,7 @@ function site_admin_read_page_list_request(array $get, array $config)
 
     return array(
         'page' => max(1, (int) site_admin_read_scalar($get, 'page', 1)),
+        'content_format' => $content_format,
         'status' => $status,
         'stx' => site_admin_read_scalar($get, 'stx', ''),
         'page_rows' => $page_rows,
@@ -45,6 +51,7 @@ function site_admin_read_page_list_request(array $get, array $config)
 function site_admin_build_page_list_qstr(array $request, array $overrides = array())
 {
     $query = array(
+        'content_format' => $request['content_format'],
         'status' => $request['status'],
         'stx' => $request['stx'],
         'page' => $request['page'],
