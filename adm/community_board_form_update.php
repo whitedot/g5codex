@@ -1,7 +1,7 @@
 <?php
 // 검증 지도: 커뮤니티 게시판 저장 action controller다.
 // 요청 정규화/검증/저장은 lib/domain/community/admin-*.lib.php에서 처리한다.
-$sub_menu = "300100";
+$sub_menu = "600100";
 require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'w');

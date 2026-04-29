@@ -12,10 +12,10 @@ function admin_menu_icon_id($menu_code)
     $map = array(
         '100' => 'settings',
         '200' => 'users',
-        '300' => 'content',
+        '300' => 'folder',
         '400' => 'folder',
-        '450' => 'folder',
         '500' => 'article',
+        '600' => 'content',
         '900' => 'message',
     );
 

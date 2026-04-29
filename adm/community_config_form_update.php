@@ -1,7 +1,7 @@
 <?php
 // 검증 지도: 커뮤니티 기본환경 설정 저장 action controller다.
 // 요청 정규화/저장은 lib/domain/community/admin-*.lib.php에서 처리한다.
-$sub_menu = "300050";
+$sub_menu = "600050";
 require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'w');

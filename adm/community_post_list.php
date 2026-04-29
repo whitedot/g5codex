@@ -1,6 +1,6 @@
 <?php
 // 검증 지도: 커뮤니티 게시글 관리 controller다.
-$sub_menu = "300200";
+$sub_menu = "600200";
 require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'r');

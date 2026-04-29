@@ -1,6 +1,6 @@
 <?php
 // 검증 지도: 커뮤니티 포인트 관리 controller다.
-$sub_menu = "300500";
+$sub_menu = "600500";
 require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'r');

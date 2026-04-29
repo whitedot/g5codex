@@ -1,6 +1,6 @@
 <?php
 // 검증 지도: 커뮤니티 댓글 관리 controller다.
-$sub_menu = "300300";
+$sub_menu = "600300";
 require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'r');
