@@ -4,6 +4,12 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 run_event('pre_head');
 
 include_once(G5_PATH.'/head.sub.php');
+
+$head_community_point_balance_text = '';
+if ($is_member && function_exists('community_point_refresh_member_wallet')) {
+    $head_community_point_wallet = community_point_refresh_member_wallet($member['mb_id'], true);
+    $head_community_point_balance_text = number_format((int) $head_community_point_wallet['balance']);
+}
 ?>
 
 <div id="hd">
@@ -32,6 +38,7 @@ include_once(G5_PATH.'/head.sub.php');
         <div></div>
         <ul class="hd_login">
             <?php if ($is_member) { ?>
+            <li><a href="<?php echo G5_COMMUNITY_URL ?>/point.php">포인트 <?php echo $head_community_point_balance_text; ?></a></li>
             <li><a href="<?php echo G5_MEMBER_URL ?>/member_confirm.php?url=<?php echo G5_MEMBER_URL ?>/register_form.php">정보수정</a></li>
             <li><a href="<?php echo G5_MEMBER_URL ?>/member_confirm.php?url=member_leave.php">회원탈퇴</a></li>
             <li><a href="<?php echo G5_MEMBER_URL ?>/logout.php">로그아웃</a></li>
@@ -52,6 +59,7 @@ include_once(G5_PATH.'/head.sub.php');
                 <li><a href="<?php echo G5_URL ?>/">홈</a></li>
                 <li><a href="<?php echo G5_COMMUNITY_URL ?>/">커뮤니티</a></li>
                 <?php if ($is_member) { ?>
+                <li><a href="<?php echo G5_COMMUNITY_URL ?>/point.php">내 포인트</a></li>
                 <li><a href="<?php echo G5_MEMBER_URL ?>/member_confirm.php?url=<?php echo G5_MEMBER_URL ?>/register_form.php">내 정보</a></li>
                 <?php } ?>
             </ul>

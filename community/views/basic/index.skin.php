@@ -7,7 +7,11 @@ if (!defined('_GNUBOARD_')) {
 <section class="community-home">
     <h2>커뮤니티</h2>
     <?php if (!empty($member['mb_id'])) { ?>
-        <p><a href="<?php echo community_escape_attr(G5_COMMUNITY_URL . '/scrap.php'); ?>">내 스크랩 보기</a></p>
+        <p>
+            <a href="<?php echo community_escape_attr(G5_COMMUNITY_URL . '/point.php'); ?>">내 포인트</a>
+            <span>|</span>
+            <a href="<?php echo community_escape_attr(G5_COMMUNITY_URL . '/scrap.php'); ?>">내 스크랩 보기</a>
+        </p>
     <?php } ?>
 
     <?php if (empty($community_boards)) { ?>

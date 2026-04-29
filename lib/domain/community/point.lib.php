@@ -24,6 +24,61 @@ function community_point_available_table()
     return $g5['community_point_available_table'];
 }
 
+function community_point_empty_wallet($mb_id = '')
+{
+    return array(
+        'mb_id' => $mb_id,
+        'balance' => 0,
+        'earned_total' => 0,
+        'spent_total' => 0,
+        'expired_total' => 0,
+        'updated_at' => '0000-00-00 00:00:00',
+    );
+}
+
+function community_point_tables_ready()
+{
+    static $ready = null;
+
+    if ($ready !== null) {
+        return $ready;
+    }
+
+    $ready = sql_table_exists(community_point_wallet_table())
+        && sql_table_exists(community_point_ledger_table())
+        && sql_table_exists(community_point_available_table());
+
+    return $ready;
+}
+
+function community_point_refresh_member_wallet($mb_id, $expire = true)
+{
+    static $wallet_cache = array();
+
+    $mb_id = (string) $mb_id;
+    if ($mb_id === '' || !community_point_tables_ready()) {
+        return community_point_empty_wallet($mb_id);
+    }
+
+    $cache_key = $mb_id . ':' . ($expire ? 'expire' : 'read');
+    if (isset($wallet_cache[$cache_key])) {
+        return $wallet_cache[$cache_key];
+    }
+
+    if ($expire) {
+        community_point_expire_available($mb_id);
+    }
+
+    $wallet = community_point_recalculate_wallet($mb_id);
+    if (empty($wallet['mb_id'])) {
+        $wallet = community_point_empty_wallet($mb_id);
+    }
+
+    $wallet_cache[$cache_key] = $wallet;
+
+    return $wallet;
+}
+
 function community_point_fetch_wallet($mb_id)
 {
     $table = community_point_wallet_table();
@@ -241,6 +296,14 @@ function community_point_update_wallet_expired($mb_id, $amount)
 
 function community_point_expire_available($mb_id = '', $now = '', $limit = 0)
 {
+    if (!community_point_tables_ready()) {
+        return array(
+            'expired_count' => 0,
+            'expired_amount' => 0,
+            'has_more' => false,
+        );
+    }
+
     $now = $now !== '' ? $now : G5_TIME_YMDHIS;
     $where = " where amount_remaining > 0
                  and expires_at <> '0000-00-00 00:00:00'
@@ -426,6 +489,81 @@ function community_point_adjust($mb_id, $amount, array $meta)
     community_point_recalculate_wallet($mb_id);
 
     return array('error' => '', 'ledger_id' => $ledger_id);
+}
+
+function community_point_fetch_available_summary($mb_id)
+{
+    if ($mb_id === '' || !community_point_tables_ready()) {
+        return array(
+            'available_total' => 0,
+            'expiring_total' => 0,
+            'non_expiring_total' => 0,
+            'next_expires_at' => '',
+        );
+    }
+
+    $table = community_point_available_table();
+    $row = sql_fetch_prepared(
+        " select coalesce(sum(amount_remaining), 0) as available_total,
+                 coalesce(sum(case when expires_at <> '0000-00-00 00:00:00' then amount_remaining else 0 end), 0) as expiring_total,
+                 coalesce(sum(case when expires_at = '0000-00-00 00:00:00' then amount_remaining else 0 end), 0) as non_expiring_total,
+                 min(case when expires_at <> '0000-00-00 00:00:00' then expires_at else null end) as next_expires_at
+            from {$table}
+           where mb_id = :mb_id
+             and amount_remaining > 0
+             and (expires_at = '0000-00-00 00:00:00' or expires_at >= :now) ",
+        array(
+            'mb_id' => $mb_id,
+            'now' => G5_TIME_YMDHIS,
+        ),
+        false
+    );
+
+    return array(
+        'available_total' => isset($row['available_total']) ? (int) $row['available_total'] : 0,
+        'expiring_total' => isset($row['expiring_total']) ? (int) $row['expiring_total'] : 0,
+        'non_expiring_total' => isset($row['non_expiring_total']) ? (int) $row['non_expiring_total'] : 0,
+        'next_expires_at' => !empty($row['next_expires_at']) ? $row['next_expires_at'] : '',
+    );
+}
+
+function community_point_fetch_ledger_page($mb_id, array $request)
+{
+    if ($mb_id === '' || !community_point_tables_ready()) {
+        return array(
+            'total_count' => 0,
+            'rows' => array(),
+            'from_record' => 0,
+        );
+    }
+
+    $table = community_point_ledger_table();
+    $count_row = sql_fetch_prepared(
+        " select count(*) as cnt from {$table} where mb_id = :mb_id ",
+        array('mb_id' => $mb_id),
+        false
+    );
+    $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
+    $from_record = ($request['page'] - 1) * $request['page_rows'];
+
+    $rows = sql_fetch_all_prepared(
+        " select * from {$table}
+          where mb_id = :mb_id
+          order by ledger_id desc
+          limit :from_record, :page_rows ",
+        array(
+            'mb_id' => $mb_id,
+            'from_record' => $from_record,
+            'page_rows' => $request['page_rows'],
+        ),
+        false
+    );
+
+    return array(
+        'total_count' => $total_count,
+        'rows' => $rows,
+        'from_record' => $from_record,
+    );
 }
 
 function community_point_grant_for_post(array $board, array $post)

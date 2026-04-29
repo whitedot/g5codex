@@ -242,6 +242,67 @@ function community_build_scrap_list_view(array $request, array $member, $is_admi
     );
 }
 
+function community_point_reason_label($reason)
+{
+    $labels = array(
+        'write' => '글 작성',
+        'comment' => '댓글 작성',
+        'read' => '글 읽기',
+        'expire' => '기간 만료',
+        'admin_adjust' => '관리자 조정',
+    );
+
+    return isset($labels[$reason]) ? $labels[$reason] : $reason;
+}
+
+function community_build_point_ledger_item(array $row)
+{
+    $amount = (int) $row['amount'];
+    $expires_at = isset($row['expires_at']) ? (string) $row['expires_at'] : '';
+
+    return array(
+        'ledger_id_text' => (int) $row['ledger_id'],
+        'amount_text' => number_format($amount),
+        'amount_class' => $amount >= 0 ? 'is-positive' : 'is-negative',
+        'balance_after_text' => number_format((int) $row['balance_after']),
+        'reason_text' => get_text(community_point_reason_label($row['reason'])),
+        'target_text' => get_text($row['target_type'] !== '' ? $row['target_type'] . ' #' . (int) $row['target_id'] : ''),
+        'expires_at_text' => $expires_at !== '' && $expires_at !== '0000-00-00 00:00:00' ? get_text(substr($expires_at, 0, 16)) : '만료 없음',
+        'created_at_text' => get_text(substr($row['created_at'], 0, 16)),
+    );
+}
+
+function community_build_point_view(array $request, array $member)
+{
+    $mb_id = isset($member['mb_id']) ? (string) $member['mb_id'] : '';
+    $wallet = community_point_refresh_member_wallet($mb_id, true);
+    $available = community_point_fetch_available_summary($mb_id);
+    $page_data = community_point_fetch_ledger_page($mb_id, $request);
+    $items = array();
+
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_build_point_ledger_item($row);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $base_url = G5_COMMUNITY_URL . '/point.php?page=';
+
+    return array(
+        'title' => '내 포인트',
+        'balance_text' => number_format((int) $wallet['balance']),
+        'earned_total_text' => number_format((int) $wallet['earned_total']),
+        'spent_total_text' => number_format((int) $wallet['spent_total']),
+        'expired_total_text' => number_format((int) $wallet['expired_total']),
+        'available_total_text' => number_format((int) $available['available_total']),
+        'expiring_total_text' => number_format((int) $available['expiring_total']),
+        'non_expiring_total_text' => number_format((int) $available['non_expiring_total']),
+        'next_expires_at_text' => $available['next_expires_at'] !== '' ? get_text(substr($available['next_expires_at'], 0, 16)) : '예정 없음',
+        'items' => $items,
+        'empty_message' => '포인트 내역이 없습니다.',
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $base_url),
+    );
+}
+
 function community_build_form_view(array $board, array $post, array $member, $is_admin)
 {
     $is_update = isset($post['post_id']) && (int) $post['post_id'] > 0;
