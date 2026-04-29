@@ -10,8 +10,8 @@ header('P3P: CP="ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV
 if (!defined('G5_SET_TIME_LIMIT')) define('G5_SET_TIME_LIMIT', 0);
 @set_time_limit(G5_SET_TIME_LIMIT);
 
-if( version_compare( PHP_VERSION, '5.2.17' , '<' ) ){
-    die(sprintf('PHP 5.2.17 or higher required. Your PHP version is %s', PHP_VERSION));
+if( version_compare( PHP_VERSION, '7.4.0' , '<' ) ){
+    die(sprintf('PHP 7.4.0 or higher required. Your PHP version is %s', PHP_VERSION));
 }
 
 $ext_arr = array ('PHP_SELF', '_ENV', '_GET', '_POST', '_FILES', '_SERVER', '_COOKIE', '_SESSION', '_REQUEST',
