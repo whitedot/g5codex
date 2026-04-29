@@ -1060,23 +1060,6 @@
         @apply mb-5 justify-end;
     }
 
-    .community-bulk-actions {
-        @apply justify-start gap-2;
-    }
-
-    .community-action-select {
-        width: 14rem;
-        min-width: 12rem;
-        max-width: 100%;
-        min-height: 2.5rem;
-        flex: 0 0 14rem;
-    }
-
-    .community-action-submit {
-        min-height: 2.5rem;
-        flex: 0 0 auto;
-    }
-
     #fmemberlist .member-manage form {
         @apply m-0;
     }
@@ -1084,6 +1067,24 @@
     .member-list-actions {
         @apply flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-default-300 px-4 py-4;
         background: color-mix(in oklab, var(--color-default-50) 70%, white);
+    }
+
+    .member-list-actions.community-bulk-actions {
+        @apply justify-start gap-2;
+    }
+
+    .member-list-actions.community-bulk-actions .community-action-select {
+        width: 14rem;
+        min-width: 12rem;
+        max-width: 100%;
+        min-height: 2.5rem;
+        flex: 0 0 14rem;
+        border-radius: 0;
+    }
+
+    .member-list-actions.community-bulk-actions .community-action-submit {
+        min-height: 2.5rem;
+        flex: 0 0 auto;
     }
 
     #ft {
