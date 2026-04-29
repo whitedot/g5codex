@@ -54,7 +54,6 @@ adm/
   community_point_list.php
   community_point_adjust.php
   community_point_expire.php
-  community_health.php
 ```
 
 관리자 화면은 `adm/community_*_parts/`의 부분 템플릿과 `lib/domain/community/admin-*.lib.php`의 request/persist/render 함수로 구성한다.
@@ -152,7 +151,6 @@ community_scrap_table
 7. 게시글/댓글 메일 알림
 8. 포인트 지급, 차감, 만료 정산
 9. 관리자 게시글/댓글 상태 일괄 변경
-10. `adm/community_health.php` 테이블 상태 확인
 
 ## 남은 개선 후보
 

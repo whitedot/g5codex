@@ -236,4 +236,4 @@ SELECT *
 - 기대 인덱스가 선택되지 않으면 실제 `WHERE`, `ORDER BY`, cardinality를 확인한다.
 - 검색어 `LIKE '%keyword%'`는 기본 인덱스를 활용하기 어렵다. 트래픽이 커지면 별도 검색 인덱스 adapter로 분리한다.
 - 최신글과 게시판 메타데이터는 캐시가 비어도 DB 기준으로 정상 동작해야 한다.
-- 관리자 `adm/community_health.php`에서 커뮤니티 핵심 테이블 존재 여부를 먼저 확인한다.
+- 설치 직후 `install/community_schema.sql` 적용 여부와 핵심 테이블 존재 여부를 먼저 확인한다.
