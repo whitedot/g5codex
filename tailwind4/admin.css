@@ -1052,6 +1052,14 @@
         flex: 0 0 auto;
     }
 
+    .community-point-adjust-form {
+        @apply mb-5;
+    }
+
+    .community-point-adjust-actions {
+        @apply mb-5 justify-end;
+    }
+
     #fmemberlist .member-manage form {
         @apply m-0;
     }

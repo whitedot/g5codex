@@ -27,28 +27,47 @@ if (!defined('_GNUBOARD_')) {
     </form>
 </div>
 
-<form method="post" action="<?php echo $community_point_view['adjust_action_attr']; ?>" class="admin-form-layout ui-form-theme">
+<form method="post" action="<?php echo $community_point_view['adjust_action_attr']; ?>" class="admin-form-layout ui-form-theme ui-form-showcase community-point-adjust-form">
     <input type="hidden" name="token" value="<?php echo $community_point_view['admin_token']; ?>">
     <input type="hidden" name="return_query" value="<?php echo $community_point_view['return_query_attr']; ?>">
-    <div class="tbl_frm01 tbl_wrap">
-        <table>
-            <tbody>
-            <tr>
-                <th scope="row"><label for="adjust_mb_id">회원 ID</label></th>
-                <td><input type="text" name="mb_id" id="adjust_mb_id" value="<?php echo $community_point_view['mb_id_value']; ?>" class="frm_input" required></td>
-            </tr>
-            <tr>
-                <th scope="row"><label for="adjust_amount">조정 포인트</label></th>
-                <td><input type="number" name="amount" id="adjust_amount" class="frm_input" required></td>
-            </tr>
-            <tr>
-                <th scope="row"><label for="adjust_memo">메모</label></th>
-                <td><input type="text" name="memo" id="adjust_memo" class="frm_input" maxlength="255"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="btn_fixed_top">
+    <section class="card">
+        <div class="card-header">
+            <h2 class="card-title">포인트 조정</h2>
+        </div>
+        <div class="card-body">
+            <div class="af-grid">
+                <div class="af-row">
+                    <div class="af-label">
+                        <label for="adjust_mb_id" class="form-label">회원 ID<strong class="caption-sr-only">필수</strong></label>
+                    </div>
+                    <div class="af-field">
+                        <input type="text" name="mb_id" id="adjust_mb_id" value="<?php echo $community_point_view['mb_id_value']; ?>" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="af-row">
+                    <div class="af-label">
+                        <label for="adjust_amount" class="form-label">조정 포인트<strong class="caption-sr-only">필수</strong></label>
+                    </div>
+                    <div class="af-field">
+                        <input type="number" name="amount" id="adjust_amount" class="form-input" required>
+                        <p class="hint-text">지급은 양수, 차감은 음수로 입력합니다.</p>
+                    </div>
+                </div>
+
+                <div class="af-row">
+                    <div class="af-label">
+                        <label for="adjust_memo" class="form-label">메모</label>
+                    </div>
+                    <div class="af-field">
+                        <input type="text" name="memo" id="adjust_memo" class="form-input" maxlength="255" placeholder="조정 사유">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="admin-form-actions admin-form-actions-primary community-point-adjust-actions">
         <button type="submit" class="btn btn-solid-primary">포인트 조정</button>
     </div>
 </form>
