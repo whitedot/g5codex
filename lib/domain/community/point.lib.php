@@ -381,10 +381,14 @@ function community_point_grant($mb_id, $amount, array $meta)
 
     community_point_expire_available($mb_id);
 
+    if (!isset($meta['expires_at'])) {
+        $meta['expires_at'] = community_point_calculate_expires_at();
+    }
+
     $wallet = community_point_recalculate_wallet($mb_id);
     $balance_after = (int) $wallet['balance'] + $amount;
     $ledger_id = community_point_insert_ledger($mb_id, $amount, $balance_after, $meta);
-    community_point_insert_available($mb_id, $ledger_id, $amount, isset($meta['expires_at']) ? $meta['expires_at'] : '');
+    community_point_insert_available($mb_id, $ledger_id, $amount, $meta['expires_at']);
     community_point_update_wallet_totals($mb_id, $amount);
     community_point_recalculate_wallet($mb_id);
 
@@ -410,9 +414,13 @@ function community_point_adjust($mb_id, $amount, array $meta)
         return array('error' => '사용 가능 포인트가 부족합니다.', 'ledger_id' => 0);
     }
 
+    if ($amount > 0 && !isset($meta['expires_at'])) {
+        $meta['expires_at'] = community_point_calculate_expires_at();
+    }
+
     $ledger_id = community_point_insert_ledger($mb_id, $amount, $balance_after, $meta);
     if ($amount > 0) {
-        community_point_insert_available($mb_id, $ledger_id, $amount, isset($meta['expires_at']) ? $meta['expires_at'] : '');
+        community_point_insert_available($mb_id, $ledger_id, $amount, $meta['expires_at']);
     }
     community_point_update_wallet_totals($mb_id, $amount);
     community_point_recalculate_wallet($mb_id);

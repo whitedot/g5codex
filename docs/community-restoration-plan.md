@@ -92,6 +92,7 @@ lib/domain/community/
 `lib/domain/community/runtime.lib.php`는 `G5_TABLE_PREFIX`를 기준으로 아래 테이블명을 등록한다. 설치 시 `install/install_db.php`도 같은 테이블명을 `data/dbconfig.php`에 기록한다.
 
 ```text
+community_config_table
 community_board_table
 community_board_category_table
 community_post_table
@@ -108,6 +109,7 @@ community_scrap_table
 
 ## 스키마 요약
 
+- `community_config`: 포인트 만료 기준, 신규 게시판 기본 권한과 공통 기본값
 - `community_board`: 게시판 설정, 권한 레벨, 업로드 정책, 메일/포인트 사용 여부
 - `community_board_category`: 게시판별 카테고리
 - `community_post`: 게시글 본문, 공지/비밀글 상태, 댓글/조회/첨부 집계

@@ -237,6 +237,7 @@ fwrite($f, "\$g5['member_table'] = G5_TABLE_PREFIX.'member'; // 회원 테이블
 fwrite($f, "\$g5['uniqid_table'] = G5_TABLE_PREFIX.'uniqid'; // 유니크한 값을 만드는 테이블\n");
 fwrite($f, "\$g5['cert_history_table'] = G5_TABLE_PREFIX.'cert_history'; // 인증내역 테이블\n");
 fwrite($f, "\$g5['member_cert_history_table'] = G5_TABLE_PREFIX.'member_cert_history'; // 본인인증 변경내역 테이블\n");
+fwrite($f, "\$g5['community_config_table'] = G5_TABLE_PREFIX.'community_config'; // 커뮤니티 기본환경 설정 테이블\n");
 fwrite($f, "\$g5['community_board_table'] = G5_TABLE_PREFIX.'community_board'; // 커뮤니티 게시판 테이블\n");
 fwrite($f, "\$g5['community_board_category_table'] = G5_TABLE_PREFIX.'community_board_category'; // 커뮤니티 게시판 카테고리 테이블\n");
 fwrite($f, "\$g5['community_post_table'] = G5_TABLE_PREFIX.'community_post'; // 커뮤니티 게시글 테이블\n");

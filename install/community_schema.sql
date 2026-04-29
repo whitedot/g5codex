@@ -1,5 +1,12 @@
--- Community schema for the G5 member runtime.
+-- Community schema for G5 Codex.
 -- Replace `g5_` with the configured G5_TABLE_PREFIX before applying when needed.
+
+CREATE TABLE IF NOT EXISTS `g5_community_config` (
+  `config_key` varchar(100) NOT NULL DEFAULT '',
+  `config_value` text NOT NULL,
+  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`config_key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `g5_community_board` (
   `board_id` varchar(50) NOT NULL DEFAULT '',

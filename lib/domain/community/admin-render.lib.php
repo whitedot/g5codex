@@ -100,28 +100,66 @@ function community_admin_build_board_list_view(array $request, array $config)
 
 function community_admin_default_board_row()
 {
+    $community_config = community_get_config();
+
     return array(
         'board_id' => '',
         'name' => '',
         'description' => '',
-        'read_level' => 1,
-        'write_level' => 2,
-        'comment_level' => 2,
+        'read_level' => $community_config['board_read_level'],
+        'write_level' => $community_config['board_write_level'],
+        'comment_level' => $community_config['board_comment_level'],
         'list_order' => 0,
-        'use_category' => 0,
-        'use_latest' => 1,
-        'use_comment' => 1,
-        'use_mail_post' => 1,
-        'use_mail_comment' => 1,
-        'mail_admin' => 0,
-        'upload_file_count' => 0,
-        'upload_file_size' => 0,
-        'upload_extensions' => '',
-        'use_point' => 0,
-        'point_write' => 0,
-        'point_comment' => 0,
-        'point_read' => 0,
+        'use_category' => $community_config['board_use_category'],
+        'use_latest' => $community_config['board_use_latest'],
+        'use_comment' => $community_config['board_use_comment'],
+        'use_mail_post' => $community_config['board_use_mail_post'],
+        'use_mail_comment' => $community_config['board_use_mail_comment'],
+        'mail_admin' => $community_config['board_mail_admin'],
+        'upload_file_count' => $community_config['board_upload_file_count'],
+        'upload_file_size' => $community_config['board_upload_file_size'],
+        'upload_extensions' => $community_config['board_upload_extensions'],
+        'use_point' => $community_config['board_use_point'],
+        'point_write' => $community_config['board_point_write'],
+        'point_comment' => $community_config['board_point_comment'],
+        'point_read' => $community_config['board_point_read'],
         'status' => 'active',
+    );
+}
+
+function community_admin_build_config_form_view()
+{
+    $community_config = community_get_config();
+    $expire_days = (int) $community_config['point_expire_days'];
+    $point_expire_rule = $expire_days > 0
+        ? '현재 기준: 새로 지급되는 포인트는 지급 시점부터 ' . number_format($expire_days) . '일 뒤 만료됩니다.'
+        : '현재 기준: 새로 지급되는 포인트는 만료되지 않습니다.';
+
+    return array(
+        'title' => '커뮤니티 기본환경 설정',
+        'admin_container_class' => 'admin-page-community-config-form',
+        'admin_page_subtitle' => '포인트 만료 기준과 신규 게시판에 공통 적용할 기본값을 설정합니다.',
+        'form_action_attr' => admin_escape_attr('./community_config_form_update.php'),
+        'board_list_url_attr' => admin_escape_attr('./community_board_list.php'),
+        'point_expire_days_value' => $expire_days,
+        'point_expire_rule_text' => get_text($point_expire_rule),
+        'board_read_level_options' => admin_build_member_level_options(1, 10, $community_config['board_read_level']),
+        'board_write_level_options' => admin_build_member_level_options(1, 10, $community_config['board_write_level']),
+        'board_comment_level_options' => admin_build_member_level_options(1, 10, $community_config['board_comment_level']),
+        'board_use_category_checked' => !empty($community_config['board_use_category']) ? ' checked' : '',
+        'board_use_latest_checked' => !empty($community_config['board_use_latest']) ? ' checked' : '',
+        'board_use_comment_checked' => !empty($community_config['board_use_comment']) ? ' checked' : '',
+        'board_use_mail_post_checked' => !empty($community_config['board_use_mail_post']) ? ' checked' : '',
+        'board_use_mail_comment_checked' => !empty($community_config['board_use_mail_comment']) ? ' checked' : '',
+        'board_mail_admin_checked' => !empty($community_config['board_mail_admin']) ? ' checked' : '',
+        'board_upload_file_count_value' => (int) $community_config['board_upload_file_count'],
+        'board_upload_file_size_value' => (int) $community_config['board_upload_file_size'],
+        'board_upload_extensions_value' => get_sanitize_input($community_config['board_upload_extensions']),
+        'board_use_point_checked' => !empty($community_config['board_use_point']) ? ' checked' : '',
+        'board_point_write_value' => (int) $community_config['board_point_write'],
+        'board_point_comment_value' => (int) $community_config['board_point_comment'],
+        'board_point_read_value' => (int) $community_config['board_point_read'],
+        'admin_token' => get_admin_token(),
     );
 }
 

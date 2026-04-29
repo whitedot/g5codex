@@ -279,6 +279,15 @@ function community_admin_save_board(array $request)
     return array('error' => '', 'board_id' => $request['board_id']);
 }
 
+function community_admin_save_config(array $request)
+{
+    if (!community_set_config_values($request)) {
+        return array('error' => '커뮤니티 기본환경 설정 테이블을 준비하지 못했습니다.');
+    }
+
+    return array('error' => '');
+}
+
 function community_admin_post_table()
 {
     global $g5;
@@ -577,6 +586,7 @@ function community_admin_health_table_checks()
     global $g5;
 
     $tables = array(
+        '기본환경 설정' => $g5['community_config_table'],
         '게시판' => $g5['community_board_table'],
         '카테고리' => $g5['community_board_category_table'],
         '게시글' => $g5['community_post_table'],

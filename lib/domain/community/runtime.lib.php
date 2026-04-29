@@ -12,6 +12,7 @@ function community_register_runtime_tables()
     }
 
     $tables = array(
+        'community_config_table' => 'community_config',
         'community_board_table' => 'community_board',
         'community_board_category_table' => 'community_board_category',
         'community_post_table' => 'community_post',

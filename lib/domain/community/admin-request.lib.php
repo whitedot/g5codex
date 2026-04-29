@@ -94,6 +94,29 @@ function community_admin_read_board_save_request(array $post)
     );
 }
 
+function community_admin_read_config_save_request(array $post)
+{
+    return array(
+        'point_expire_days' => max(0, (int) community_admin_read_scalar($post, 'point_expire_days', 0)),
+        'board_read_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'board_read_level', 1))),
+        'board_write_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'board_write_level', 2))),
+        'board_comment_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'board_comment_level', 2))),
+        'board_use_category' => isset($post['board_use_category']) ? 1 : 0,
+        'board_use_latest' => isset($post['board_use_latest']) ? 1 : 0,
+        'board_use_comment' => isset($post['board_use_comment']) ? 1 : 0,
+        'board_use_mail_post' => isset($post['board_use_mail_post']) ? 1 : 0,
+        'board_use_mail_comment' => isset($post['board_use_mail_comment']) ? 1 : 0,
+        'board_mail_admin' => isset($post['board_mail_admin']) ? 1 : 0,
+        'board_upload_file_count' => max(0, (int) community_admin_read_scalar($post, 'board_upload_file_count', 0)),
+        'board_upload_file_size' => max(0, (int) community_admin_read_scalar($post, 'board_upload_file_size', 0)),
+        'board_upload_extensions' => preg_replace('/[^a-z0-9|,._-]/i', '', community_admin_read_scalar($post, 'board_upload_extensions', '')),
+        'board_use_point' => isset($post['board_use_point']) ? 1 : 0,
+        'board_point_write' => (int) community_admin_read_scalar($post, 'board_point_write', 0),
+        'board_point_comment' => (int) community_admin_read_scalar($post, 'board_point_comment', 0),
+        'board_point_read' => (int) community_admin_read_scalar($post, 'board_point_read', 0),
+    );
+}
+
 function community_admin_post_status_values()
 {
     return array('published', 'hidden', 'deleted');

@@ -151,6 +151,7 @@ adm/css/admin.css
 
 핵심 테이블:
 
+- `community_config`
 - `community_board`
 - `community_board_category`
 - `community_post`
