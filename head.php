@@ -10,6 +10,8 @@ if ($is_member && function_exists('community_point_refresh_member_wallet')) {
     $head_community_point_wallet = community_point_refresh_member_wallet($member['mb_id'], true);
     $head_community_point_balance_text = number_format((int) $head_community_point_wallet['balance']);
 }
+
+$head_site_menu_items = function_exists('site_fetch_menu_tree') ? site_fetch_menu_tree(G5_IS_MOBILE ? 'mobile' : 'pc', $member) : array();
 ?>
 
 <div id="hd">
@@ -56,11 +58,26 @@ if ($is_member && function_exists('community_point_refresh_member_wallet')) {
         <h2>메인메뉴</h2>
         <div>
             <ul id="gnb_1dul">
+                <?php if (!empty($head_site_menu_items)) { ?>
+                <?php foreach ($head_site_menu_items as $head_site_menu_item) { ?>
+                <li>
+                    <a href="<?php echo community_escape_attr($head_site_menu_item['url']); ?>"<?php echo !empty($head_site_menu_item['target_blank']) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo get_text($head_site_menu_item['name']); ?></a>
+                    <?php if (!empty($head_site_menu_item['children'])) { ?>
+                    <ul>
+                        <?php foreach ($head_site_menu_item['children'] as $head_site_menu_child) { ?>
+                        <li><a href="<?php echo community_escape_attr($head_site_menu_child['url']); ?>"<?php echo !empty($head_site_menu_child['target_blank']) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo get_text($head_site_menu_child['name']); ?></a></li>
+                        <?php } ?>
+                    </ul>
+                    <?php } ?>
+                </li>
+                <?php } ?>
+                <?php } else { ?>
                 <li><a href="<?php echo G5_URL ?>/">홈</a></li>
                 <li><a href="<?php echo G5_COMMUNITY_URL ?>/">커뮤니티</a></li>
                 <?php if ($is_member) { ?>
                 <li><a href="<?php echo G5_COMMUNITY_URL ?>/point.php">내 포인트</a></li>
                 <li><a href="<?php echo G5_MEMBER_URL ?>/member_confirm.php?url=<?php echo G5_MEMBER_URL ?>/register_form.php">내 정보</a></li>
+                <?php } ?>
                 <?php } ?>
             </ul>
         </div>

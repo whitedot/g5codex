@@ -232,7 +232,7 @@ function community_admin_read_menu_save_request(array $post)
 
 function community_admin_banner_position_values()
 {
-    return array('main_top', 'main_middle', 'community_top', 'board_list_top', 'post_view_bottom', 'side');
+    return site_banner_position_values();
 }
 
 function community_admin_read_banner_list_request(array $get, array $config)
@@ -310,9 +310,9 @@ function community_admin_normalize_datetime_request($date, $time)
 
 function community_admin_read_banner_save_request(array $post)
 {
-    $position = community_admin_read_scalar($post, 'position', 'main_top');
+    $position = community_admin_read_scalar($post, 'position', site_banner_default_position());
     if (!in_array($position, community_admin_banner_position_values(), true)) {
-        $position = 'main_top';
+        $position = site_banner_default_position();
     }
 
     $status = community_admin_read_scalar($post, 'status', 'active');

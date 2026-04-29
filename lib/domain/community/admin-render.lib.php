@@ -329,7 +329,7 @@ function community_admin_build_menu_item(array $row)
         'status_text' => get_text(community_admin_status_label($row['status'])),
         'status_class' => community_admin_status_class($row['status']),
         'device_text' => get_text(($row['show_pc'] ? 'PC' : '') . ($row['show_pc'] && $row['show_mobile'] ? ' / ' : '') . ($row['show_mobile'] ? '모바일' : '')),
-        'edit_url_attr' => admin_escape_attr('./community_menu_form.php?menu_id=' . (int) $row['menu_id']),
+        'edit_url_attr' => admin_escape_attr('./site_menu_form.php?menu_id=' . (int) $row['menu_id']),
     );
 }
 
@@ -343,19 +343,19 @@ function community_admin_build_menu_list_view(array $request, array $config)
 
     $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
     $qstr = community_admin_build_menu_list_qstr($request, array('page' => ''));
-    $paging_url = './community_menu_list.php';
+    $paging_url = './site_menu_list.php';
     $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
 
     return array(
-        'title' => '커뮤니티 메뉴 관리',
+        'title' => '사이트 메뉴 관리',
         'admin_container_class' => 'admin-page-community-menu-list',
-        'admin_page_subtitle' => '게시판 그룹, 게시판, 직접 URL을 메뉴로 구성합니다.',
+        'admin_page_subtitle' => '전체 사이트에 적용할 메뉴를 게시판 그룹, 게시판, 직접 URL로 구성합니다.',
         'total_count_text' => admin_format_count_text($page_data['total_count'], '개'),
         'items' => $items,
         'empty_message' => '등록된 메뉴가 없습니다.',
-        'add_url_attr' => admin_escape_attr('./community_menu_form.php'),
-        'list_all_url_attr' => admin_escape_attr('./community_menu_list.php'),
-        'search_action_attr' => admin_escape_attr('./community_menu_list.php'),
+        'add_url_attr' => admin_escape_attr('./site_menu_form.php'),
+        'list_all_url_attr' => admin_escape_attr('./site_menu_list.php'),
+        'search_action_attr' => admin_escape_attr('./site_menu_list.php'),
         'stx_value' => get_sanitize_input($request['stx']),
         'status_options' => array(
             admin_build_select_option_view('', '전체', $request['status'] === ''),
@@ -390,17 +390,17 @@ function community_admin_build_menu_form_view(array $request)
     $menu = $is_update ? community_admin_fetch_menu($request['menu_id']) : array();
 
     if ($is_update && empty($menu['menu_id'])) {
-        alert('존재하지 않는 메뉴입니다.', './community_menu_list.php');
+        alert('존재하지 않는 메뉴입니다.', './site_menu_list.php');
     }
 
     $menu = array_merge(community_admin_default_menu_row(), $menu);
 
     return array(
-        'title' => $is_update ? '커뮤니티 메뉴 수정' : '커뮤니티 메뉴 추가',
+        'title' => $is_update ? '사이트 메뉴 수정' : '사이트 메뉴 추가',
         'admin_container_class' => 'admin-page-community-menu-form',
-        'admin_page_subtitle' => '메뉴 유형, 연결 대상, 노출 기기와 접근 레벨을 설정합니다.',
-        'form_action_attr' => admin_escape_attr('./community_menu_form_update.php'),
-        'list_url_attr' => admin_escape_attr('./community_menu_list.php'),
+        'admin_page_subtitle' => '전체 사이트 메뉴의 유형, 연결 대상, 노출 기기와 접근 레벨을 설정합니다.',
+        'form_action_attr' => admin_escape_attr('./site_menu_form_update.php'),
+        'list_url_attr' => admin_escape_attr('./site_menu_list.php'),
         'menu_id_value' => (int) $menu['menu_id'],
         'name_value' => get_sanitize_input($menu['name']),
         'url_value' => get_sanitize_input($menu['url']),
@@ -419,16 +419,7 @@ function community_admin_build_menu_form_view(array $request)
 
 function community_admin_banner_position_label($position)
 {
-    $labels = array(
-        'main_top' => '메인 상단',
-        'main_middle' => '메인 중단',
-        'community_top' => '커뮤니티 상단',
-        'board_list_top' => '게시판 목록 상단',
-        'post_view_bottom' => '게시글 보기 하단',
-        'side' => '사이드',
-    );
-
-    return isset($labels[$position]) ? $labels[$position] : $position;
+    return site_banner_position_label($position);
 }
 
 function community_admin_build_banner_position_options($selected, $include_all = false)
@@ -438,8 +429,11 @@ function community_admin_build_banner_position_options($selected, $include_all =
         $options[] = admin_build_select_option_view('', '전체', $selected === '');
     }
 
-    foreach (community_admin_banner_position_values() as $position) {
-        $options[] = admin_build_select_option_view($position, community_admin_banner_position_label($position), $selected === $position);
+    foreach (site_banner_position_groups() as $group) {
+        foreach ($group['positions'] as $position => $label) {
+            $option_label = $group['label'] !== '' && strpos($label, $group['label']) !== 0 ? $group['label'] . ' - ' . $label : $label;
+            $options[] = admin_build_select_option_view($position, $option_label, $selected === $position);
+        }
     }
 
     return $options;
@@ -465,7 +459,7 @@ function community_admin_build_banner_item(array $row)
         'period_text' => get_text(($row['started_at'] === '0000-00-00 00:00:00' ? '즉시' : $row['started_at']) . ' ~ ' . ($row['ended_at'] === '0000-00-00 00:00:00' ? '제한 없음' : $row['ended_at'])),
         'device_text' => get_text(($row['show_pc'] ? 'PC' : '') . ($row['show_pc'] && $row['show_mobile'] ? ' / ' : '') . ($row['show_mobile'] ? '모바일' : '')),
         'image_url_attr' => admin_escape_attr(site_banner_image_url($row['image_path'])),
-        'edit_url_attr' => admin_escape_attr('./community_banner_form.php?banner_id=' . (int) $row['banner_id']),
+        'edit_url_attr' => admin_escape_attr('./site_banner_form.php?banner_id=' . (int) $row['banner_id']),
     );
 }
 
@@ -479,19 +473,19 @@ function community_admin_build_banner_list_view(array $request, array $config)
 
     $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
     $qstr = community_admin_build_banner_list_qstr($request, array('page' => ''));
-    $paging_url = './community_banner_list.php';
+    $paging_url = './site_banner_list.php';
     $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
 
     return array(
-        'title' => '커뮤니티 배너 관리',
+        'title' => '사이트 배너 관리',
         'admin_container_class' => 'admin-page-community-banner-list',
-        'admin_page_subtitle' => '위치별 배너 이미지, 링크, 노출 기간을 관리합니다.',
+        'admin_page_subtitle' => '전체 사이트에서 사용할 배너 위치, 이미지, 링크, 노출 기간을 관리합니다.',
         'total_count_text' => admin_format_count_text($page_data['total_count'], '개'),
         'items' => $items,
         'empty_message' => '등록된 배너가 없습니다.',
-        'add_url_attr' => admin_escape_attr('./community_banner_form.php'),
-        'list_all_url_attr' => admin_escape_attr('./community_banner_list.php'),
-        'search_action_attr' => admin_escape_attr('./community_banner_list.php'),
+        'add_url_attr' => admin_escape_attr('./site_banner_form.php'),
+        'list_all_url_attr' => admin_escape_attr('./site_banner_list.php'),
+        'search_action_attr' => admin_escape_attr('./site_banner_list.php'),
         'position_options' => community_admin_build_banner_position_options($request['position'], true),
         'status_options' => array(
             admin_build_select_option_view('', '전체', $request['status'] === ''),
@@ -507,7 +501,7 @@ function community_admin_default_banner_row()
 {
     return array(
         'banner_id' => 0,
-        'position' => 'main_top',
+        'position' => site_banner_default_position(),
         'title' => '',
         'image_path' => '',
         'mobile_image_path' => '',
@@ -527,7 +521,7 @@ function community_admin_build_banner_form_view(array $request)
     $is_update = ($request['banner_id'] > 0);
     $banner = $is_update ? community_admin_fetch_banner($request['banner_id']) : array();
     if ($is_update && empty($banner['banner_id'])) {
-        alert('존재하지 않는 배너입니다.', './community_banner_list.php');
+        alert('존재하지 않는 배너입니다.', './site_banner_list.php');
     }
 
     $banner = array_merge(community_admin_default_banner_row(), $banner);
@@ -535,11 +529,11 @@ function community_admin_build_banner_form_view(array $request)
     $ended = community_admin_split_datetime_value($banner['ended_at']);
 
     return array(
-        'title' => $is_update ? '커뮤니티 배너 수정' : '커뮤니티 배너 추가',
+        'title' => $is_update ? '사이트 배너 수정' : '사이트 배너 추가',
         'admin_container_class' => 'admin-page-community-banner-form',
-        'admin_page_subtitle' => '배너 위치, 이미지, 링크와 노출 기간을 설정합니다.',
-        'form_action_attr' => admin_escape_attr('./community_banner_form_update.php'),
-        'list_url_attr' => admin_escape_attr('./community_banner_list.php'),
+        'admin_page_subtitle' => '전체 사이트 배너의 위치, 이미지, 링크와 노출 기간을 설정합니다.',
+        'form_action_attr' => admin_escape_attr('./site_banner_form_update.php'),
+        'list_url_attr' => admin_escape_attr('./site_banner_list.php'),
         'banner_id_value' => (int) $banner['banner_id'],
         'position_options' => community_admin_build_banner_position_options($banner['position']),
         'title_value' => get_sanitize_input($banner['title']),

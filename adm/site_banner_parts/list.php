@@ -45,7 +45,7 @@ if (!defined('_GNUBOARD_')) {
 <div class="member-table-card community-table-card">
     <div class="table-wrapper">
         <table class="table community-list-table">
-            <caption>커뮤니티 배너 목록</caption>
+            <caption>사이트 배너 목록</caption>
             <thead class="ui-table-head">
             <tr>
                 <th scope="col">배너</th>

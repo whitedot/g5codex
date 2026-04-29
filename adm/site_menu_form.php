@@ -1,5 +1,5 @@
 <?php
-$sub_menu = "300400";
+$sub_menu = "400100";
 require_once './_common.php';
 
 auth_check_menu($auth, $sub_menu, 'w');
@@ -9,5 +9,5 @@ $community_menu_form_view = community_admin_build_menu_form_view($community_menu
 
 admin_apply_page_view($community_menu_form_view);
 require_once './admin.head.php';
-include_once G5_ADMIN_PATH . '/community_menu_parts/form.php';
+include_once G5_ADMIN_PATH . '/site_menu_parts/form.php';
 require_once './admin.tail.php';

@@ -37,7 +37,7 @@ if (!defined('_GNUBOARD_')) {
 <div class="member-table-card community-table-card">
     <div class="table-wrapper">
         <table class="table community-list-table">
-            <caption>커뮤니티 메뉴 목록</caption>
+            <caption>사이트 메뉴 목록</caption>
             <thead class="ui-table-head">
             <tr>
                 <th scope="col">메뉴</th>

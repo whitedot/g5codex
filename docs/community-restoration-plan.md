@@ -123,7 +123,7 @@ community_scrap_table
 - `community_point_ledger`: 포인트 원장
 - `community_point_available`: 만료 및 차감 가능한 포인트 묶음
 - `site_menu`: 게시판 그룹, 게시판, 직접 URL 기반 사이트 메뉴
-- `site_banner`: 위치별 배너 이미지, 링크, 노출 기간
+- `site_banner`: 기능별로 등록 가능한 위치 기반 배너 이미지, 링크, 노출 기간
 - `community_attachment`: 첨부파일 메타데이터
 - `community_scrap`: 회원별 스크랩
 
@@ -137,6 +137,7 @@ community_scrap_table
 - 사용자 입력은 request 파일에서 정규화하고, SQL 값은 prepared helper로 바인딩한다.
 - HTML 출력은 저장 전 escape가 아니라 출력 직전 escape helper를 사용한다.
 - 게시글/댓글/포인트 상태 변경은 가능한 한 한 흐름 안에서 일관되게 처리한다.
+- 배너 위치는 `site_banner_position_groups` replace hook으로 기능별 항목을 추가한다.
 
 ## 운영 점검
 

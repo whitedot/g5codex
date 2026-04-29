@@ -24,6 +24,102 @@ function site_banner_table()
     return $g5['site_banner_table'];
 }
 
+function site_banner_default_position_groups()
+{
+    return array(
+        'common' => array(
+            'label' => '공통',
+            'positions' => array(
+                'main_top' => '메인 상단',
+                'main_middle' => '메인 중단',
+                'side' => '사이드',
+            ),
+        ),
+        'community' => array(
+            'label' => '커뮤니티',
+            'positions' => array(
+                'community_top' => '커뮤니티 상단',
+                'board_list_top' => '게시판 목록 상단',
+                'post_view_bottom' => '게시글 보기 하단',
+            ),
+        ),
+    );
+}
+
+function site_banner_normalize_position_groups(array $groups)
+{
+    $normalized = array();
+
+    foreach ($groups as $group_key => $group) {
+        $group_key = preg_replace('/[^a-z0-9_]/i', '', (string) $group_key);
+        if ($group_key === '' || !is_array($group)) {
+            continue;
+        }
+
+        $label = isset($group['label']) ? (string) $group['label'] : $group_key;
+        $positions = isset($group['positions']) && is_array($group['positions']) ? $group['positions'] : $group;
+        unset($positions['label'], $positions['positions']);
+
+        foreach ($positions as $position => $position_label) {
+            $position = preg_replace('/[^a-z0-9_]/i', '', (string) $position);
+            if ($position === '') {
+                continue;
+            }
+
+            if (is_array($position_label)) {
+                $position_label = isset($position_label['label']) ? $position_label['label'] : $position;
+            }
+
+            $normalized[$group_key]['label'] = $label;
+            $normalized[$group_key]['positions'][$position] = (string) $position_label;
+        }
+    }
+
+    return $normalized;
+}
+
+function site_banner_position_groups()
+{
+    $groups = site_banner_default_position_groups();
+    $replaced = function_exists('run_replace') ? run_replace('site_banner_position_groups', $groups) : null;
+    if (is_array($replaced)) {
+        $groups = $replaced;
+    }
+
+    return site_banner_normalize_position_groups($groups);
+}
+
+function site_banner_position_map()
+{
+    $map = array();
+    foreach (site_banner_position_groups() as $group) {
+        foreach ($group['positions'] as $position => $label) {
+            $map[$position] = $label;
+        }
+    }
+
+    return $map;
+}
+
+function site_banner_position_values()
+{
+    return array_keys(site_banner_position_map());
+}
+
+function site_banner_default_position()
+{
+    $positions = site_banner_position_values();
+
+    return isset($positions[0]) ? $positions[0] : 'main_top';
+}
+
+function site_banner_position_label($position)
+{
+    $map = site_banner_position_map();
+
+    return isset($map[$position]) ? $map[$position] : $position;
+}
+
 function community_schema_column_exists($table, $column)
 {
     $table = preg_replace('/[^a-z0-9_]/i', '', $table);
