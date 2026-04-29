@@ -14,6 +14,27 @@ function community_admin_status_label($status)
     return isset($labels[$status]) ? $labels[$status] : $status;
 }
 
+function community_admin_status_class($status)
+{
+    $classes = array(
+        'active' => 'is-active',
+        'hidden' => 'is-hidden',
+        'archived' => 'is-archived',
+        'published' => 'is-active',
+        'deleted' => 'is-deleted',
+        'ok' => 'is-active',
+        'warning' => 'is-warning',
+        'error' => 'is-deleted',
+    );
+
+    return isset($classes[$status]) ? $classes[$status] : 'is-muted';
+}
+
+function community_admin_flag_class($enabled)
+{
+    return !empty($enabled) ? 'is-on' : 'is-off';
+}
+
 function community_admin_build_status_options($selected)
 {
     $options = array();
@@ -30,12 +51,16 @@ function community_admin_build_board_item(array $row)
         'board_id_text' => get_text($row['board_id']),
         'name_text' => get_text($row['name']),
         'status_text' => get_text(community_admin_status_label($row['status'])),
+        'status_class' => community_admin_status_class($row['status']),
         'read_level_text' => (int) $row['read_level'],
         'write_level_text' => (int) $row['write_level'],
         'comment_level_text' => (int) $row['comment_level'],
         'use_category_text' => !empty($row['use_category']) ? '사용' : '미사용',
+        'use_category_class' => community_admin_flag_class($row['use_category']),
         'use_comment_text' => !empty($row['use_comment']) ? '사용' : '미사용',
+        'use_comment_class' => community_admin_flag_class($row['use_comment']),
         'use_latest_text' => !empty($row['use_latest']) ? '사용' : '미사용',
+        'use_latest_class' => community_admin_flag_class($row['use_latest']),
         'edit_url_attr' => admin_escape_attr('./community_board_form.php?board_id=' . rawurlencode($row['board_id'])),
     );
 }
@@ -187,6 +212,7 @@ function community_admin_build_post_item(array $row)
         'title_text' => get_text($row['title']),
         'author_text' => get_text($row['mb_id']),
         'status_text' => get_text(community_admin_post_status_label($row['status'])),
+        'status_class' => community_admin_status_class($row['status']),
         'notice_text' => !empty($row['is_notice']) ? '공지' : '',
         'comment_count_text' => (int) $row['comment_count'],
         'attachment_count_text' => (int) $row['attachment_count'],
@@ -243,6 +269,7 @@ function community_admin_build_comment_item(array $row)
         'author_text' => get_text($row['mb_id']),
         'content_text' => get_text(cut_str($row['content'], 120)),
         'status_text' => get_text(community_admin_post_status_label($row['status'])),
+        'status_class' => community_admin_status_class($row['status']),
         'created_at_text' => get_text($row['created_at']),
         'post_url_attr' => admin_escape_attr($post_url),
     );
@@ -294,10 +321,13 @@ function community_admin_build_point_wallet_item(array $row)
 
 function community_admin_build_point_ledger_item(array $row)
 {
+    $amount = (int) $row['amount'];
+
     return array(
         'ledger_id_text' => (int) $row['ledger_id'],
         'mb_id_text' => get_text($row['mb_id']),
-        'amount_text' => number_format((int) $row['amount']),
+        'amount_text' => number_format($amount),
+        'amount_class' => $amount >= 0 ? 'is-positive' : 'is-negative',
         'balance_after_text' => number_format((int) $row['balance_after']),
         'reason_text' => get_text($row['reason']),
         'target_text' => get_text($row['target_type'] . ' #' . (int) $row['target_id']),
@@ -359,6 +389,7 @@ function community_admin_build_health_item(array $row)
     return array(
         'label_text' => get_text($row['label']),
         'status_text' => get_text(community_admin_health_status_label($row['status'])),
+        'status_class' => community_admin_status_class($row['status']),
         'message_text' => get_text($row['message']),
         'action_text' => get_text($row['action']),
     );

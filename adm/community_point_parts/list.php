@@ -15,13 +15,17 @@ if (!defined('_GNUBOARD_')) {
     </form>
 </div>
 
-<form method="get" action="<?php echo $community_point_view['search_action_attr']; ?>" class="member-search">
-    <div class="member-search-fields">
-        <label for="point_mb_id" class="member-field-label">회원 ID</label>
-        <input type="text" name="mb_id" value="<?php echo $community_point_view['mb_id_value']; ?>" id="point_mb_id" class="form-input member-field-input" placeholder="회원 ID">
-        <button type="submit" class="btn btn-solid-primary">검색</button>
-    </div>
-</form>
+<div class="member-search-card">
+    <form method="get" action="<?php echo $community_point_view['search_action_attr']; ?>">
+        <div class="member-search-fields community-search-fields community-search-fields-compact">
+            <div class="member-field">
+                <label for="point_mb_id" class="member-field-label">회원 ID</label>
+                <input type="text" name="mb_id" value="<?php echo $community_point_view['mb_id_value']; ?>" id="point_mb_id" class="form-input member-field-input" placeholder="회원 ID">
+            </div>
+            <button type="submit" class="btn btn-solid-primary member-search-submit">검색</button>
+        </div>
+    </form>
+</div>
 
 <form method="post" action="<?php echo $community_point_view['adjust_action_attr']; ?>" class="admin-form-layout ui-form-theme">
     <input type="hidden" name="token" value="<?php echo $community_point_view['admin_token']; ?>">
@@ -50,71 +54,75 @@ if (!defined('_GNUBOARD_')) {
 </form>
 
 <h2 class="h2_frm">지갑</h2>
-<div class="tbl_head01 tbl_wrap">
-    <table>
-        <caption>커뮤니티 포인트 지갑</caption>
-        <thead>
-        <tr>
-            <th scope="col">회원 ID</th>
-            <th scope="col">잔액</th>
-            <th scope="col">적립</th>
-            <th scope="col">사용</th>
-            <th scope="col">만료</th>
-            <th scope="col">갱신일</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($community_point_view['wallet_items'] as $item) { ?>
+<div class="member-table-card community-table-card">
+    <div class="table-wrapper">
+        <table class="table community-list-table">
+            <caption>커뮤니티 포인트 지갑</caption>
+            <thead class="ui-table-head">
             <tr>
-                <td><?php echo $item['mb_id_text']; ?></td>
-                <td><?php echo $item['balance_text']; ?></td>
-                <td><?php echo $item['earned_text']; ?></td>
-                <td><?php echo $item['spent_text']; ?></td>
-                <td><?php echo $item['expired_text']; ?></td>
-                <td><?php echo $item['updated_at_text']; ?></td>
+                <th scope="col">회원 ID</th>
+                <th scope="col">잔액</th>
+                <th scope="col">적립</th>
+                <th scope="col">사용</th>
+                <th scope="col">만료</th>
+                <th scope="col">갱신일</th>
             </tr>
-        <?php } ?>
-        <?php if (empty($community_point_view['wallet_items'])) { ?>
-            <tr><td colspan="6" class="ui-table-empty"><?php echo $community_point_view['empty_wallet_message']; ?></td></tr>
-        <?php } ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            <?php foreach ($community_point_view['wallet_items'] as $item) { ?>
+                <tr>
+                    <td><strong class="community-id"><?php echo $item['mb_id_text']; ?></strong></td>
+                    <td class="community-number"><?php echo $item['balance_text']; ?></td>
+                    <td class="community-number is-positive"><?php echo $item['earned_text']; ?></td>
+                    <td class="community-number is-negative"><?php echo $item['spent_text']; ?></td>
+                    <td class="community-number is-muted"><?php echo $item['expired_text']; ?></td>
+                    <td class="community-date"><?php echo $item['updated_at_text']; ?></td>
+                </tr>
+            <?php } ?>
+            <?php if (empty($community_point_view['wallet_items'])) { ?>
+                <tr><td colspan="6" class="ui-table-empty"><?php echo $community_point_view['empty_wallet_message']; ?></td></tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <?php echo $community_point_view['paging_html']; ?>
 
 <h2 class="h2_frm">최근 원장</h2>
-<div class="tbl_head01 tbl_wrap">
-    <table>
-        <caption>커뮤니티 포인트 원장</caption>
-        <thead>
-        <tr>
-            <th scope="col">번호</th>
-            <th scope="col">회원 ID</th>
-            <th scope="col">금액</th>
-            <th scope="col">잔액</th>
-            <th scope="col">사유</th>
-            <th scope="col">대상</th>
-            <th scope="col">처리자</th>
-            <th scope="col">일시</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($community_point_view['ledger_items'] as $item) { ?>
+<div class="member-table-card community-table-card">
+    <div class="table-wrapper">
+        <table class="table community-list-table">
+            <caption>커뮤니티 포인트 원장</caption>
+            <thead class="ui-table-head">
             <tr>
-                <td><?php echo $item['ledger_id_text']; ?></td>
-                <td><?php echo $item['mb_id_text']; ?></td>
-                <td><?php echo $item['amount_text']; ?></td>
-                <td><?php echo $item['balance_after_text']; ?></td>
-                <td><?php echo $item['reason_text']; ?></td>
-                <td><?php echo $item['target_text']; ?></td>
-                <td><?php echo $item['created_by_text']; ?></td>
-                <td><?php echo $item['created_at_text']; ?></td>
+                <th scope="col">번호</th>
+                <th scope="col">회원 ID</th>
+                <th scope="col">금액</th>
+                <th scope="col">잔액</th>
+                <th scope="col">사유</th>
+                <th scope="col">대상</th>
+                <th scope="col">처리자</th>
+                <th scope="col">일시</th>
             </tr>
-        <?php } ?>
-        <?php if (empty($community_point_view['ledger_items'])) { ?>
-            <tr><td colspan="8" class="ui-table-empty"><?php echo $community_point_view['empty_ledger_message']; ?></td></tr>
-        <?php } ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            <?php foreach ($community_point_view['ledger_items'] as $item) { ?>
+                <tr>
+                    <td><?php echo $item['ledger_id_text']; ?></td>
+                    <td><strong class="community-id"><?php echo $item['mb_id_text']; ?></strong></td>
+                    <td class="community-number <?php echo $item['amount_class']; ?>"><?php echo $item['amount_text']; ?></td>
+                    <td class="community-number"><?php echo $item['balance_after_text']; ?></td>
+                    <td><?php echo $item['reason_text']; ?></td>
+                    <td><?php echo $item['target_text']; ?></td>
+                    <td><?php echo $item['created_by_text']; ?></td>
+                    <td class="community-date"><?php echo $item['created_at_text']; ?></td>
+                </tr>
+            <?php } ?>
+            <?php if (empty($community_point_view['ledger_items'])) { ?>
+                <tr><td colspan="8" class="ui-table-empty"><?php echo $community_point_view['empty_ledger_message']; ?></td></tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </div>

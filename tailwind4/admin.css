@@ -750,7 +750,8 @@
     }
 
     .member-field select,
-    .member-field input[type="text"] {
+    .member-field input[type="text"],
+    .member-field input[type="number"] {
         width: 100%;
         min-height: 2.75rem;
         border: 1px solid var(--color-default-300);
@@ -761,7 +762,8 @@
     }
 
     .member-field select:focus,
-    .member-field input[type="text"]:focus {
+    .member-field input[type="text"]:focus,
+    .member-field input[type="number"]:focus {
         border-color: color-mix(in oklab, var(--color-primary) 38%, var(--color-default-300));
         outline: none;
         box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 12%, transparent);
@@ -913,6 +915,140 @@
     }
 
     #fmemberlist .member-manage .btn {
+        flex: 0 0 auto;
+    }
+
+    .community-search-fields-wide {
+        grid-template-columns: minmax(0, 10rem) minmax(0, 10rem) minmax(0, 1fr) auto;
+    }
+
+    .community-search-fields-compact {
+        grid-template-columns: minmax(0, 16rem) auto;
+        justify-content: start;
+    }
+
+    .community-table-card .table-wrapper {
+        @apply w-full overflow-auto;
+    }
+
+    .community-list-table {
+        width: 100%;
+        border-radius: 0 !important;
+        border-collapse: collapse;
+    }
+
+    .community-list-table thead th {
+        @apply border-b border-default-300 bg-default-100 px-2.5 py-3 text-left align-middle text-xs font-semibold text-default-700;
+    }
+
+    .community-list-table tbody td {
+        @apply border-b border-default-300 px-2.5 py-3 text-sm align-middle;
+    }
+
+    .community-list-table tbody tr:last-child td {
+        @apply border-b-0;
+    }
+
+    .community-list-table :is(th, td):first-child {
+        @apply pl-4;
+    }
+
+    .community-list-table :is(th, td):last-child {
+        @apply pr-4;
+    }
+
+    .community-list-table thead th.text-end,
+    .community-list-table tbody td.text-end {
+        @apply text-right;
+    }
+
+    .community-primary {
+        @apply grid min-w-[12rem] gap-1;
+    }
+
+    .community-primary strong {
+        @apply text-sm font-semibold text-default-900;
+        overflow-wrap: anywhere;
+    }
+
+    .community-primary span,
+    .community-primary a {
+        @apply text-xs text-default-600;
+    }
+
+    .community-primary a {
+        @apply font-semibold text-primary hover:underline;
+    }
+
+    .community-primary-compact {
+        min-width: 10rem;
+    }
+
+    .community-status,
+    .community-flag {
+        @apply inline-flex items-center justify-center whitespace-nowrap px-[0.7rem] py-[0.35rem] text-xs font-semibold leading-none;
+        border-radius: 999px;
+    }
+
+    .community-status.is-active,
+    .community-flag.is-on {
+        background: color-mix(in oklab, var(--color-success) 14%, white);
+        color: var(--color-success-hover);
+    }
+
+    .community-status.is-hidden,
+    .community-status.is-archived,
+    .community-status.is-muted,
+    .community-flag.is-off {
+        background: var(--color-default-100);
+        color: var(--color-default-700);
+    }
+
+    .community-status.is-warning {
+        background: color-mix(in oklab, var(--color-warning) 14%, white);
+        color: var(--color-warning-hover);
+    }
+
+    .community-status.is-deleted {
+        background: color-mix(in oklab, var(--color-danger) 12%, white);
+        color: var(--color-danger-hover);
+    }
+
+    .community-meta-list,
+    .community-flag-list {
+        @apply flex flex-wrap items-center gap-1.5;
+    }
+
+    .community-meta-list span {
+        @apply inline-flex items-center whitespace-nowrap text-xs font-medium text-default-700;
+    }
+
+    .community-id {
+        @apply text-sm font-semibold text-default-900;
+    }
+
+    .community-number {
+        @apply whitespace-nowrap font-semibold text-default-900;
+    }
+
+    .community-number.is-positive {
+        color: var(--color-success-hover);
+    }
+
+    .community-number.is-negative {
+        color: var(--color-danger-hover);
+    }
+
+    .community-number.is-muted,
+    .community-date {
+        @apply whitespace-nowrap text-default-600;
+    }
+
+    .community-table-card .member-manage {
+        @apply flex flex-nowrap items-center justify-end gap-1.5 whitespace-nowrap;
+    }
+
+    .community-table-card .member-manage .btn {
         flex: 0 0 auto;
     }
 
@@ -1070,6 +1206,14 @@
 
     @media (max-width: 1023px) {
         .member-search-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .community-search-fields-wide {
+            grid-template-columns: 1fr;
+        }
+
+        .community-search-fields-compact {
             grid-template-columns: 1fr;
         }
 
