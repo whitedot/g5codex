@@ -122,7 +122,7 @@ community_scrap_table
 - `community_point_wallet`: 회원별 커뮤니티 포인트 잔액
 - `community_point_ledger`: 포인트 원장
 - `community_point_available`: 만료 및 차감 가능한 포인트 묶음
-- `site_menu`: 게시판 그룹, 게시판, 직접 URL 기반 사이트 메뉴
+- `site_menu`: 페이지, 게시판 그룹, 게시판, 직접 URL 기반 사이트 메뉴
 - `site_banner`: 기능별로 등록 가능한 위치 기반 배너 이미지, 링크, 노출 기간
 - `community_attachment`: 첨부파일 메타데이터
 - `community_scrap`: 회원별 스크랩

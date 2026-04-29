@@ -93,6 +93,7 @@ if ($g5_install || $is_install === false) {
     $schema_files = array(
         './gnuboard5.sql',
         './community_schema.sql',
+        './site_schema.sql',
     );
 
     foreach ($schema_files as $schema_file) {
@@ -251,6 +252,7 @@ fwrite($f, "\$g5['community_attachment_table'] = G5_TABLE_PREFIX.'community_atta
 fwrite($f, "\$g5['community_scrap_table'] = G5_TABLE_PREFIX.'community_scrap'; // 커뮤니티 스크랩 테이블\n");
 fwrite($f, "\$g5['site_menu_table'] = G5_TABLE_PREFIX.'site_menu'; // 사이트 메뉴 테이블\n");
 fwrite($f, "\$g5['site_banner_table'] = G5_TABLE_PREFIX.'site_banner'; // 사이트 배너 테이블\n");
+fwrite($f, "\$g5['site_page_table'] = G5_TABLE_PREFIX.'site_page'; // 사이트 페이지 테이블\n");
 
 fwrite($f, "?>");
 

@@ -237,6 +237,10 @@ function site_build_menu_url(array $row)
         return G5_COMMUNITY_URL . '/index.php?group_id=' . rawurlencode($row['target_id']);
     }
 
+    if ($row['menu_type'] === 'page' && $row['target_id'] !== '' && function_exists('site_page_url')) {
+        return site_page_url($row['target_id']);
+    }
+
     if ($row['menu_type'] === 'board' && $row['target_id'] !== '') {
         return G5_COMMUNITY_URL . '/board.php?board_id=' . rawurlencode($row['target_id']);
     }

@@ -287,6 +287,7 @@ function community_admin_menu_type_label($type)
 {
     $labels = array(
         'url' => '직접 URL',
+        'page' => '페이지',
         'board_group' => '게시판 그룹',
         'board' => '게시판',
         'disabled' => '비활성',
@@ -349,7 +350,7 @@ function community_admin_build_menu_list_view(array $request, array $config)
     return array(
         'title' => '사이트 메뉴 관리',
         'admin_container_class' => 'admin-page-community-menu-list',
-        'admin_page_subtitle' => '전체 사이트에 적용할 메뉴를 게시판 그룹, 게시판, 직접 URL로 구성합니다.',
+        'admin_page_subtitle' => '전체 사이트에 적용할 메뉴를 페이지, 게시판 그룹, 게시판, 직접 URL로 구성합니다.',
         'total_count_text' => admin_format_count_text($page_data['total_count'], '개'),
         'items' => $items,
         'empty_message' => '등록된 메뉴가 없습니다.',

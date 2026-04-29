@@ -526,7 +526,7 @@ function community_admin_validate_menu_request(array $request)
         return '직접 URL 메뉴는 URL을 입력하세요.';
     }
 
-    if (($request['menu_type'] === 'board_group' || $request['menu_type'] === 'board') && $request['target_id'] === '') {
+    if (in_array($request['menu_type'], array('page', 'board_group', 'board'), true) && $request['target_id'] === '') {
         return '연결 대상을 입력하세요.';
     }
 

@@ -167,7 +167,7 @@ function community_admin_read_group_save_request(array $post)
 
 function community_admin_menu_type_values()
 {
-    return array('url', 'board_group', 'board', 'disabled');
+    return array('url', 'page', 'board_group', 'board', 'disabled');
 }
 
 function community_admin_read_menu_list_request(array $get, array $config)
@@ -218,7 +218,7 @@ function community_admin_read_menu_save_request(array $post)
         'menu_id' => max(0, (int) community_admin_read_scalar($post, 'menu_id', 0)),
         'parent_id' => max(0, (int) community_admin_read_scalar($post, 'parent_id', 0)),
         'menu_type' => $menu_type,
-        'target_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'target_id', '')),
+        'target_id' => preg_replace('/[^a-z0-9_-]/i', '', community_admin_read_scalar($post, 'target_id', '')),
         'name' => strip_tags(community_admin_read_scalar($post, 'name', '')),
         'url' => strip_tags(community_admin_read_scalar($post, 'url', '')),
         'target_blank' => isset($post['target_blank']) ? 1 : 0,

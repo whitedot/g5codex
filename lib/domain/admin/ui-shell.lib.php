@@ -14,7 +14,8 @@ function admin_menu_icon_id($menu_code)
         '200' => 'users',
         '300' => 'content',
         '400' => 'folder',
-        '500' => 'stats',
+        '450' => 'folder',
+        '500' => 'article',
         '900' => 'message',
     );
 

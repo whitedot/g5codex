@@ -41,7 +41,7 @@ if (!defined('_GNUBOARD_')) {
                 <div class="af-row">
                     <div class="af-label"><label for="target_id" class="form-label">연결 대상 ID</label></div>
                     <div class="af-field">
-                        <input type="text" name="target_id" value="<?php echo $community_menu_form_view['target_id_value']; ?>" id="target_id" class="form-input" maxlength="100" placeholder="게시판 그룹 ID 또는 게시판 ID">
+                        <input type="text" name="target_id" value="<?php echo $community_menu_form_view['target_id_value']; ?>" id="target_id" class="form-input" maxlength="100" placeholder="페이지 ID, 게시판 그룹 ID 또는 게시판 ID">
                     </div>
                 </div>
                 <div class="af-row">

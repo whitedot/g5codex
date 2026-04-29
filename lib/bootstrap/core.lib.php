@@ -77,6 +77,7 @@ function g5_include_core_libraries()
     include_once(G5_LIB_PATH . '/domain/member/flow.lib.php');
     include_once(G5_LIB_PATH . '/domain/member/page.lib.php');
     include_once(G5_LIB_PATH . '/domain/community/community.lib.php');
+    include_once(G5_LIB_PATH . '/domain/site/site.lib.php');
 }
 
 function g5_render_install_required()
