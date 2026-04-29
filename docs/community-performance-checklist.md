@@ -160,20 +160,6 @@ SELECT s.scrap_id, s.created_at AS scrapped_at, p.*, b.name AS board_name
 
 기대 인덱스: `idx_member_created`
 
-## 알림 로그
-
-```sql
-EXPLAIN
-SELECT *
-  FROM g5_community_notification_log
- WHERE status = 'failed'
- ORDER BY created_at DESC,
-          notification_id DESC
- LIMIT 0, 20;
-```
-
-기대 인덱스: `idx_status_created`
-
 ## 포인트 지갑
 
 ```sql

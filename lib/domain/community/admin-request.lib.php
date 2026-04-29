@@ -94,56 +94,6 @@ function community_admin_read_board_save_request(array $post)
     );
 }
 
-function community_admin_read_notification_log_request(array $get, array $config)
-{
-    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
-    if ($page_rows < 1) {
-        $page_rows = 15;
-    }
-
-    return array(
-        'page' => max(1, (int) community_admin_read_scalar($get, 'page', 1)),
-        'status' => preg_replace('/[^a-z_]/i', '', community_admin_read_scalar($get, 'status', '')),
-        'stx' => community_admin_read_scalar($get, 'stx', ''),
-        'page_rows' => $page_rows,
-    );
-}
-
-function community_admin_build_notification_log_qstr(array $request, array $overrides = array())
-{
-    $query = array(
-        'status' => $request['status'],
-        'stx' => $request['stx'],
-        'page' => $request['page'],
-    );
-
-    foreach ($overrides as $key => $value) {
-        $query[$key] = $value;
-    }
-
-    foreach ($query as $key => $value) {
-        if ($value === '' || $value === null) {
-            unset($query[$key]);
-        }
-    }
-
-    return http_build_query($query);
-}
-
-function community_admin_read_notification_log_update_request(array $post)
-{
-    $action = community_admin_read_scalar($post, 'action', '');
-    if (!in_array($action, array('retry'), true)) {
-        $action = '';
-    }
-
-    return array(
-        'action' => $action,
-        'notification_ids' => community_admin_read_selected_ids($post, 'notification_id'),
-        'return_query' => community_admin_read_scalar($post, 'return_query', ''),
-    );
-}
-
 function community_admin_post_status_values()
 {
     return array('published', 'hidden', 'deleted');

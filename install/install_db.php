@@ -242,7 +242,6 @@ fwrite($f, "\$g5['community_board_category_table'] = G5_TABLE_PREFIX.'community_
 fwrite($f, "\$g5['community_post_table'] = G5_TABLE_PREFIX.'community_post'; // 커뮤니티 게시글 테이블\n");
 fwrite($f, "\$g5['community_comment_table'] = G5_TABLE_PREFIX.'community_comment'; // 커뮤니티 댓글 테이블\n");
 fwrite($f, "\$g5['community_latest_table'] = G5_TABLE_PREFIX.'community_latest_index'; // 커뮤니티 최신글 인덱스 테이블\n");
-fwrite($f, "\$g5['community_notification_table'] = G5_TABLE_PREFIX.'community_notification_log'; // 커뮤니티 알림 로그 테이블\n");
 fwrite($f, "\$g5['community_point_ledger_table'] = G5_TABLE_PREFIX.'community_point_ledger'; // 커뮤니티 포인트 원장 테이블\n");
 fwrite($f, "\$g5['community_point_available_table'] = G5_TABLE_PREFIX.'community_point_available'; // 커뮤니티 사용 가능 포인트 테이블\n");
 fwrite($f, "\$g5['community_point_wallet_table'] = G5_TABLE_PREFIX.'community_point_wallet'; // 커뮤니티 포인트 지갑 테이블\n");

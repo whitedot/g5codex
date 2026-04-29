@@ -3,13 +3,6 @@ if (!defined('_GNUBOARD_')) {
     exit;
 }
 
-function community_notification_table()
-{
-    global $g5;
-
-    return $g5['community_notification_table'];
-}
-
 function community_member_table()
 {
     global $g5;
@@ -46,38 +39,6 @@ function community_fetch_comment_author_members($post_id, $exclude_mb_id)
     );
 }
 
-function community_log_notification($event_type, array $target, array $recipient, $subject, $status, $error_message = '')
-{
-    $table = community_notification_table();
-
-    sql_query_prepared(
-        " insert into {$table}
-            set event_type = :event_type,
-                post_id = :post_id,
-                comment_id = :comment_id,
-                recipient_mb_id = :recipient_mb_id,
-                recipient_email = :recipient_email,
-                subject = :subject,
-                status = :status,
-                error_message = :error_message,
-                sent_at = :sent_at,
-                created_at = :created_at ",
-        array(
-            'event_type' => $event_type,
-            'post_id' => isset($target['post_id']) ? (int) $target['post_id'] : 0,
-            'comment_id' => isset($target['comment_id']) ? (int) $target['comment_id'] : 0,
-            'recipient_mb_id' => isset($recipient['mb_id']) ? $recipient['mb_id'] : '',
-            'recipient_email' => isset($recipient['mb_email']) ? $recipient['mb_email'] : '',
-            'subject' => $subject,
-            'status' => $status,
-            'error_message' => $error_message,
-            'sent_at' => $status === 'sent' ? G5_TIME_YMDHIS : '0000-00-00 00:00:00',
-            'created_at' => G5_TIME_YMDHIS,
-        ),
-        false
-    );
-}
-
 function community_add_notification_recipient(array &$recipients, array $recipient)
 {
     $mb_id = isset($recipient['mb_id']) ? (string) $recipient['mb_id'] : '';
@@ -108,19 +69,16 @@ function community_send_notification_mail($event_type, array $target, array $rec
     global $config;
 
     if (empty($recipient['mb_email'])) {
-        community_log_notification($event_type, $target, $recipient, $subject, 'skipped', 'empty_email');
         return false;
     }
 
     if (empty($config['cf_email_use'])) {
-        community_log_notification($event_type, $target, $recipient, $subject, 'skipped', 'email_disabled');
         return false;
     }
 
     include_once G5_LIB_PATH . '/support/mail.lib.php';
 
     $sent = mailer($config['cf_admin_email_name'], $config['cf_admin_email'], $recipient['mb_email'], $subject, $content, 1);
-    community_log_notification($event_type, $target, $recipient, $subject, $sent ? 'sent' : 'failed', $sent ? '' : 'mail_send_failed');
 
     return $sent;
 }

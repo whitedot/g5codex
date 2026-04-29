@@ -108,24 +108,6 @@ CREATE TABLE IF NOT EXISTS `g5_community_latest_index` (
   KEY `idx_scope_latest` (`scope`, `board_id`, `last_activity_at`, `post_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `g5_community_notification_log` (
-  `notification_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `event_type` varchar(50) NOT NULL DEFAULT '',
-  `post_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `comment_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `recipient_mb_id` varchar(20) NOT NULL DEFAULT '',
-  `recipient_email` varchar(255) NOT NULL DEFAULT '',
-  `subject` varchar(255) NOT NULL DEFAULT '',
-  `status` varchar(20) NOT NULL DEFAULT 'pending',
-  `error_message` text NOT NULL,
-  `sent_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`notification_id`),
-  KEY `idx_recipient_created` (`recipient_mb_id`, `created_at`),
-  KEY `idx_target` (`post_id`, `comment_id`),
-  KEY `idx_status_created` (`status`, `created_at`, `notification_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `g5_community_point_wallet` (
   `mb_id` varchar(20) NOT NULL DEFAULT '',
   `balance` int(11) NOT NULL DEFAULT '0',

@@ -17,7 +17,6 @@ function community_register_runtime_tables()
         'community_post_table' => 'community_post',
         'community_comment_table' => 'community_comment',
         'community_latest_table' => 'community_latest_index',
-        'community_notification_table' => 'community_notification_log',
         'community_point_ledger_table' => 'community_point_ledger',
         'community_point_available_table' => 'community_point_available',
         'community_point_wallet_table' => 'community_point_wallet',

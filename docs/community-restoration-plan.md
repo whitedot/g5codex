@@ -51,8 +51,6 @@ adm/
   community_post_list_update.php
   community_comment_list.php
   community_comment_list_update.php
-  community_notification_log.php
-  community_notification_log_update.php
   community_point_list.php
   community_point_adjust.php
   community_point_expire.php
@@ -99,7 +97,6 @@ community_board_category_table
 community_post_table
 community_comment_table
 community_latest_table
-community_notification_table
 community_point_ledger_table
 community_point_available_table
 community_point_wallet_table
@@ -116,7 +113,6 @@ community_scrap_table
 - `community_post`: 게시글 본문, 공지/비밀글 상태, 댓글/조회/첨부 집계
 - `community_comment`: 댓글 본문과 상태
 - `community_latest_index`: 최신글 조회용 인덱스
-- `community_notification_log`: 게시글/댓글 알림 발송 로그
 - `community_point_wallet`: 회원별 커뮤니티 포인트 잔액
 - `community_point_ledger`: 포인트 원장
 - `community_point_available`: 만료 및 차감 가능한 포인트 묶음
@@ -144,7 +140,7 @@ community_scrap_table
 4. 첨부파일 업로드와 다운로드
 5. 최신글 조회
 6. 스크랩 등록과 목록 조회
-7. 게시글/댓글 알림 로그 확인
+7. 게시글/댓글 메일 알림
 8. 포인트 지급, 차감, 만료 정산
 9. 관리자 게시글/댓글 상태 일괄 변경
 10. `adm/community_health.php` 테이블 상태 확인
@@ -154,5 +150,4 @@ community_scrap_table
 - 커뮤니티/관리자 request 입력도 회원 도메인처럼 raw input context로 단계 이전
 - 포인트 처리에서 DB 엔진이 InnoDB인 환경의 row lock 기준 보강
 - 최신글/게시판 메타 캐시 무효화 시나리오 자동 테스트 추가
-- 알림 재발송 실패 유형별 운영 로그 보강
 - PHPUnit 또는 별도 HTTP 회귀 테스트 도입
