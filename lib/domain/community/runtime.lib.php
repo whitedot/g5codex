@@ -13,6 +13,7 @@ function community_register_runtime_tables()
 
     $tables = array(
         'community_config_table' => 'community_config',
+        'community_board_group_table' => 'community_board_group',
         'community_board_table' => 'community_board',
         'community_board_category_table' => 'community_board_category',
         'community_post_table' => 'community_post',
@@ -23,6 +24,8 @@ function community_register_runtime_tables()
         'community_point_wallet_table' => 'community_point_wallet',
         'community_attachment_table' => 'community_attachment',
         'community_scrap_table' => 'community_scrap',
+        'site_menu_table' => 'site_menu',
+        'site_banner_table' => 'site_banner',
     );
 
     foreach ($tables as $key => $suffix) {

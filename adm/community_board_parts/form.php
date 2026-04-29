@@ -43,6 +43,19 @@ if (!defined('_GNUBOARD_')) {
 
                 <div class="af-row">
                     <div class="af-label">
+                        <label for="group_id" class="form-label">게시판 그룹</label>
+                    </div>
+                    <div class="af-field">
+                        <select name="group_id" id="group_id" class="form-select">
+                            <?php foreach ($community_board_form_view['group_options'] as $option) { ?>
+                                <option value="<?php echo $option['value_attr']; ?>"<?php echo $option['selected_attr']; ?>><?php echo $option['label_text']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="af-row">
+                    <div class="af-label">
                         <label for="status" class="form-label">상태</label>
                     </div>
                     <div class="af-field">

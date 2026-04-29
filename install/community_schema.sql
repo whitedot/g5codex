@@ -8,8 +8,24 @@ CREATE TABLE IF NOT EXISTS `g5_community_config` (
   PRIMARY KEY (`config_key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `g5_community_board_group` (
+  `group_id` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `read_level` tinyint(4) NOT NULL DEFAULT '1',
+  `write_level` tinyint(4) NOT NULL DEFAULT '2',
+  `comment_level` tinyint(4) NOT NULL DEFAULT '2',
+  `list_order` int(11) NOT NULL DEFAULT '0',
+  `status` varchar(20) NOT NULL DEFAULT 'active',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`group_id`),
+  KEY `idx_status_order` (`status`, `list_order`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `g5_community_board` (
   `board_id` varchar(50) NOT NULL DEFAULT '',
+  `group_id` varchar(50) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `read_level` tinyint(4) NOT NULL DEFAULT '1',
@@ -33,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `g5_community_board` (
   `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`board_id`),
+  KEY `idx_group_order` (`group_id`, `status`, `list_order`),
   KEY `idx_status_order` (`status`, `list_order`),
   KEY `idx_latest` (`use_latest`, `status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -182,4 +199,44 @@ CREATE TABLE IF NOT EXISTS `g5_community_scrap` (
   UNIQUE KEY `uq_member_post` (`mb_id`, `post_id`),
   KEY `idx_member_created` (`mb_id`, `created_at`, `scrap_id`),
   KEY `idx_post` (`post_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `g5_site_menu` (
+  `menu_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `menu_type` varchar(20) NOT NULL DEFAULT 'url',
+  `target_id` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `url` varchar(255) NOT NULL DEFAULT '',
+  `target_blank` tinyint(1) NOT NULL DEFAULT '0',
+  `access_level` tinyint(4) NOT NULL DEFAULT '1',
+  `show_pc` tinyint(1) NOT NULL DEFAULT '1',
+  `show_mobile` tinyint(1) NOT NULL DEFAULT '1',
+  `list_order` int(11) NOT NULL DEFAULT '0',
+  `status` varchar(20) NOT NULL DEFAULT 'active',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`menu_id`),
+  KEY `idx_parent_order` (`parent_id`, `status`, `list_order`),
+  KEY `idx_target` (`menu_type`, `target_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `g5_site_banner` (
+  `banner_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `position` varchar(50) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `image_path` varchar(255) NOT NULL DEFAULT '',
+  `mobile_image_path` varchar(255) NOT NULL DEFAULT '',
+  `link_url` varchar(255) NOT NULL DEFAULT '',
+  `target_blank` tinyint(1) NOT NULL DEFAULT '0',
+  `started_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ended_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `show_pc` tinyint(1) NOT NULL DEFAULT '1',
+  `show_mobile` tinyint(1) NOT NULL DEFAULT '1',
+  `list_order` int(11) NOT NULL DEFAULT '0',
+  `status` varchar(20) NOT NULL DEFAULT 'active',
+  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`banner_id`),
+  KEY `idx_position_period` (`position`, `status`, `started_at`, `ended_at`, `list_order`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

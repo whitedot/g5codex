@@ -93,6 +93,7 @@ lib/domain/community/
 
 ```text
 community_config_table
+community_board_group_table
 community_board_table
 community_board_category_table
 community_post_table
@@ -101,6 +102,8 @@ community_latest_table
 community_point_ledger_table
 community_point_available_table
 community_point_wallet_table
+site_menu_table
+site_banner_table
 community_attachment_table
 community_scrap_table
 ```
@@ -110,6 +113,7 @@ community_scrap_table
 ## 스키마 요약
 
 - `community_config`: 포인트 만료 기준, 신규 게시판 기본 권한과 공통 기본값
+- `community_board_group`: 게시판 그룹과 그룹별 기본 권한
 - `community_board`: 게시판 설정, 권한 레벨, 업로드 정책, 메일/포인트 사용 여부
 - `community_board_category`: 게시판별 카테고리
 - `community_post`: 게시글 본문, 공지/비밀글 상태, 댓글/조회/첨부 집계
@@ -118,6 +122,8 @@ community_scrap_table
 - `community_point_wallet`: 회원별 커뮤니티 포인트 잔액
 - `community_point_ledger`: 포인트 원장
 - `community_point_available`: 만료 및 차감 가능한 포인트 묶음
+- `site_menu`: 게시판 그룹, 게시판, 직접 URL 기반 사이트 메뉴
+- `site_banner`: 위치별 배너 이미지, 링크, 노출 기간
 - `community_attachment`: 첨부파일 메타데이터
 - `community_scrap`: 회원별 스크랩
 

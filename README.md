@@ -152,6 +152,7 @@ adm/css/admin.css
 핵심 테이블:
 
 - `community_config`
+- `community_board_group`
 - `community_board`
 - `community_board_category`
 - `community_post`
@@ -162,6 +163,8 @@ adm/css/admin.css
 - `community_point_available`
 - `community_attachment`
 - `community_scrap`
+- `site_menu`
+- `site_banner`
 
 현재 구조 문서는 `docs/community-restoration-plan.md`, 주요 조회 성능 점검은 `docs/community-performance-checklist.md`를 참고한다.
 

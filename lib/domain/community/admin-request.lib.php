@@ -70,6 +70,7 @@ function community_admin_read_board_save_request(array $post)
     return array(
         'original_board_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'original_board_id', '')),
         'board_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'board_id', '')),
+        'group_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'group_id', '')),
         'name' => strip_tags(community_admin_read_scalar($post, 'name', '')),
         'description' => strip_tags(community_admin_read_scalar($post, 'description', '')),
         'read_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'read_level', 1))),
@@ -114,6 +115,227 @@ function community_admin_read_config_save_request(array $post)
         'board_point_write' => (int) community_admin_read_scalar($post, 'board_point_write', 0),
         'board_point_comment' => (int) community_admin_read_scalar($post, 'board_point_comment', 0),
         'board_point_read' => (int) community_admin_read_scalar($post, 'board_point_read', 0),
+    );
+}
+
+function community_admin_read_group_list_request(array $get, array $config)
+{
+    $status = community_admin_read_scalar($get, 'status', '');
+    if ($status !== '' && !in_array($status, community_admin_board_status_values(), true)) {
+        $status = '';
+    }
+
+    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
+    if ($page_rows < 1) {
+        $page_rows = 15;
+    }
+
+    return array(
+        'page' => max(1, (int) community_admin_read_scalar($get, 'page', 1)),
+        'stx' => community_admin_read_scalar($get, 'stx', ''),
+        'status' => $status,
+        'page_rows' => $page_rows,
+    );
+}
+
+function community_admin_build_group_list_qstr(array $request, array $overrides = array())
+{
+    return community_admin_build_board_list_qstr($request, $overrides);
+}
+
+function community_admin_read_group_form_request(array $get)
+{
+    return array(
+        'group_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($get, 'group_id', '')),
+    );
+}
+
+function community_admin_read_group_save_request(array $post)
+{
+    return array(
+        'original_group_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'original_group_id', '')),
+        'group_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'group_id', '')),
+        'name' => strip_tags(community_admin_read_scalar($post, 'name', '')),
+        'description' => strip_tags(community_admin_read_scalar($post, 'description', '')),
+        'read_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'read_level', 1))),
+        'write_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'write_level', 2))),
+        'comment_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'comment_level', 2))),
+        'list_order' => (int) community_admin_read_scalar($post, 'list_order', 0),
+        'status' => community_admin_read_scalar($post, 'status', 'active'),
+    );
+}
+
+function community_admin_menu_type_values()
+{
+    return array('url', 'board_group', 'board', 'disabled');
+}
+
+function community_admin_read_menu_list_request(array $get, array $config)
+{
+    $status = community_admin_read_scalar($get, 'status', '');
+    if ($status !== '' && !in_array($status, array('active', 'hidden'), true)) {
+        $status = '';
+    }
+
+    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
+    if ($page_rows < 1) {
+        $page_rows = 15;
+    }
+
+    return array(
+        'page' => max(1, (int) community_admin_read_scalar($get, 'page', 1)),
+        'stx' => community_admin_read_scalar($get, 'stx', ''),
+        'status' => $status,
+        'page_rows' => $page_rows,
+    );
+}
+
+function community_admin_build_menu_list_qstr(array $request, array $overrides = array())
+{
+    return community_admin_build_board_list_qstr($request, $overrides);
+}
+
+function community_admin_read_menu_form_request(array $get)
+{
+    return array(
+        'menu_id' => max(0, (int) community_admin_read_scalar($get, 'menu_id', 0)),
+    );
+}
+
+function community_admin_read_menu_save_request(array $post)
+{
+    $menu_type = community_admin_read_scalar($post, 'menu_type', 'url');
+    if (!in_array($menu_type, community_admin_menu_type_values(), true)) {
+        $menu_type = 'url';
+    }
+
+    $status = community_admin_read_scalar($post, 'status', 'active');
+    if (!in_array($status, array('active', 'hidden'), true)) {
+        $status = 'active';
+    }
+
+    return array(
+        'menu_id' => max(0, (int) community_admin_read_scalar($post, 'menu_id', 0)),
+        'parent_id' => max(0, (int) community_admin_read_scalar($post, 'parent_id', 0)),
+        'menu_type' => $menu_type,
+        'target_id' => preg_replace('/[^a-z0-9_]/i', '', community_admin_read_scalar($post, 'target_id', '')),
+        'name' => strip_tags(community_admin_read_scalar($post, 'name', '')),
+        'url' => strip_tags(community_admin_read_scalar($post, 'url', '')),
+        'target_blank' => isset($post['target_blank']) ? 1 : 0,
+        'access_level' => max(1, min(10, (int) community_admin_read_scalar($post, 'access_level', 1))),
+        'show_pc' => isset($post['show_pc']) ? 1 : 0,
+        'show_mobile' => isset($post['show_mobile']) ? 1 : 0,
+        'list_order' => (int) community_admin_read_scalar($post, 'list_order', 0),
+        'status' => $status,
+    );
+}
+
+function community_admin_banner_position_values()
+{
+    return array('main_top', 'main_middle', 'community_top', 'board_list_top', 'post_view_bottom', 'side');
+}
+
+function community_admin_read_banner_list_request(array $get, array $config)
+{
+    $status = community_admin_read_scalar($get, 'status', '');
+    if ($status !== '' && !in_array($status, array('active', 'hidden'), true)) {
+        $status = '';
+    }
+
+    $position = community_admin_read_scalar($get, 'position', '');
+    if ($position !== '' && !in_array($position, community_admin_banner_position_values(), true)) {
+        $position = '';
+    }
+
+    $page_rows = isset($config['cf_page_rows']) ? (int) $config['cf_page_rows'] : 15;
+    if ($page_rows < 1) {
+        $page_rows = 15;
+    }
+
+    return array(
+        'page' => max(1, (int) community_admin_read_scalar($get, 'page', 1)),
+        'position' => $position,
+        'status' => $status,
+        'stx' => community_admin_read_scalar($get, 'stx', ''),
+        'page_rows' => $page_rows,
+    );
+}
+
+function community_admin_build_banner_list_qstr(array $request, array $overrides = array())
+{
+    $query = array(
+        'position' => $request['position'],
+        'status' => $request['status'],
+        'stx' => $request['stx'],
+        'page' => $request['page'],
+    );
+
+    foreach ($overrides as $key => $value) {
+        $query[$key] = $value;
+    }
+
+    foreach ($query as $key => $value) {
+        if ($value === '' || $value === null) {
+            unset($query[$key]);
+        }
+    }
+
+    return http_build_query($query);
+}
+
+function community_admin_read_banner_form_request(array $get)
+{
+    return array(
+        'banner_id' => max(0, (int) community_admin_read_scalar($get, 'banner_id', 0)),
+    );
+}
+
+function community_admin_normalize_datetime_request($date, $time)
+{
+    $date = preg_replace('/[^0-9-]/', '', (string) $date);
+    $time = preg_replace('/[^0-9:]/', '', (string) $time);
+
+    if ($date === '') {
+        return '0000-00-00 00:00:00';
+    }
+
+    if ($time === '') {
+        $time = '00:00:00';
+    } elseif (strlen($time) === 5) {
+        $time .= ':00';
+    }
+
+    return $date . ' ' . $time;
+}
+
+function community_admin_read_banner_save_request(array $post)
+{
+    $position = community_admin_read_scalar($post, 'position', 'main_top');
+    if (!in_array($position, community_admin_banner_position_values(), true)) {
+        $position = 'main_top';
+    }
+
+    $status = community_admin_read_scalar($post, 'status', 'active');
+    if (!in_array($status, array('active', 'hidden'), true)) {
+        $status = 'active';
+    }
+
+    return array(
+        'banner_id' => max(0, (int) community_admin_read_scalar($post, 'banner_id', 0)),
+        'position' => $position,
+        'title' => strip_tags(community_admin_read_scalar($post, 'title', '')),
+        'image_path' => preg_replace('/[^a-z0-9_\/.\-]/i', '', community_admin_read_scalar($post, 'image_path', '')),
+        'mobile_image_path' => preg_replace('/[^a-z0-9_\/.\-]/i', '', community_admin_read_scalar($post, 'mobile_image_path', '')),
+        'delete_image' => isset($post['delete_image']) ? 1 : 0,
+        'delete_mobile_image' => isset($post['delete_mobile_image']) ? 1 : 0,
+        'link_url' => strip_tags(community_admin_read_scalar($post, 'link_url', '')),
+        'target_blank' => isset($post['target_blank']) ? 1 : 0,
+        'started_at' => community_admin_normalize_datetime_request(community_admin_read_scalar($post, 'started_date', ''), community_admin_read_scalar($post, 'started_time', '')),
+        'ended_at' => community_admin_normalize_datetime_request(community_admin_read_scalar($post, 'ended_date', ''), community_admin_read_scalar($post, 'ended_time', '')),
+        'show_pc' => isset($post['show_pc']) ? 1 : 0,
+        'show_mobile' => isset($post['show_mobile']) ? 1 : 0,
+        'list_order' => (int) community_admin_read_scalar($post, 'list_order', 0),
+        'status' => $status,
     );
 }
 

@@ -19,6 +19,7 @@ function community_admin_board_category_table()
 
 function community_admin_fetch_board($board_id)
 {
+    community_ensure_operation_schema();
     $table = community_admin_board_table();
 
     return sql_fetch_prepared(" select * from {$table} where board_id = :board_id ", array(
@@ -55,6 +56,7 @@ function community_admin_build_board_search_sql(array $request, array &$params)
 
 function community_admin_fetch_board_list_page(array $request)
 {
+    community_ensure_operation_schema();
     $table = community_admin_board_table();
     $params = array();
     $where = community_admin_build_board_search_sql($request, $params);
@@ -173,6 +175,7 @@ function community_admin_save_board(array $request)
     $params = array(
         'name' => $request['name'],
         'description' => $request['description'],
+        'group_id' => $request['group_id'],
         'read_level' => $request['read_level'],
         'write_level' => $request['write_level'],
         'comment_level' => $request['comment_level'],
@@ -204,6 +207,7 @@ function community_admin_save_board(array $request)
         $sql = " update {$table}
                     set name = :name,
                         description = :description,
+                        group_id = :group_id,
                         read_level = :read_level,
                         write_level = :write_level,
                         comment_level = :comment_level,
@@ -232,6 +236,7 @@ function community_admin_save_board(array $request)
                     set board_id = :board_id,
                         name = :name,
                         description = :description,
+                        group_id = :group_id,
                         read_level = :read_level,
                         write_level = :write_level,
                         comment_level = :comment_level,
@@ -261,6 +266,7 @@ function community_admin_save_board(array $request)
 
     community_cache_delete_group('community:board:' . $request['board_id'] . ':');
     community_cache_delete('community:board:list:active');
+    community_cache_delete_group('community:board:list:active:');
     community_admin_save_board_categories($request['board_id'], $request['categories']);
     if (!community_rebuild_latest_board(array(
         'board_id' => $request['board_id'],
@@ -286,6 +292,533 @@ function community_admin_save_config(array $request)
     }
 
     return array('error' => '');
+}
+
+function community_admin_group_table()
+{
+    return community_board_group_table();
+}
+
+function community_admin_fetch_group($group_id)
+{
+    community_ensure_operation_schema();
+    $table = community_admin_group_table();
+
+    return sql_fetch_prepared(" select * from {$table} where group_id = :group_id ", array('group_id' => $group_id));
+}
+
+function community_admin_build_group_search_sql(array $request, array &$params)
+{
+    $where = array('1=1');
+
+    if ($request['status'] !== '') {
+        $where[] = 'status = :status';
+        $params['status'] = $request['status'];
+    }
+
+    if ($request['stx'] !== '') {
+        $where[] = '(group_id like :stx_like or name like :stx_like)';
+        $params['stx_like'] = '%' . $request['stx'] . '%';
+    }
+
+    return ' where ' . implode(' and ', $where);
+}
+
+function community_admin_fetch_group_list_page(array $request)
+{
+    community_ensure_operation_schema();
+    $table = community_admin_group_table();
+    $board_table = community_admin_board_table();
+    $params = array();
+    $where = community_admin_build_group_search_sql($request, $params);
+    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
+    $from_record = ($request['page'] - 1) * $request['page_rows'];
+
+    $list_params = $params;
+    $list_params['from_record'] = $from_record;
+    $list_params['page_rows'] = $request['page_rows'];
+
+    $rows = sql_fetch_all_prepared(
+        " select g.*,
+                 (select count(*) from {$board_table} b where b.group_id = g.group_id) as board_count
+            from {$table} g
+            {$where}
+           order by g.list_order asc, g.group_id asc
+           limit :from_record, :page_rows ",
+        $list_params
+    );
+
+    return array(
+        'total_count' => $total_count,
+        'rows' => $rows,
+        'from_record' => $from_record,
+    );
+}
+
+function community_admin_validate_group_request(array $request, $is_update)
+{
+    if ($request['group_id'] === '') {
+        return '그룹 ID를 입력하세요.';
+    }
+
+    if (!preg_match('/^[a-z][a-z0-9_]{1,49}$/i', $request['group_id'])) {
+        return '그룹 ID는 영문자로 시작하고 영문자, 숫자, _ 만 사용할 수 있습니다.';
+    }
+
+    if ($request['name'] === '') {
+        return '그룹 이름을 입력하세요.';
+    }
+
+    if (!in_array($request['status'], community_admin_board_status_values(), true)) {
+        return '그룹 상태가 올바르지 않습니다.';
+    }
+
+    if ($is_update && $request['original_group_id'] !== $request['group_id']) {
+        return '그룹 ID는 수정할 수 없습니다.';
+    }
+
+    $existing = community_admin_fetch_group($request['group_id']);
+    if (!$is_update && isset($existing['group_id']) && $existing['group_id'] !== '') {
+        return '이미 존재하는 그룹 ID입니다.';
+    }
+
+    return '';
+}
+
+function community_admin_save_group(array $request)
+{
+    community_ensure_operation_schema();
+    $is_update = ($request['original_group_id'] !== '');
+    $error = community_admin_validate_group_request($request, $is_update);
+
+    if ($error !== '') {
+        return array('error' => $error, 'group_id' => $request['group_id']);
+    }
+
+    $table = community_admin_group_table();
+    $params = array(
+        'name' => $request['name'],
+        'description' => $request['description'],
+        'read_level' => $request['read_level'],
+        'write_level' => $request['write_level'],
+        'comment_level' => $request['comment_level'],
+        'list_order' => $request['list_order'],
+        'status' => $request['status'],
+        'updated_at' => G5_TIME_YMDHIS,
+    );
+
+    if ($is_update) {
+        $params['original_group_id'] = $request['original_group_id'];
+        $sql = " update {$table}
+                    set name = :name,
+                        description = :description,
+                        read_level = :read_level,
+                        write_level = :write_level,
+                        comment_level = :comment_level,
+                        list_order = :list_order,
+                        status = :status,
+                        updated_at = :updated_at
+                  where group_id = :original_group_id ";
+    } else {
+        $params['group_id'] = $request['group_id'];
+        $params['created_at'] = G5_TIME_YMDHIS;
+        $sql = " insert into {$table}
+                    set group_id = :group_id,
+                        name = :name,
+                        description = :description,
+                        read_level = :read_level,
+                        write_level = :write_level,
+                        comment_level = :comment_level,
+                        list_order = :list_order,
+                        status = :status,
+                        created_at = :created_at,
+                        updated_at = :updated_at ";
+    }
+
+    if (!sql_query_prepared($sql, $params, false)) {
+        return array('error' => '게시판 그룹을 저장하지 못했습니다.', 'group_id' => $request['group_id']);
+    }
+
+    return array('error' => '', 'group_id' => $request['group_id']);
+}
+
+function community_admin_fetch_group_options()
+{
+    community_ensure_operation_schema();
+    $table = community_admin_group_table();
+
+    return sql_fetch_all_prepared(
+        " select group_id, name from {$table} where status <> 'archived' order by list_order asc, group_id asc ",
+        array()
+    );
+}
+
+function community_admin_menu_table()
+{
+    return site_menu_table();
+}
+
+function community_admin_fetch_menu($menu_id)
+{
+    community_ensure_operation_schema();
+    $table = community_admin_menu_table();
+
+    return sql_fetch_prepared(" select * from {$table} where menu_id = :menu_id ", array('menu_id' => (int) $menu_id));
+}
+
+function community_admin_build_menu_search_sql(array $request, array &$params)
+{
+    $where = array('1=1');
+    if ($request['status'] !== '') {
+        $where[] = 'm.status = :status';
+        $params['status'] = $request['status'];
+    }
+    if ($request['stx'] !== '') {
+        $where[] = '(m.name like :stx_like or m.target_id like :stx_like or m.url like :stx_like)';
+        $params['stx_like'] = '%' . $request['stx'] . '%';
+    }
+
+    return ' where ' . implode(' and ', $where);
+}
+
+function community_admin_fetch_menu_list_page(array $request)
+{
+    community_ensure_operation_schema();
+    $table = community_admin_menu_table();
+    $params = array();
+    $where = community_admin_build_menu_search_sql($request, $params);
+    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
+    $from_record = ($request['page'] - 1) * $request['page_rows'];
+
+    $list_params = $params;
+    $list_params['from_record'] = $from_record;
+    $list_params['page_rows'] = $request['page_rows'];
+    $rows = sql_fetch_all_prepared(
+        " select m.*, p.name as parent_name
+            from {$table} m
+            left join {$table} p on p.menu_id = m.parent_id
+            {$where}
+           order by m.parent_id asc, m.list_order asc, m.menu_id asc
+           limit :from_record, :page_rows ",
+        $list_params
+    );
+
+    return array(
+        'total_count' => $total_count,
+        'rows' => $rows,
+        'from_record' => $from_record,
+    );
+}
+
+function community_admin_validate_menu_request(array $request)
+{
+    if ($request['name'] === '') {
+        return '메뉴명을 입력하세요.';
+    }
+
+    if ($request['parent_id'] > 0 && $request['parent_id'] === $request['menu_id']) {
+        return '상위 메뉴를 자기 자신으로 지정할 수 없습니다.';
+    }
+
+    if ($request['menu_type'] === 'url' && $request['url'] === '') {
+        return '직접 URL 메뉴는 URL을 입력하세요.';
+    }
+
+    if (($request['menu_type'] === 'board_group' || $request['menu_type'] === 'board') && $request['target_id'] === '') {
+        return '연결 대상을 입력하세요.';
+    }
+
+    return '';
+}
+
+function community_admin_save_menu(array $request)
+{
+    community_ensure_operation_schema();
+    $error = community_admin_validate_menu_request($request);
+    if ($error !== '') {
+        return array('error' => $error, 'menu_id' => $request['menu_id']);
+    }
+
+    $table = community_admin_menu_table();
+    $params = array(
+        'parent_id' => $request['parent_id'],
+        'menu_type' => $request['menu_type'],
+        'target_id' => $request['target_id'],
+        'name' => $request['name'],
+        'url' => $request['url'],
+        'target_blank' => $request['target_blank'],
+        'access_level' => $request['access_level'],
+        'show_pc' => $request['show_pc'],
+        'show_mobile' => $request['show_mobile'],
+        'list_order' => $request['list_order'],
+        'status' => $request['status'],
+        'updated_at' => G5_TIME_YMDHIS,
+    );
+
+    if ($request['menu_id'] > 0) {
+        $params['menu_id'] = $request['menu_id'];
+        $sql = " update {$table}
+                    set parent_id = :parent_id,
+                        menu_type = :menu_type,
+                        target_id = :target_id,
+                        name = :name,
+                        url = :url,
+                        target_blank = :target_blank,
+                        access_level = :access_level,
+                        show_pc = :show_pc,
+                        show_mobile = :show_mobile,
+                        list_order = :list_order,
+                        status = :status,
+                        updated_at = :updated_at
+                  where menu_id = :menu_id ";
+    } else {
+        $params['created_at'] = G5_TIME_YMDHIS;
+        $sql = " insert into {$table}
+                    set parent_id = :parent_id,
+                        menu_type = :menu_type,
+                        target_id = :target_id,
+                        name = :name,
+                        url = :url,
+                        target_blank = :target_blank,
+                        access_level = :access_level,
+                        show_pc = :show_pc,
+                        show_mobile = :show_mobile,
+                        list_order = :list_order,
+                        status = :status,
+                        created_at = :created_at,
+                        updated_at = :updated_at ";
+    }
+
+    if (!sql_query_prepared($sql, $params, false)) {
+        return array('error' => '메뉴를 저장하지 못했습니다.', 'menu_id' => $request['menu_id']);
+    }
+
+    return array('error' => '', 'menu_id' => $request['menu_id'] > 0 ? $request['menu_id'] : sql_insert_id());
+}
+
+function community_admin_fetch_parent_menu_options($exclude_menu_id = 0)
+{
+    community_ensure_operation_schema();
+    $table = community_admin_menu_table();
+
+    return sql_fetch_all_prepared(
+        " select menu_id, name from {$table}
+          where parent_id = 0 and menu_id <> :exclude_menu_id
+          order by list_order asc, menu_id asc ",
+        array('exclude_menu_id' => (int) $exclude_menu_id)
+    );
+}
+
+function community_admin_banner_table()
+{
+    return site_banner_table();
+}
+
+function community_admin_fetch_banner($banner_id)
+{
+    community_ensure_operation_schema();
+    $table = community_admin_banner_table();
+
+    return sql_fetch_prepared(" select * from {$table} where banner_id = :banner_id ", array('banner_id' => (int) $banner_id));
+}
+
+function community_admin_build_banner_search_sql(array $request, array &$params)
+{
+    $where = array('1=1');
+    if ($request['position'] !== '') {
+        $where[] = 'position = :position';
+        $params['position'] = $request['position'];
+    }
+    if ($request['status'] !== '') {
+        $where[] = 'status = :status';
+        $params['status'] = $request['status'];
+    }
+    if ($request['stx'] !== '') {
+        $where[] = '(title like :stx_like or link_url like :stx_like)';
+        $params['stx_like'] = '%' . $request['stx'] . '%';
+    }
+
+    return ' where ' . implode(' and ', $where);
+}
+
+function community_admin_fetch_banner_list_page(array $request)
+{
+    community_ensure_operation_schema();
+    $table = community_admin_banner_table();
+    $params = array();
+    $where = community_admin_build_banner_search_sql($request, $params);
+    $count_row = sql_fetch_prepared(" select count(*) as cnt from {$table} {$where} ", $params);
+    $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
+    $from_record = ($request['page'] - 1) * $request['page_rows'];
+
+    $list_params = $params;
+    $list_params['from_record'] = $from_record;
+    $list_params['page_rows'] = $request['page_rows'];
+    $rows = sql_fetch_all_prepared(
+        " select * from {$table} {$where}
+          order by position asc, list_order asc, banner_id desc
+          limit :from_record, :page_rows ",
+        $list_params
+    );
+
+    return array(
+        'total_count' => $total_count,
+        'rows' => $rows,
+        'from_record' => $from_record,
+    );
+}
+
+function community_admin_banner_upload_dir()
+{
+    return 'banner/' . date('Ym', G5_SERVER_TIME);
+}
+
+function community_admin_store_banner_upload(array $file)
+{
+    if (empty($file['name']) || (int) $file['error'] === UPLOAD_ERR_NO_FILE) {
+        return array('error' => '', 'path' => '');
+    }
+
+    if ((int) $file['error'] !== UPLOAD_ERR_OK) {
+        return array('error' => '배너 이미지를 업로드하지 못했습니다.', 'path' => '');
+    }
+
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($extension, array('jpg', 'jpeg', 'png', 'gif', 'webp'), true)) {
+        return array('error' => '배너 이미지는 jpg, png, gif, webp만 업로드할 수 있습니다.', 'path' => '');
+    }
+
+    $relative_dir = community_admin_banner_upload_dir();
+    $absolute_dir = G5_DATA_PATH . '/' . $relative_dir;
+    if (!is_dir($absolute_dir) && !mkdir($absolute_dir, G5_DIR_PERMISSION, true)) {
+        return array('error' => '배너 이미지 저장 디렉터리를 만들지 못했습니다.', 'path' => '');
+    }
+
+    $filename = 'banner-' . date('YmdHis', G5_SERVER_TIME) . '-' . bin2hex(random_bytes(4)) . '.' . $extension;
+    $relative_path = $relative_dir . '/' . $filename;
+    $absolute_path = G5_DATA_PATH . '/' . $relative_path;
+
+    if (!is_uploaded_file($file['tmp_name']) || !move_uploaded_file($file['tmp_name'], $absolute_path)) {
+        return array('error' => '배너 이미지 파일을 저장하지 못했습니다.', 'path' => '');
+    }
+
+    @chmod($absolute_path, G5_FILE_PERMISSION);
+
+    return array('error' => '', 'path' => $relative_path);
+}
+
+function community_admin_validate_banner_request(array $request)
+{
+    if ($request['title'] === '') {
+        return '배너명을 입력하세요.';
+    }
+
+    if ($request['ended_at'] !== '0000-00-00 00:00:00' && $request['started_at'] !== '0000-00-00 00:00:00' && $request['ended_at'] < $request['started_at']) {
+        return '종료 일시는 시작 일시보다 빠를 수 없습니다.';
+    }
+
+    return '';
+}
+
+function community_admin_save_banner(array $request, array $files)
+{
+    community_ensure_operation_schema();
+    $error = community_admin_validate_banner_request($request);
+    if ($error !== '') {
+        return array('error' => $error, 'banner_id' => $request['banner_id']);
+    }
+
+    $current = $request['banner_id'] > 0 ? community_admin_fetch_banner($request['banner_id']) : array();
+    $image_path = !empty($current['image_path']) ? $current['image_path'] : $request['image_path'];
+    $mobile_image_path = !empty($current['mobile_image_path']) ? $current['mobile_image_path'] : $request['mobile_image_path'];
+
+    if ($request['delete_image']) {
+        $image_path = '';
+    }
+    if ($request['delete_mobile_image']) {
+        $mobile_image_path = '';
+    }
+
+    if (isset($files['image_file'])) {
+        $upload = community_admin_store_banner_upload($files['image_file']);
+        if ($upload['error'] !== '') {
+            return array('error' => $upload['error'], 'banner_id' => $request['banner_id']);
+        }
+        if ($upload['path'] !== '') {
+            $image_path = $upload['path'];
+        }
+    }
+
+    if (isset($files['mobile_image_file'])) {
+        $upload = community_admin_store_banner_upload($files['mobile_image_file']);
+        if ($upload['error'] !== '') {
+            return array('error' => $upload['error'], 'banner_id' => $request['banner_id']);
+        }
+        if ($upload['path'] !== '') {
+            $mobile_image_path = $upload['path'];
+        }
+    }
+
+    $table = community_admin_banner_table();
+    $params = array(
+        'position' => $request['position'],
+        'title' => $request['title'],
+        'image_path' => $image_path,
+        'mobile_image_path' => $mobile_image_path,
+        'link_url' => $request['link_url'],
+        'target_blank' => $request['target_blank'],
+        'started_at' => $request['started_at'],
+        'ended_at' => $request['ended_at'],
+        'show_pc' => $request['show_pc'],
+        'show_mobile' => $request['show_mobile'],
+        'list_order' => $request['list_order'],
+        'status' => $request['status'],
+        'updated_at' => G5_TIME_YMDHIS,
+    );
+
+    if ($request['banner_id'] > 0) {
+        $params['banner_id'] = $request['banner_id'];
+        $sql = " update {$table}
+                    set position = :position,
+                        title = :title,
+                        image_path = :image_path,
+                        mobile_image_path = :mobile_image_path,
+                        link_url = :link_url,
+                        target_blank = :target_blank,
+                        started_at = :started_at,
+                        ended_at = :ended_at,
+                        show_pc = :show_pc,
+                        show_mobile = :show_mobile,
+                        list_order = :list_order,
+                        status = :status,
+                        updated_at = :updated_at
+                  where banner_id = :banner_id ";
+    } else {
+        $params['created_at'] = G5_TIME_YMDHIS;
+        $sql = " insert into {$table}
+                    set position = :position,
+                        title = :title,
+                        image_path = :image_path,
+                        mobile_image_path = :mobile_image_path,
+                        link_url = :link_url,
+                        target_blank = :target_blank,
+                        started_at = :started_at,
+                        ended_at = :ended_at,
+                        show_pc = :show_pc,
+                        show_mobile = :show_mobile,
+                        list_order = :list_order,
+                        status = :status,
+                        created_at = :created_at,
+                        updated_at = :updated_at ";
+    }
+
+    if (!sql_query_prepared($sql, $params, false)) {
+        return array('error' => '배너를 저장하지 못했습니다.', 'banner_id' => $request['banner_id']);
+    }
+
+    return array('error' => '', 'banner_id' => $request['banner_id'] > 0 ? $request['banner_id'] : sql_insert_id());
 }
 
 function community_admin_post_table()
@@ -587,6 +1120,7 @@ function community_admin_health_table_checks()
 
     $tables = array(
         '기본환경 설정' => $g5['community_config_table'],
+        '게시판 그룹' => $g5['community_board_group_table'],
         '게시판' => $g5['community_board_table'],
         '카테고리' => $g5['community_board_category_table'],
         '게시글' => $g5['community_post_table'],
@@ -597,6 +1131,8 @@ function community_admin_health_table_checks()
         '사용 가능 포인트' => $g5['community_point_available_table'],
         '첨부파일' => $g5['community_attachment_table'],
         '스크랩' => $g5['community_scrap_table'],
+        '사이트 메뉴' => $g5['site_menu_table'],
+        '사이트 배너' => $g5['site_banner_table'],
     );
 
     $checks = array();

@@ -47,13 +47,26 @@ function community_fetch_board($board_id, $include_hidden = false)
     return $board;
 }
 
-function community_fetch_board_list($include_hidden = false)
+function community_fetch_board_list($include_hidden = false, $group_id = '')
 {
+    community_ensure_operation_schema();
     $table = community_board_table();
-    $status_sql = $include_hidden ? '' : " where status = 'active' ";
+    $where = array();
+    $params = array();
 
     if (!$include_hidden) {
-        $cache_key = 'community:board:list:active';
+        $where[] = "status = 'active'";
+    }
+
+    if ($group_id !== '') {
+        $where[] = 'group_id = :group_id';
+        $params['group_id'] = $group_id;
+    }
+
+    $where_sql = !empty($where) ? ' where ' . implode(' and ', $where) : '';
+
+    if (!$include_hidden) {
+        $cache_key = 'community:board:list:active:' . $group_id;
         $cached_boards = community_cache_get($cache_key);
         if (is_array($cached_boards)) {
             return $cached_boards;
@@ -61,8 +74,8 @@ function community_fetch_board_list($include_hidden = false)
     }
 
     $boards = sql_fetch_all_prepared(
-        " select * from {$table} {$status_sql} order by list_order asc, board_id asc ",
-        array()
+        " select * from {$table} {$where_sql} order by list_order asc, board_id asc ",
+        $params
     );
 
     if (!$include_hidden) {

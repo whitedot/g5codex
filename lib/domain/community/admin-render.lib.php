@@ -45,10 +45,33 @@ function community_admin_build_status_options($selected)
     return $options;
 }
 
+function community_admin_build_binary_status_options($selected)
+{
+    return array(
+        admin_build_select_option_view('active', '사용', $selected === 'active'),
+        admin_build_select_option_view('hidden', '숨김', $selected === 'hidden'),
+    );
+}
+
+function community_admin_build_group_options($selected, $include_empty = true)
+{
+    $options = array();
+    if ($include_empty) {
+        $options[] = admin_build_select_option_view('', '그룹 없음', $selected === '');
+    }
+
+    foreach (community_admin_fetch_group_options() as $group) {
+        $options[] = admin_build_select_option_view($group['group_id'], $group['name'] . ' (' . $group['group_id'] . ')', $selected === $group['group_id']);
+    }
+
+    return $options;
+}
+
 function community_admin_build_board_item(array $row)
 {
     return array(
         'board_id_text' => get_text($row['board_id']),
+        'group_id_text' => get_text(isset($row['group_id']) && $row['group_id'] !== '' ? $row['group_id'] : '그룹 없음'),
         'name_text' => get_text($row['name']),
         'status_text' => get_text(community_admin_status_label($row['status'])),
         'status_class' => community_admin_status_class($row['status']),
@@ -106,6 +129,7 @@ function community_admin_default_board_row()
         'board_id' => '',
         'name' => '',
         'description' => '',
+        'group_id' => '',
         'read_level' => $community_config['board_read_level'],
         'write_level' => $community_config['board_write_level'],
         'comment_level' => $community_config['board_comment_level'],
@@ -163,6 +187,380 @@ function community_admin_build_config_form_view()
     );
 }
 
+function community_admin_build_group_item(array $row)
+{
+    return array(
+        'group_id_text' => get_text($row['group_id']),
+        'name_text' => get_text($row['name']),
+        'description_text' => get_text(cut_str($row['description'], 80)),
+        'status_text' => get_text(community_admin_status_label($row['status'])),
+        'status_class' => community_admin_status_class($row['status']),
+        'read_level_text' => (int) $row['read_level'],
+        'write_level_text' => (int) $row['write_level'],
+        'comment_level_text' => (int) $row['comment_level'],
+        'board_count_text' => number_format((int) $row['board_count']),
+        'edit_url_attr' => admin_escape_attr('./community_group_form.php?group_id=' . rawurlencode($row['group_id'])),
+    );
+}
+
+function community_admin_build_group_list_view(array $request, array $config)
+{
+    $page_data = community_admin_fetch_group_list_page($request);
+    $items = array();
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_admin_build_group_item($row);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $qstr = community_admin_build_group_list_qstr($request, array('page' => ''));
+    $paging_url = './community_group_list.php';
+    $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
+
+    return array(
+        'title' => '커뮤니티 게시판 그룹',
+        'admin_container_class' => 'admin-page-community-group-list',
+        'admin_page_subtitle' => '게시판을 그룹으로 묶고 그룹별 기본 권한을 관리합니다.',
+        'total_count_text' => admin_format_count_text($page_data['total_count'], '개'),
+        'items' => $items,
+        'empty_message' => '등록된 게시판 그룹이 없습니다.',
+        'add_url_attr' => admin_escape_attr('./community_group_form.php'),
+        'list_all_url_attr' => admin_escape_attr('./community_group_list.php'),
+        'search_action_attr' => admin_escape_attr('./community_group_list.php'),
+        'stx_value' => get_sanitize_input($request['stx']),
+        'status_options' => array_merge(
+            array(admin_build_select_option_view('', '전체', $request['status'] === '')),
+            community_admin_build_status_options($request['status'])
+        ),
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
+    );
+}
+
+function community_admin_default_group_row()
+{
+    $community_config = community_get_config();
+
+    return array(
+        'group_id' => '',
+        'name' => '',
+        'description' => '',
+        'read_level' => $community_config['board_read_level'],
+        'write_level' => $community_config['board_write_level'],
+        'comment_level' => $community_config['board_comment_level'],
+        'list_order' => 0,
+        'status' => 'active',
+    );
+}
+
+function community_admin_build_group_form_view(array $request)
+{
+    $is_update = ($request['group_id'] !== '');
+    $group = $is_update ? community_admin_fetch_group($request['group_id']) : array();
+
+    if ($is_update && !(isset($group['group_id']) && $group['group_id'] !== '')) {
+        alert('존재하지 않는 게시판 그룹입니다.', './community_group_list.php');
+    }
+
+    $group = array_merge(community_admin_default_group_row(), $group);
+
+    return array(
+        'title' => $is_update ? '게시판 그룹 수정' : '게시판 그룹 추가',
+        'admin_container_class' => 'admin-page-community-group-form',
+        'admin_page_subtitle' => '그룹명, 정렬, 기본 권한, 사용 상태를 설정합니다.',
+        'is_update' => $is_update,
+        'form_action_attr' => admin_escape_attr('./community_group_form_update.php'),
+        'list_url_attr' => admin_escape_attr('./community_group_list.php'),
+        'original_group_id_attr' => admin_escape_attr($group['group_id']),
+        'group_id_value' => get_sanitize_input($group['group_id']),
+        'group_id_readonly_attr' => $is_update ? ' readonly' : '',
+        'name_value' => get_sanitize_input($group['name']),
+        'description_value' => get_sanitize_input($group['description']),
+        'read_level_options' => admin_build_member_level_options(1, 10, $group['read_level']),
+        'write_level_options' => admin_build_member_level_options(1, 10, $group['write_level']),
+        'comment_level_options' => admin_build_member_level_options(1, 10, $group['comment_level']),
+        'list_order_value' => (int) $group['list_order'],
+        'status_options' => community_admin_build_status_options($group['status']),
+        'admin_token' => get_admin_token(),
+    );
+}
+
+function community_admin_menu_type_label($type)
+{
+    $labels = array(
+        'url' => '직접 URL',
+        'board_group' => '게시판 그룹',
+        'board' => '게시판',
+        'disabled' => '비활성',
+    );
+
+    return isset($labels[$type]) ? $labels[$type] : $type;
+}
+
+function community_admin_build_menu_type_options($selected)
+{
+    $options = array();
+    foreach (community_admin_menu_type_values() as $type) {
+        $options[] = admin_build_select_option_view($type, community_admin_menu_type_label($type), $selected === $type);
+    }
+
+    return $options;
+}
+
+function community_admin_build_parent_menu_options($selected, $exclude_menu_id = 0)
+{
+    $options = array(admin_build_select_option_view(0, '최상위 메뉴', (int) $selected === 0));
+    foreach (community_admin_fetch_parent_menu_options($exclude_menu_id) as $menu) {
+        $options[] = admin_build_select_option_view((int) $menu['menu_id'], $menu['name'], (int) $selected === (int) $menu['menu_id']);
+    }
+
+    return $options;
+}
+
+function community_admin_build_menu_item(array $row)
+{
+    $url = site_build_menu_url($row);
+
+    return array(
+        'menu_id_text' => (int) $row['menu_id'],
+        'name_text' => get_text($row['name']),
+        'parent_text' => get_text($row['parent_name'] !== null && $row['parent_name'] !== '' ? $row['parent_name'] : '최상위'),
+        'type_text' => get_text(community_admin_menu_type_label($row['menu_type'])),
+        'target_text' => get_text($row['target_id'] !== '' ? $row['target_id'] : $row['url']),
+        'url_attr' => admin_escape_attr($url),
+        'status_text' => get_text(community_admin_status_label($row['status'])),
+        'status_class' => community_admin_status_class($row['status']),
+        'device_text' => get_text(($row['show_pc'] ? 'PC' : '') . ($row['show_pc'] && $row['show_mobile'] ? ' / ' : '') . ($row['show_mobile'] ? '모바일' : '')),
+        'edit_url_attr' => admin_escape_attr('./community_menu_form.php?menu_id=' . (int) $row['menu_id']),
+    );
+}
+
+function community_admin_build_menu_list_view(array $request, array $config)
+{
+    $page_data = community_admin_fetch_menu_list_page($request);
+    $items = array();
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_admin_build_menu_item($row);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $qstr = community_admin_build_menu_list_qstr($request, array('page' => ''));
+    $paging_url = './community_menu_list.php';
+    $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
+
+    return array(
+        'title' => '커뮤니티 메뉴 관리',
+        'admin_container_class' => 'admin-page-community-menu-list',
+        'admin_page_subtitle' => '게시판 그룹, 게시판, 직접 URL을 메뉴로 구성합니다.',
+        'total_count_text' => admin_format_count_text($page_data['total_count'], '개'),
+        'items' => $items,
+        'empty_message' => '등록된 메뉴가 없습니다.',
+        'add_url_attr' => admin_escape_attr('./community_menu_form.php'),
+        'list_all_url_attr' => admin_escape_attr('./community_menu_list.php'),
+        'search_action_attr' => admin_escape_attr('./community_menu_list.php'),
+        'stx_value' => get_sanitize_input($request['stx']),
+        'status_options' => array(
+            admin_build_select_option_view('', '전체', $request['status'] === ''),
+            admin_build_select_option_view('active', '사용', $request['status'] === 'active'),
+            admin_build_select_option_view('hidden', '숨김', $request['status'] === 'hidden'),
+        ),
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
+    );
+}
+
+function community_admin_default_menu_row()
+{
+    return array(
+        'menu_id' => 0,
+        'parent_id' => 0,
+        'menu_type' => 'url',
+        'target_id' => '',
+        'name' => '',
+        'url' => '',
+        'target_blank' => 0,
+        'access_level' => 1,
+        'show_pc' => 1,
+        'show_mobile' => 1,
+        'list_order' => 0,
+        'status' => 'active',
+    );
+}
+
+function community_admin_build_menu_form_view(array $request)
+{
+    $is_update = ($request['menu_id'] > 0);
+    $menu = $is_update ? community_admin_fetch_menu($request['menu_id']) : array();
+
+    if ($is_update && empty($menu['menu_id'])) {
+        alert('존재하지 않는 메뉴입니다.', './community_menu_list.php');
+    }
+
+    $menu = array_merge(community_admin_default_menu_row(), $menu);
+
+    return array(
+        'title' => $is_update ? '커뮤니티 메뉴 수정' : '커뮤니티 메뉴 추가',
+        'admin_container_class' => 'admin-page-community-menu-form',
+        'admin_page_subtitle' => '메뉴 유형, 연결 대상, 노출 기기와 접근 레벨을 설정합니다.',
+        'form_action_attr' => admin_escape_attr('./community_menu_form_update.php'),
+        'list_url_attr' => admin_escape_attr('./community_menu_list.php'),
+        'menu_id_value' => (int) $menu['menu_id'],
+        'name_value' => get_sanitize_input($menu['name']),
+        'url_value' => get_sanitize_input($menu['url']),
+        'target_id_value' => get_sanitize_input($menu['target_id']),
+        'parent_options' => community_admin_build_parent_menu_options($menu['parent_id'], $menu['menu_id']),
+        'menu_type_options' => community_admin_build_menu_type_options($menu['menu_type']),
+        'access_level_options' => admin_build_member_level_options(1, 10, $menu['access_level']),
+        'target_blank_checked' => !empty($menu['target_blank']) ? ' checked' : '',
+        'show_pc_checked' => !empty($menu['show_pc']) ? ' checked' : '',
+        'show_mobile_checked' => !empty($menu['show_mobile']) ? ' checked' : '',
+        'list_order_value' => (int) $menu['list_order'],
+        'status_options' => community_admin_build_binary_status_options($menu['status']),
+        'admin_token' => get_admin_token(),
+    );
+}
+
+function community_admin_banner_position_label($position)
+{
+    $labels = array(
+        'main_top' => '메인 상단',
+        'main_middle' => '메인 중단',
+        'community_top' => '커뮤니티 상단',
+        'board_list_top' => '게시판 목록 상단',
+        'post_view_bottom' => '게시글 보기 하단',
+        'side' => '사이드',
+    );
+
+    return isset($labels[$position]) ? $labels[$position] : $position;
+}
+
+function community_admin_build_banner_position_options($selected, $include_all = false)
+{
+    $options = array();
+    if ($include_all) {
+        $options[] = admin_build_select_option_view('', '전체', $selected === '');
+    }
+
+    foreach (community_admin_banner_position_values() as $position) {
+        $options[] = admin_build_select_option_view($position, community_admin_banner_position_label($position), $selected === $position);
+    }
+
+    return $options;
+}
+
+function community_admin_split_datetime_value($value)
+{
+    if ($value === '' || $value === '0000-00-00 00:00:00') {
+        return array('date' => '', 'time' => '');
+    }
+
+    return array('date' => substr($value, 0, 10), 'time' => substr($value, 11, 5));
+}
+
+function community_admin_build_banner_item(array $row)
+{
+    return array(
+        'banner_id_text' => (int) $row['banner_id'],
+        'title_text' => get_text($row['title']),
+        'position_text' => get_text(community_admin_banner_position_label($row['position'])),
+        'status_text' => get_text(community_admin_status_label($row['status'])),
+        'status_class' => community_admin_status_class($row['status']),
+        'period_text' => get_text(($row['started_at'] === '0000-00-00 00:00:00' ? '즉시' : $row['started_at']) . ' ~ ' . ($row['ended_at'] === '0000-00-00 00:00:00' ? '제한 없음' : $row['ended_at'])),
+        'device_text' => get_text(($row['show_pc'] ? 'PC' : '') . ($row['show_pc'] && $row['show_mobile'] ? ' / ' : '') . ($row['show_mobile'] ? '모바일' : '')),
+        'image_url_attr' => admin_escape_attr(site_banner_image_url($row['image_path'])),
+        'edit_url_attr' => admin_escape_attr('./community_banner_form.php?banner_id=' . (int) $row['banner_id']),
+    );
+}
+
+function community_admin_build_banner_list_view(array $request, array $config)
+{
+    $page_data = community_admin_fetch_banner_list_page($request);
+    $items = array();
+    foreach ($page_data['rows'] as $row) {
+        $items[] = community_admin_build_banner_item($row);
+    }
+
+    $total_page = $request['page_rows'] > 0 ? (int) ceil($page_data['total_count'] / $request['page_rows']) : 1;
+    $qstr = community_admin_build_banner_list_qstr($request, array('page' => ''));
+    $paging_url = './community_banner_list.php';
+    $paging_url .= $qstr !== '' ? '?' . $qstr . '&amp;page=' : '?page=';
+
+    return array(
+        'title' => '커뮤니티 배너 관리',
+        'admin_container_class' => 'admin-page-community-banner-list',
+        'admin_page_subtitle' => '위치별 배너 이미지, 링크, 노출 기간을 관리합니다.',
+        'total_count_text' => admin_format_count_text($page_data['total_count'], '개'),
+        'items' => $items,
+        'empty_message' => '등록된 배너가 없습니다.',
+        'add_url_attr' => admin_escape_attr('./community_banner_form.php'),
+        'list_all_url_attr' => admin_escape_attr('./community_banner_list.php'),
+        'search_action_attr' => admin_escape_attr('./community_banner_list.php'),
+        'position_options' => community_admin_build_banner_position_options($request['position'], true),
+        'status_options' => array(
+            admin_build_select_option_view('', '전체', $request['status'] === ''),
+            admin_build_select_option_view('active', '사용', $request['status'] === 'active'),
+            admin_build_select_option_view('hidden', '숨김', $request['status'] === 'hidden'),
+        ),
+        'stx_value' => get_sanitize_input($request['stx']),
+        'paging_html' => get_paging(G5_ADMIN_PAGING_PAGES, $request['page'], max(1, $total_page), $paging_url),
+    );
+}
+
+function community_admin_default_banner_row()
+{
+    return array(
+        'banner_id' => 0,
+        'position' => 'main_top',
+        'title' => '',
+        'image_path' => '',
+        'mobile_image_path' => '',
+        'link_url' => '',
+        'target_blank' => 0,
+        'started_at' => '0000-00-00 00:00:00',
+        'ended_at' => '0000-00-00 00:00:00',
+        'show_pc' => 1,
+        'show_mobile' => 1,
+        'list_order' => 0,
+        'status' => 'active',
+    );
+}
+
+function community_admin_build_banner_form_view(array $request)
+{
+    $is_update = ($request['banner_id'] > 0);
+    $banner = $is_update ? community_admin_fetch_banner($request['banner_id']) : array();
+    if ($is_update && empty($banner['banner_id'])) {
+        alert('존재하지 않는 배너입니다.', './community_banner_list.php');
+    }
+
+    $banner = array_merge(community_admin_default_banner_row(), $banner);
+    $started = community_admin_split_datetime_value($banner['started_at']);
+    $ended = community_admin_split_datetime_value($banner['ended_at']);
+
+    return array(
+        'title' => $is_update ? '커뮤니티 배너 수정' : '커뮤니티 배너 추가',
+        'admin_container_class' => 'admin-page-community-banner-form',
+        'admin_page_subtitle' => '배너 위치, 이미지, 링크와 노출 기간을 설정합니다.',
+        'form_action_attr' => admin_escape_attr('./community_banner_form_update.php'),
+        'list_url_attr' => admin_escape_attr('./community_banner_list.php'),
+        'banner_id_value' => (int) $banner['banner_id'],
+        'position_options' => community_admin_build_banner_position_options($banner['position']),
+        'title_value' => get_sanitize_input($banner['title']),
+        'image_path_value' => get_sanitize_input($banner['image_path']),
+        'mobile_image_path_value' => get_sanitize_input($banner['mobile_image_path']),
+        'image_url_attr' => admin_escape_attr(site_banner_image_url($banner['image_path'])),
+        'mobile_image_url_attr' => admin_escape_attr(site_banner_image_url($banner['mobile_image_path'])),
+        'link_url_value' => get_sanitize_input($banner['link_url']),
+        'target_blank_checked' => !empty($banner['target_blank']) ? ' checked' : '',
+        'started_date_value' => get_sanitize_input($started['date']),
+        'started_time_value' => get_sanitize_input($started['time']),
+        'ended_date_value' => get_sanitize_input($ended['date']),
+        'ended_time_value' => get_sanitize_input($ended['time']),
+        'show_pc_checked' => !empty($banner['show_pc']) ? ' checked' : '',
+        'show_mobile_checked' => !empty($banner['show_mobile']) ? ' checked' : '',
+        'list_order_value' => (int) $banner['list_order'],
+        'status_options' => community_admin_build_binary_status_options($banner['status']),
+        'admin_token' => get_admin_token(),
+    );
+}
+
 function community_admin_category_text(array $categories)
 {
     $names = array();
@@ -197,6 +595,7 @@ function community_admin_build_board_form_view(array $request)
         'board_id_readonly_attr' => $is_update ? ' readonly' : '',
         'name_value' => get_sanitize_input($board['name']),
         'description_value' => get_sanitize_input($board['description']),
+        'group_options' => community_admin_build_group_options($board['group_id']),
         'read_level_options' => admin_build_member_level_options(1, 10, $board['read_level']),
         'write_level_options' => admin_build_member_level_options(1, 10, $board['write_level']),
         'comment_level_options' => admin_build_member_level_options(1, 10, $board['comment_level']),
